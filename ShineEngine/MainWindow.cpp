@@ -37,8 +37,9 @@ void CMainWindow::Init()
 	gSys->Init();
 
 	if (glewInit() != GLEW_OK)
+	{
 		exit(1);
-
+	}
 
 	float data2[] = 
 	{

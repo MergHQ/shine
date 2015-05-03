@@ -5,7 +5,6 @@
 
 CRenderer::CRenderer()
 {
-	//vaos.empty();
 }
 
 CRenderer::~CRenderer()
@@ -15,20 +14,8 @@ CRenderer::~CRenderer()
 
 bool CRenderer::CreateMesh(float a[], int elements, const char* v_shader, const char* f_shader)
 {
-	//std::string inputfile = filename;
-	//std::vector<tinyobj::shape_t> verts;
-	//std::vector<tinyobj::material_t> materials;
-
-	//std::string err = tinyobj::LoadObj(verts, materials, inputfile.c_str());
-
-	//if (!err.empty())
-	//{
-	//	return false;
-	//}
-
-
 	//========================================
-	// Create VBOs and VAOs
+	// Load shaders from files.
 	//========================================
 
 	std::ifstream vshader(v_shader);
@@ -58,6 +45,10 @@ bool CRenderer::CreateMesh(float a[], int elements, const char* v_shader, const 
 	vshader.close();
 	fshader.close();
 
+	//========================================
+	// Create VBOs and VAOs.
+	//========================================
+
 	GLuint vbo = 0;
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -73,12 +64,12 @@ bool CRenderer::CreateMesh(float a[], int elements, const char* v_shader, const 
 	vaos.push_back(vao);
 
 	//=========================================
-	// Create shaders
+	// Create shaders.
 	//=========================================
 
 	const char* v = vshadercont.c_str();
 	const char* f = fshadercont.c_str();
-
+	
 	if (v != "" && f != "")
 	{
 		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -94,11 +85,7 @@ bool CRenderer::CreateMesh(float a[], int elements, const char* v_shader, const 
 		glLinkProgram(shader_programme);
 
 		shaders.push_back(shader_programme);
-	}
-	else
-	{ 
-		//gSys->Log("Error loading shader. Return value is null"); 
-	}
+	} else return false;
 
 	return true;
 }
@@ -108,13 +95,10 @@ void CRenderer::Render()
 	// Render yo shit
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	rot++;
 	if (this != nullptr)
 	{
 		for (int iter = 0; iter < this->GetVaos().size(); iter++)
 		{			
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 			glUseProgram(this->GetShaders()[iter]);
 			glBindVertexArray(this->GetVaos()[iter]);
 			glDrawArrays(GL_TRIANGLES, 0, 3);

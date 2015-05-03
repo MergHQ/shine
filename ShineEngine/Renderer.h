@@ -21,7 +21,6 @@ public:
 private:
 	std::vector<GLuint> vaos;
 	std::vector<GLuint> shaders;
-	float rot;
 };
 
 #endif
