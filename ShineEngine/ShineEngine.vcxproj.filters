@@ -42,10 +42,10 @@
     <ClCompile Include="MeshSystem.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderSystem.cpp">
+    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Shader.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,9 +68,6 @@
     <ClInclude Include="MeshSystem.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderSystem.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="IMesh.h">
       <Filter>Source Files\Interfaces</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
       <Filter>Source Files\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
   </ItemGroup>

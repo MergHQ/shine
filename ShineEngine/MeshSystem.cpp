@@ -1,8 +1,10 @@
 #include "MeshSystem.h"
+#include "Shader.h"
 
 CMeshSystem::~CMeshSystem()
 {
 	mesh_instances.clear();
+	shader_instances.clear();
 }
 
 IMesh* CMeshSystem::GetMeshById(int id)
@@ -17,7 +19,7 @@ IMesh* CMeshSystem::GetMeshById(int id)
 	return nullptr;
 }
 
-IMesh* CMeshSystem::CreateMesh(SShineMesh* pMesh)
+IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 {
 	if (pMesh->id == 0)
 	{
@@ -26,13 +28,13 @@ IMesh* CMeshSystem::CreateMesh(SShineMesh* pMesh)
 	
 	if (pMesh->name == "")
 	{
-		printf("[MESHSYS]You didn't name your mesh!");
+		gSys->Log("[MESHSYS]You didn't name your mesh!");
 		return nullptr;
 	}
 
 	if (pMesh->verts.empty())
 	{
-		printf("[MESHSYS]Please consider addaing verticies to your mesh.");
+		gSys->Log("[MESHSYS]Please consider addaing verticies to your mesh.");
 		return nullptr;
 	}
 
@@ -67,7 +69,9 @@ void CMeshSystem::DeleteMesh(int id)
 			if (mesh_instances[iter] == pMesh)
 			{
 				mesh_instances.erase(mesh_instances.begin() + iter);
+				shader_instances.erase(shader_instances.begin() + iter);
 				delete pMesh;
+				delete shader_instances[iter];
 			}
 		}
 	}

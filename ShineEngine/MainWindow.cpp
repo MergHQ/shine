@@ -125,20 +125,27 @@ void CMainWindow::Init()
 		-1.0, 1.0, -1.0
 	};
 
-	SShineMesh mesh;
+	SShaderParams sparams;
+	sparams.id = 1231;
+	sparams.name = "sampleshader";
+	sparams.f_file = "shaders/frag1.frag";
+	sparams.v_file = "shaders/vertex1.vert";
+
+
+	SMeshParams mesh;
 
 	mesh.name = "sample";
+	mesh.id = 123;
 	mesh.verts = data2;
 	//mesh.pos = Vec3(0, 0, 0);
-	//mesh.pShader = &shader;
+	mesh.pShader = &sparams;
 
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
-
 	while (!glfwWindowShouldClose(window))
 	{
 		gSys->pRenderer->Render();
 		glfwPollEvents();
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(window);		
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -146,18 +153,18 @@ void CMainWindow::Init()
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVao);
-			//glDeleteShader(gSys->pRenderer->GetShaders()[iter]);
+			glDeleteShader(pMeshSys->GetShaderConteainer()[iter]->GetShaderProgramme());
 		}
 	}
-
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
 	{
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			if (pMeshSys->GetMeshContainer()[iter] != nullptr)
 			{
-				// Delete all the meshes from memory, so we avoid memory leaks.
+				// Delete all the meshes and shaders from memory, so we avoid memory leaks.
 				delete pMeshSys->GetMeshContainer()[iter];
+				delete pMeshSys->GetShaderConteainer()[iter];
 			}
 		}
 	}

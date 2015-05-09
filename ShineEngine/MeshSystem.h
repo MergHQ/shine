@@ -4,9 +4,9 @@
 #pragma once
 
 #include "shine.h"
-#include "ShaderSystem.h"
 #include "IMesh.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 class CMeshSystem
 {
@@ -18,12 +18,15 @@ public:
 
 	IMesh* GetMeshById(int id);
 	IMesh* GetMeshByName(const char* name);
-	IMesh* CreateMesh(SShineMesh* pMesh);
+	IMesh* CreateMesh(SMeshParams* pMesh);
 	void DeleteMesh(int id);
 	std::vector<CMesh*> GetMeshContainer(){ return mesh_instances; }
+	std::vector<CShader*> GetShaderConteainer(){ return shader_instances; }
+	void AddToShaderContainer(CShader* pShader) { shader_instances.push_back(pShader); }
 
 private:
 	std::vector<CMesh*> mesh_instances;
+	std::vector<CShader*> shader_instances;
 
 };
 

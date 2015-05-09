@@ -11,14 +11,14 @@
 	This struct is used to create a mesh.
 */
 
-struct SShineMesh
+struct SMeshParams
 {
 
 	const char* name;
 	int id;
 	std::vector<float> verts;
 	glm::vec3 pos = glm::vec3(0, 0, 0);
-	IShader* pShader;
+	SShaderParams* pShader;
 
 };
 
@@ -31,6 +31,7 @@ struct IMesh
 	virtual const char* GetName() = 0;
 	virtual int GetId() = 0;
 	virtual IShader* GetShader() = 0;
+	virtual IShader* CreateShader(SShaderParams* pShaderParams) = 0;
 	virtual std::vector<float> GetVerts() = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
 	virtual void SetPos(glm::vec3 pos) = 0;

@@ -17,8 +17,6 @@ struct IGlobalSystem
 	CMeshSystem* pMeshSystem;
 	void Init();
 	void Log(const char* _Format);
-
-
 };
 
 #endif

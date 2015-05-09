@@ -11,7 +11,7 @@
 class CMesh : public IMesh
 {
 public:
-	CMesh(SShineMesh* pMesh);
+	CMesh(SMeshParams* pMesh);
 	~CMesh();
 
 
@@ -19,6 +19,7 @@ public:
 	virtual const char* GetName() { return m_meshName; }
 	virtual int GetId() { return m_meshId; }
 	virtual IShader* GetShader() { return m_pIShader; }
+	virtual IShader* CreateShader(SShaderParams* pShaderParams);
 	virtual std::vector<float> GetVerts() { return m_verticies; }
 	virtual glm::vec3 GetWorldPos() { return m_worldPos; }
 	virtual void SetPos(glm::vec3 pos);
@@ -28,6 +29,7 @@ public:
 	GLuint meshVao;
 	GLuint meshVbo;
 private:
+
 	const char* m_meshName;
 	int m_meshId;
 	std::vector<float> m_verticies;

@@ -3,14 +3,15 @@
 #include <GL\glew.h>
 #include "GLFW\glfw3.h"
 
-CMesh::CMesh(SShineMesh* pMesh)
+
+CMesh::CMesh(SMeshParams* pMesh)
 {
 	m_meshId = pMesh->id;
 	m_meshName = pMesh->name;
 	m_verticies = pMesh->verts;
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
-	m_pIShader = pMesh->pShader;	
+	m_pIShader = CreateShader(pMesh->pShader);
 }
 
 CMesh::~CMesh() {}
@@ -36,4 +37,40 @@ void CMesh::CreateVaosAndShit()
 
 	meshVbo = vbo;
 	meshVao = vao;
+}
+
+IShader* CMesh::CreateShader(SShaderParams* pShaderParams)
+{
+	if (pShaderParams->id == 0)
+	{
+		pShaderParams->id = rand() * 1000;
+	}
+
+	if (pShaderParams->name == "")
+	{
+		gSys->Log("[SHADERSYS] You didn't name your shader!");
+		return nullptr;
+	}
+
+	if (pShaderParams->f_file == "")
+	{
+		gSys->Log("[SHADERSYS] No frag shader path specified!");
+		return nullptr;
+	}
+
+	if (pShaderParams->v_file == "")
+	{
+		gSys->Log("[SHADERSYS] No vert shader path specified!");
+		return nullptr;
+	}
+
+	CShader* pNShader = new CShader(pShaderParams);
+
+	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
+	{
+		// Control the shaderz.
+		pMeshSys->AddToShaderContainer(pNShader);
+	} else return nullptr;
+
+	return pNShader;
 }
