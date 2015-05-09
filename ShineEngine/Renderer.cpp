@@ -1,7 +1,6 @@
 #include "Renderer.h"
-#include "MainWindow.h"
+#include "GlobalSystem.h"
 #include "MeshSystem.h"
-#include "Mesh.h"
 
 #include <GL\glew.h>
 #include <vector>

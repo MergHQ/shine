@@ -2,16 +2,13 @@
 #define _MAINWINDOW_H_
 
 #pragma once
-#include "GlobalSystem.h"
 
-extern IGlobalSystem* gSys; // Gives linker errors :( Some shit is up.
 class CMainWindow
 {
 public:
 	CMainWindow();
 	~CMainWindow();
 	void Init();
-	IGlobalSystem* gSys;
 private:
 
 }; 

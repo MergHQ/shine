@@ -5,7 +5,10 @@
 #include <stdio.h>
 #include "shine.h"
 #include "MainWindow.h"
+#include "GlobalSystem.h"
 
+
+IGlobalSystem* gSys;
 
 static void error_callback(int error, const char* description)
 {
@@ -38,7 +41,7 @@ void CMainWindow::Init()
 	glfwSwapInterval(1);
 
 	// Creating the core systems
-	IGlobalSystem* gSys = new IGlobalSystem();
+	gSys = new IGlobalSystem();
 	gSys->Init();
 
 	if (glewInit() != GLEW_OK)
