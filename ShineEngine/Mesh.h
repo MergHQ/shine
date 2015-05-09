@@ -16,12 +16,12 @@ public:
 
 
 	// IMesh
-	virtual int GetId() { return m_meshId; }
 	virtual const char* GetName() { return m_meshName; }
+	virtual int GetId() { return m_meshId; }
+	virtual IShader* GetShader() { return m_pIShader; }
 	virtual std::vector<float> GetVerts() { return m_verticies; }
 	virtual glm::vec3 GetWorldPos() { return m_worldPos; }
 	virtual void SetPos(glm::vec3 pos);
-	virtual IShader* GetShader() { return m_pIShader; }
 	// ~IMesh
 
 	void CreateVaosAndShit();

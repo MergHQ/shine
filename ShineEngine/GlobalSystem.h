@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "Renderer.h"
-#include "MeshSystem.h"
+class CRenderer;
+class CMeshSystem;
 
 struct IGlobalSystem
 {

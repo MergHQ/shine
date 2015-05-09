@@ -42,11 +42,11 @@ IMesh* CMeshSystem::CreateMesh(SShineMesh* pMesh)
 		return nullptr;
 	}
 
-	if (pMesh->pos == Vec3(nullptr,nullptr,nullptr))
-	{
+	/*if (pMesh->pos == glm::vec3(nullptr, nullptr, nullptr))
+	{*/
 		pMesh->pos = Vec3(0, 0, 0);
-		printf("[MESHSYS]No Vec3 positions vere given, moved to origin of worldspace coordinate system.");
-	}
+	/*	printf("[MESHSYS]No Vec3 positions vere given, moved to origin of worldspace coordinate system.");
+	}*/
 
 	CMesh* pNMesh = new CMesh(pMesh);
 

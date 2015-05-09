@@ -13,6 +13,8 @@ CMesh::CMesh(SShineMesh* pMesh)
 	m_pIShader = pMesh->pShader;	
 }
 
+CMesh::~CMesh() {}
+
 void CMesh::SetPos(Vec3 pos)
 {
 	m_worldPos = pos;

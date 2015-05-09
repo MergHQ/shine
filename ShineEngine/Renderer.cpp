@@ -1,7 +1,12 @@
 #include "Renderer.h"
-#include "shine.h"
-#include <iostream>
+#include "MainWindow.h"
+#include "MeshSystem.h"
+#include "Mesh.h"
+
+#include <GL\glew.h>
+#include <vector>
 #include <fstream>
+#include <iostream>
 
 CRenderer::CRenderer()
 {

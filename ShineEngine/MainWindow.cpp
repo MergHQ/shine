@@ -126,6 +126,7 @@ void CMainWindow::Init()
 
 	mesh.name = "sample";
 	mesh.verts = data2;
+	//mesh.pos = Vec3(0, 0, 0);
 	//mesh.pShader = &shader;
 
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
