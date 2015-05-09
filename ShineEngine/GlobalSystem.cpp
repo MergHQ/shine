@@ -1,22 +1,25 @@
 #include "GlobalSystem.h"
-#include "shine.h"
 
-IGlobalSystem::IGlobalSystem():
-pRenderer(nullptr)
+IGlobalSystem::IGlobalSystem() :
+pRenderer(nullptr),
+pMeshSystem(nullptr)
 {
 }
 
 IGlobalSystem::~IGlobalSystem()
 {
 	delete pRenderer;
+	delete pMeshSystem;
 }
 
 void IGlobalSystem::Init()
 {
 	Log("Initializing systems...");
 
-	pRenderer = new CRenderer();
+	pRenderer = new CRenderer;
 	Log("- Renderer");
+	pMeshSystem = new CMeshSystem;
+	Log("- Mesh system");
 
 	Log("We gucchi!");
 }

@@ -1,22 +1,18 @@
-﻿Build started 5/3/2015 10:34:46 PM.
+﻿Build started 5/9/2015 12:22:36 PM.
      1>Project "H:\Shine\ShineEngine\ShineEngine\ShineEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         H:\Programs\VC\bin\CL.exe /c /IH:\Shine\ShineEngine\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GlobalSystem.cpp MainWindow.cpp Renderer.cpp
-         Renderer.cpp
-     1>h:\shine\shineengine\shineengine\renderer.cpp(100): warning C4018: '<' : signed/unsigned mismatch
-         MainWindow.cpp
-     1>h:\shine\shineengine\shineengine\mainwindow.cpp(71): warning C4018: '<' : signed/unsigned mismatch
+         H:\Programs\VC\bin\CL.exe /c /IH:\Shine\ShineEngine\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GlobalSystem.cpp MeshSystem.cpp
+         MeshSystem.cpp
+     1>h:\shine\shineengine\shineengine\globalsystem.h(17): error C2143: syntax error : missing ';' before '*'
+     1>h:\shine\shineengine\shineengine\globalsystem.h(17): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
          GlobalSystem.cpp
+     1>h:\shine\shineengine\shineengine\mainwindow.h(12): error C2143: syntax error : missing ';' before '*'
+     1>h:\shine\shineengine\shineengine\mainwindow.h(12): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>h:\shine\shineengine\shineengine\mainwindow.h(16): error C2143: syntax error : missing ';' before '*'
+     1>h:\shine\shineengine\shineengine\mainwindow.h(16): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
          Generating Code...
-       Link:
-         H:\Programs\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"H:\Shine\ShineEngine\Debug\ShineEngine.exe" /INCREMENTAL /NOLOGO glew32.lib glfw3.lib opengl32.lib /NODEFAULTLIB:glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"H:\Shine\ShineEngine\Debug\ShineEngine.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"H:\Shine\ShineEngine\Debug\ShineEngine.lib" /MACHINE:X86 Debug\GlobalSystem.obj
-         Debug\MainWindow.obj
-         Debug\Renderer.obj
-         Debug\tiny_obj_loader.obj
-     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-         ShineEngine.vcxproj -> H:\Shine\ShineEngine\Debug\ShineEngine.exe
-     1>Done Building Project "H:\Shine\ShineEngine\ShineEngine\ShineEngine.vcxproj" (Build target(s)).
+     1>Done Building Project "H:\Shine\ShineEngine\ShineEngine\ShineEngine.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:02.80
+Time Elapsed 00:00:01.11

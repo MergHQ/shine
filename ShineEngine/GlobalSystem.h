@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "MeshSystem.h"
 
 struct IGlobalSystem
 {
@@ -13,8 +14,11 @@ struct IGlobalSystem
 	bool IsRunning;
 	
 	CRenderer* pRenderer;
+	CMeshSystem* pMeshSystem;
 	void Init();
 	void Log(const char* _Format);
+
+
 };
 
 #endif
