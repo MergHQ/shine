@@ -6,10 +6,9 @@
 #include "shine.h"
 #include "MainWindow.h"
 #include "GlobalSystem.h"
-
+#include <Windows.h>
 
 IGlobalSystem* gSys;
-
 static void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
@@ -51,40 +50,40 @@ void CMainWindow::Init()
 
 	std::vector<float> data2 = 
 	{
-		-1.0, -1.0, 1.0,
-		1.0, -1.0, 1.0,
-		1.0, 1.0, 1.0,
-		-1.0, 1.0, 1.0,
+		-0.1f, -0.1f, 0.1f,
+		0.1f, -0.1f, 0.1f,
+		0.1f, 0.1f, 0.1f,
+		-0.1f, 0.1f, 0.1f,
 
 		// Back face
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, -1.0, -1.0,
+		-0.1f, -0.1f, -0.1f,
+		-0.1f, 0.1f, -0.1f,
+		0.1f, 0.1f, -0.1f,
+		0.1f, -0.1f, -0.1f,
 
 		// Top face
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,
+		-0.1f, 0.1f, -0.1f,
+		-0.1f, 0.1f, 0.1f,
+		0.1f, 0.1f, 0.1f,
+		0.1f, 0.1f, -0.1f,
 
 		// Bottom face
-		-1.0, -1.0, -1.0,
-		1.0, -1.0, -1.0,
-		1.0, -1.0, 1.0,
-		-1.0, -1.0, 1.0,
+		-0.1f, -0.1f, -0.1f,
+		0.1f, -0.1f, -0.1f,
+		0.1f, -0.1f, 0.1f,
+		-0.1f, -0.1f, 0.1f,
 
 		// Right face
-		1.0, -1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0,
+		0.1f, -0.1f, -0.1f,
+		0.1f, 0.1f, -0.1f,
+		0.1f, 0.1f, 0.1f,
+		0.1f, -0.1f, 0.1f,
 
 		// Left face
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, 1.0,
-		-1.0, 1.0, 1.0,
-		-1.0, 1.0, -1.0
+		-0.1f, -0.1f, -0.1f,
+		-0.1f, -0.1f, 0.1f,
+		-0.1f, 0.1f, 0.1f,
+		-0.1f, 0.1f, -0.1f
 	};
 
 	float data3[] =
@@ -126,7 +125,7 @@ void CMainWindow::Init()
 	};
 
 	SShaderParams sparams;
-	sparams.id = 1231;
+	sparams.id = 123;
 	sparams.name = "sampleshader";
 	sparams.f_file = "shaders/frag1.frag";
 	sparams.v_file = "shaders/vertex1.vert";
@@ -139,13 +138,12 @@ void CMainWindow::Init()
 	mesh.verts = data2;
 	//mesh.pos = Vec3(0, 0, 0);
 	mesh.pShader = &sparams;
-
-	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+	gSys->pMeshSystem->CreateMesh(&mesh);
 	while (!glfwWindowShouldClose(window))
 	{
 		gSys->pRenderer->Render();
 		glfwPollEvents();
-		glfwSwapBuffers(window);		
+		glfwSwapBuffers(window);
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -153,7 +151,7 @@ void CMainWindow::Init()
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVao);
-			glDeleteShader(pMeshSys->GetShaderConteainer()[iter]->GetShaderProgramme());
+			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 		}
 	}
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -174,6 +172,7 @@ void CMainWindow::Init()
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
+
 
 CMainWindow::CMainWindow()
 {

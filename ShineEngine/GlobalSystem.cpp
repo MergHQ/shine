@@ -33,3 +33,4 @@ void IGlobalSystem::Log(const char* _Format)
 
 
 
+

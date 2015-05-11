@@ -19,12 +19,6 @@ void CRenderer::Render()
 {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION_MATRIX);
-	//gluLookAt
-	//	(0.0, 0.0, 30.0,
-	//	0.0, 0.0, 0.0,
-	//	0.0, 0.0, 0.0);
 	if (gSys->pMeshSystem != nullptr)
 	{
 		for (unsigned int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
@@ -35,13 +29,9 @@ void CRenderer::Render()
 			//glUniformMatrix4fv(transformation);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glLoadIdentity();
-			gluLookAt
-				(0.0, 0.0, 1.0,
-				0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0);
-			glUseProgram(gSys->pMeshSystem->GetShaderConteainer()[iter]->GetShaderProgramme());
+			glUseProgram(gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 			glBindVertexArray(gSys->pMeshSystem->GetMeshContainer()[iter]->meshVao);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, 16);
 		}
 	}
 }

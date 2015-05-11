@@ -29,6 +29,8 @@ struct IShader
 	virtual bool LoadShader(const char* v_shader, const char* f_shader) = 0;
 	virtual bool Reload() = 0;
 	virtual GLuint GetShaderProgramme() = 0;
+	virtual const char* GetVFile() = 0;
+	virtual const char* GetFFile() = 0;
 };
 
 #endif

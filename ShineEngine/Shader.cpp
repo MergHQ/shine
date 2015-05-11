@@ -1,24 +1,53 @@
 #include "Shader.h"
+#include <Windows.h>
 #include <GL\glew.h>
 #include "GLFW\glfw3.h"
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
+#include "shine.h"
+
+
+DWORD WINAPI listen(LPVOID lpParam)
+{
+	HANDLE fileChangeHandle = FindFirstChangeNotification(L"shaders/", false, 0x00000010);
+
+	time_t lastChange = time(0);
+	bool reloaded = false;
+
+	while (true)
+	{
+		DWORD Wait = WaitForSingleObject(fileChangeHandle, INFINITE);
+		if (Wait == WAIT_OBJECT_0)
+		{
+			if (!reloaded)
+			{
+				lastChange = time(0);
+				printf("[SHADERSYS] Recompiling shader %i...", ((IShader*)lpParam)->GetId());
+				((IShader*)lpParam)->Reload();
+				reloaded = true;
+			}			
+		}
+		FindNextChangeNotification(fileChangeHandle);
+	}
+}
 
 CShader::CShader(SShaderParams* pShaderParams) :
-firstTime(true)
+m_firstTime(true)
 {
 	m_name = pShaderParams->name;
 	m_id = pShaderParams->id;
 	m_v_file = pShaderParams->v_file;
 	m_f_file = pShaderParams->f_file;
 	LoadShader(pShaderParams->v_file, pShaderParams->f_file);
-	
+
+	HANDLE listeningThread = CreateThread(NULL, 0, listen, this, 0, NULL);
 }
 
 bool CShader::Reload()
 {
-	if (!firstTime)
+	if (!m_firstTime)
 	{
 		LoadShader(m_v_file, m_f_file);
 		return true;
@@ -33,14 +62,17 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 	//========================================
 
 	// Check if a shader is already loaded on this instance.
-	if (!firstTime)
-		glDeleteShader(sprogramme);
+
+	if (!m_firstTime)
+	{
+		glDeleteProgram(sprog);
+	}
 
 	std::ifstream vshader(v_shader);
 	std::ifstream fshader(f_shader);
 
-	std::string vshadercont;
-	std::string fshadercont;
+	std::string vshadercont = "";
+	std::string fshadercont = "";
 
 	if (!vshader.is_open() || !fshader.is_open())
 		return false;
@@ -67,7 +99,7 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 	const char* fragment_content = fshadercont.c_str();
 
 	//=========================================
-	// Create shaders.
+	//Create shaders.
 	//=========================================
 
 	if(vertex_content != "" && fragment_content != "")
@@ -75,20 +107,37 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vs, 1, &vertex_content, NULL);
 		glCompileShader(vs);
+		GLint s;
+		glGetShaderiv(vs, GL_COMPILE_STATUS, &s);
+		if (!s)
+		{
+			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, vs);
+		}
+
+
 		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fs, 1, &fragment_content, NULL);
 		glCompileShader(fs);
+		glGetShaderiv(fs, GL_COMPILE_STATUS, &s);
+		if (!s)
+		{
+			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, fs);
+		}
 
 		GLuint shader_programme = glCreateProgram();
 		glAttachShader(shader_programme, fs);
 		glAttachShader(shader_programme, vs);
 		glLinkProgram(shader_programme);
+		glGetProgramiv(shader_programme, GL_LINK_STATUS, &s);
+		if (!s)
+		{
+			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, shader_programme);
+		}
 
-		sprogramme = shader_programme;
-		firstTime = false;
+		sprog = shader_programme;
+		m_firstTime = false;
 
-	}
-	else return false;
+	} else return false;
 
 	return true;
 }
