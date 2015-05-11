@@ -3,9 +3,12 @@
 #include "MeshSystem.h"
 
 #include <GL\glew.h>
+#include <GLFW\glfw3.h>
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 CRenderer::CRenderer()
 {
@@ -15,28 +18,75 @@ CRenderer::~CRenderer()
 {
 }
 
-void CRenderer::Render()
+void CRenderer::Render(GLFWwindow* pWin)
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gSys->pMeshSystem != nullptr)
 	{
-		for (unsigned int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
+		for (int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
 		{
-			//glm::vec4 meshWorldPos = glm::vec4(gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldPos(), 1);
-			//glm::mat4 meshMatrix;
-			//glm::vec4 transformation = meshMatrix * meshWorldPos;
-			//glUniformMatrix4fv(transformation);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glLoadIdentity();
-
 			// Shader drawing
 			glUseProgram(gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 			gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->Update();
-			
+
 			// Mesh drawing
-			glBindVertexArray(gSys->pMeshSystem->GetMeshContainer()[iter]->meshVao);
-			glDrawArrays(GL_TRIANGLES, 0, 16);
+			glBindVertexArray(gSys->pMeshSystem->GetMeshContainer()[iter]->GetVao());
+			glDrawArrays(GL_TRIANGLES, 0, gSys->pMeshSystem->GetMeshContainer()[iter]->GetVerts().size());
+
+			// Simple camera system. 
+			// TODO make a camera system.
+			double xpos, ypos;
+
+			glfwGetCursorPos(pWin, &xpos, &ypos);
+
+			m_horizontalAngle += m_sensitivity * (m_oldx - xpos);
+			m_verticalAngle += m_sensitivity * (m_oldy - ypos);
+
+			m_oldx = xpos;
+			m_oldy = ypos;
+
+			glm::vec3 direction(
+				cos(m_verticalAngle) * sin(m_horizontalAngle),
+				sin(m_verticalAngle),
+				cos(m_verticalAngle) * cos(m_horizontalAngle)
+				);
+
+			glm::vec3 right = glm::vec3(
+				sin(m_horizontalAngle - 3.14f / 2.0f),
+				0,
+				cos(m_horizontalAngle - 3.14f / 2.0f)
+				);
+
+			glm::vec3 up = glm::cross(right, direction);
+
+			// Move forward
+			if (glfwGetKey(pWin, GLFW_KEY_W) == GLFW_PRESS)
+			{
+				m_cameraPos += direction * m_speed;
+			}
+			// Move backward
+			if (glfwGetKey(pWin, GLFW_KEY_S) == GLFW_PRESS)
+			{
+				m_cameraPos -= direction * m_speed;
+			}
+			// Strafe right
+			if (glfwGetKey(pWin, GLFW_KEY_D) == GLFW_PRESS)
+			{
+				m_cameraPos += right  * m_speed;
+			}
+			// Strafe left
+			if (glfwGetKey(pWin, GLFW_KEY_A) == GLFW_PRESS)
+			{
+				m_cameraPos -= right * m_speed;
+			}	
+
+			glm::mat4 ProjectionMatrix = glm::perspective(90.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
+			glm::mat4 ViewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + direction, glm::vec3(0, 1, 0));
+			GLuint p = gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme();
+
+			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(ProjectionMatrix * ViewMatrix * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
+
 		}
 	}
 }

@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include <GL\glew.h>
 #include "GLFW\glfw3.h"
+#include <glm\gtc\matrix_transform.hpp>
 
 
 CMesh::CMesh(SMeshParams* pMesh)
@@ -11,8 +12,10 @@ CMesh::CMesh(SMeshParams* pMesh)
 	m_verticies = pMesh->verts;
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
+	m_worldRotAxis = pMesh->rotaxis;
+	m_worldRot = pMesh->rotAmmount;
 	m_pIShader = CreateShader(pMesh->pShader);
-
+	BuildTM(m_worldPos, m_worldRotAxis, m_worldRot);
 }
 
 CMesh::~CMesh() {}
@@ -20,6 +23,13 @@ CMesh::~CMesh() {}
 void CMesh::SetPos(Vec3 pos)
 {
 	m_worldPos = pos;
+}
+
+void CMesh::SetRotation(glm::vec3 axis, float rot)
+{
+	m_worldRotAxis = axis;
+	m_worldRot = rot;
+	BuildTM(m_worldPos, m_worldRotAxis, m_worldRot);
 }
 
 void CMesh::CreateVaosAndShit()
@@ -38,6 +48,7 @@ void CMesh::CreateVaosAndShit()
 
 	meshVbo = vbo;
 	meshVao = vao;
+
 }
 
 IShader* CMesh::CreateShader(SShaderParams* pShaderParams)
@@ -74,4 +85,9 @@ IShader* CMesh::CreateShader(SShaderParams* pShaderParams)
 	} else return nullptr;
 
 	return pNShader;
+}
+
+void CMesh::BuildTM(Vec3 pos, glm::vec3 axis, float rot)
+{
+	m_tm = glm::translate(glm::mat4(), pos) * glm::rotate(glm::mat4(), rot, axis);
 }

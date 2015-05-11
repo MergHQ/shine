@@ -1,6 +1,7 @@
 #include "GlobalSystem.h"
 #include "Renderer.h"
 #include "MeshSystem.h"
+#include "MainWindow.h"
 
 IGlobalSystem::IGlobalSystem() :
 pRenderer(nullptr),

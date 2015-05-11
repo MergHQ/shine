@@ -16,6 +16,8 @@ static void error_callback(int error, const char* description)
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 int main(void)
@@ -43,6 +45,9 @@ void CMainWindow::Init()
 	gSys = new IGlobalSystem();
 	gSys->Init();
 
+	// Disable cursor.
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	if (glewInit() != GLEW_OK)
 	{
 		exit(1);
@@ -50,44 +55,7 @@ void CMainWindow::Init()
 
 	std::vector<float> data2 = 
 	{
-		-0.1f, -0.1f, 0.1f,
-		0.1f, -0.1f, 0.1f,
-		0.1f, 0.1f, 0.1f,
-		-0.1f, 0.1f, 0.1f,
-
-		// Back face
-		-0.1f, -0.1f, -0.1f,
-		-0.1f, 0.1f, -0.1f,
-		0.1f, 0.1f, -0.1f,
-		0.1f, -0.1f, -0.1f,
-
-		// Top face
-		-0.1f, 0.1f, -0.1f,
-		-0.1f, 0.1f, 0.1f,
-		0.1f, 0.1f, 0.1f,
-		0.1f, 0.1f, -0.1f,
-
-		// Bottom face
-		-0.1f, -0.1f, -0.1f,
-		0.1f, -0.1f, -0.1f,
-		0.1f, -0.1f, 0.1f,
-		-0.1f, -0.1f, 0.1f,
-
-		// Right face
-		0.1f, -0.1f, -0.1f,
-		0.1f, 0.1f, -0.1f,
-		0.1f, 0.1f, 0.1f,
-		0.1f, -0.1f, 0.1f,
-
-		// Left face
-		-0.1f, -0.1f, -0.1f,
-		-0.1f, -0.1f, 0.1f,
-		-0.1f, 0.1f, 0.1f,
-		-0.1f, 0.1f, -0.1f
-	};
-
-	float data3[] =
-	{
+		// Front face
 		-1.0, -1.0, 1.0,
 		1.0, -1.0, 1.0,
 		1.0, 1.0, 1.0,
@@ -124,26 +92,51 @@ void CMainWindow::Init()
 		-1.0, 1.0, -1.0
 	};
 
+	std::vector<float> data
+	{
+		0.0f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f
+	};
+
 	SShaderParams sparams;
 	sparams.id = 123;
 	sparams.name = "sampleshader";
 	sparams.f_file = "shaders/frag1.frag";
 	sparams.v_file = "shaders/vertex1.vert";
 
-
 	SMeshParams mesh;
 
 	mesh.name = "sample";
-	mesh.id = 123;
-	mesh.verts = data2;
-	//mesh.pos = Vec3(0, 0, 0);
+	mesh.verts = data;
+	mesh.pos = Vec3(0.0f, -1.5f, 1.0f);
 	mesh.pShader = &sparams;
-	gSys->pMeshSystem->CreateMesh(&mesh);
+	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+
+	SMeshParams mesh2;
+
+	mesh2.name = "sample2";
+	mesh2.verts = data;
+	mesh2.pos = Vec3(0.0f, 0.5f, 1.0f);
+	mesh2.pShader = &sparams;
+	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
+
+	SMeshParams mesh3;
+
+	mesh3.name = "sample2";
+	mesh3.verts = data2;
+	mesh3.pos = Vec3(0.0f, 2.0f, 1.0f);
+	mesh3.pShader = &sparams;
+	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
+
+	float rot = 0;
 	while (!glfwWindowShouldClose(window))
 	{
-		gSys->pRenderer->Render();
+		gSys->pRenderer->Render(window);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
+		rot += 0.01f;
+		pMesh3->SetRotation(Vec3(0, 1, 0), rot);
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)

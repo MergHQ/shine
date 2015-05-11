@@ -21,12 +21,12 @@ IMesh* CMeshSystem::GetMeshById(int id)
 
 IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 {
-	if (pMesh->id == 0)
+	if (!pMesh->id)
 	{
 		pMesh->id = rand() * 1000; // TODO: Check that a mesh with this ID doesn't exist.
 	}
 	
-	if (pMesh->name == "")
+	if (!pMesh->name)
 	{
 		gSys->Log("[MESHSYS]You didn't name your mesh!");
 		return nullptr;
@@ -44,7 +44,7 @@ IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 		return nullptr;
 	}
 
-	pMesh->pos = Vec3(0, 0, 0);
+	//pMesh->pos = Vec3(0.0f, 0.0f, 0.0f);
 
 	CMesh* pNMesh = new CMesh(pMesh);
 
