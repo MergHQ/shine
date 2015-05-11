@@ -29,7 +29,12 @@ void CRenderer::Render()
 			//glUniformMatrix4fv(transformation);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glLoadIdentity();
+
+			// Shader drawing
 			glUseProgram(gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
+			gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->Update();
+			
+			// Mesh drawing
 			glBindVertexArray(gSys->pMeshSystem->GetMeshContainer()[iter]->meshVao);
 			glDrawArrays(GL_TRIANGLES, 0, 16);
 		}

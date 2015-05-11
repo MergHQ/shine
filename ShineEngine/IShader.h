@@ -31,6 +31,7 @@ struct IShader
 	virtual GLuint GetShaderProgramme() = 0;
 	virtual const char* GetVFile() = 0;
 	virtual const char* GetFFile() = 0;
+	virtual void Update() = 0;
 };
 
 #endif

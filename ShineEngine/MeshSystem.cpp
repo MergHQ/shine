@@ -44,11 +44,7 @@ IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 		return nullptr;
 	}
 
-	/*if (pMesh->pos == glm::vec3(nullptr, nullptr, nullptr))
-	{*/
-		pMesh->pos = Vec3(0, 0, 0);
-	/*	printf("[MESHSYS]No Vec3 positions vere given, moved to origin of worldspace coordinate system.");
-	}*/
+	pMesh->pos = Vec3(0, 0, 0);
 
 	CMesh* pNMesh = new CMesh(pMesh);
 

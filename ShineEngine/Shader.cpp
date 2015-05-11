@@ -25,8 +25,7 @@ DWORD WINAPI listen(LPVOID lpParam)
 			{
 				lastChange = time(0);
 				printf("[SHADERSYS] Recompiling shader %i...", ((IShader*)lpParam)->GetId());
-				((IShader*)lpParam)->Reload();
-				reloaded = true;
+				((CShader*)lpParam)->m_shouldReload = true;
 			}			
 		}
 		FindNextChangeNotification(fileChangeHandle);
@@ -42,7 +41,18 @@ m_firstTime(true)
 	m_f_file = pShaderParams->f_file;
 	LoadShader(pShaderParams->v_file, pShaderParams->f_file);
 
+#ifdef DEV_MODE
 	HANDLE listeningThread = CreateThread(NULL, 0, listen, this, 0, NULL);
+#endif // DEV_MODE
+}
+
+void CShader::Update()
+{
+	if (m_shouldReload)
+	{
+		m_shouldReload = false;
+		Reload();
+	}
 }
 
 bool CShader::Reload()
@@ -135,6 +145,9 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 		}
 
 		sprog = shader_programme;
+
+		glDeleteShader(vs);
+		glDeleteShader(fs);
 		m_firstTime = false;
 
 	} else return false;

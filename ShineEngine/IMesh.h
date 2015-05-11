@@ -35,6 +35,7 @@ struct IMesh
 	virtual std::vector<float> GetVerts() = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
 	virtual void SetPos(glm::vec3 pos) = 0;
+	virtual glm::vec4 GetWorldVec4() = 0;
 };
 
 #endif

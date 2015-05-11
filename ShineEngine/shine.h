@@ -3,6 +3,8 @@
 
 #pragma once
 
+#define DEV_MODE
+
 #include <vector>
 #include <string>
 #include <cerrno>

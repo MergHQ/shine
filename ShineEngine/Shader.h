@@ -19,7 +19,10 @@ public:
 	virtual GLuint GetShaderProgramme() { return sprog; };
 	virtual const char* GetVFile() { return m_v_file; }
 	virtual const char* GetFFile() { return m_f_file; }
+	virtual void Update();
 	// ~IShader
+
+	bool m_shouldReload;
 
 private:
 	const char* m_name;
@@ -28,6 +31,7 @@ private:
 	const char* m_f_file;
 	GLuint sprog;
 	bool m_firstTime;
+
 
 };
 

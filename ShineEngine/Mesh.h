@@ -23,6 +23,7 @@ public:
 	virtual std::vector<float> GetVerts() { return m_verticies; }
 	virtual glm::vec3 GetWorldPos() { return m_worldPos; }
 	virtual void SetPos(glm::vec3 pos);
+	virtual glm::vec4 GetWorldVec4(){ return m_tm; }
 	// ~IMesh
 
 	void CreateVaosAndShit();
@@ -35,6 +36,7 @@ private:
 	std::vector<float> m_verticies;
 	glm::vec3 m_worldPos;
 	IShader* m_pIShader;
+	glm::vec4 m_tm;
 
 };
 #endif

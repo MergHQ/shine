@@ -12,6 +12,7 @@ CMesh::CMesh(SMeshParams* pMesh)
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
 	m_pIShader = CreateShader(pMesh->pShader);
+
 }
 
 CMesh::~CMesh() {}
