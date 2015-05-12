@@ -16,7 +16,7 @@ struct SMeshParams
 
 	const char* name;
 	int id;
-	std::vector<float> verts;
+	const char* fileName;
 	glm::vec3 pos = glm::vec3(0, 0, 0);
 	glm::vec3 rotaxis = glm::vec3(0, 1, 0);
 	float rotAmmount = 0;
@@ -35,11 +35,15 @@ struct IMesh
 	virtual IShader* GetShader() = 0;
 	virtual IShader* CreateShader(SShaderParams* pShaderParams) = 0;
 	virtual std::vector<float> GetVerts() = 0;
+	virtual std::vector<unsigned int> GetIndicies() = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
 	virtual void SetPos(glm::vec3 pos) = 0;
 	virtual void SetRotation(glm::vec3 axis, float rot) = 0; //TODO: Make them QUATS!!!
 	virtual glm::mat4 GetWorldTM() = 0;
 	virtual GLuint GetVao() = 0;
+	virtual GLuint GetVbo() = 0;
+	virtual GLuint GetGLInd() = 0;
+
 };
 
 #endif

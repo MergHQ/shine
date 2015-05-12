@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Interfaces">
       <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\System\Input">
+      <UniqueIdentifier>{8667d8f8-36ea-4a08-87cf-bcd1ad030454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp">

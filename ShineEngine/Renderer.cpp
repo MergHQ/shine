@@ -31,8 +31,11 @@ void CRenderer::Render(GLFWwindow* pWin)
 			gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->Update();
 
 			// Mesh drawing
-			glBindVertexArray(gSys->pMeshSystem->GetMeshContainer()[iter]->GetVao());
-			glDrawArrays(GL_TRIANGLES, 0, gSys->pMeshSystem->GetMeshContainer()[iter]->GetVerts().size());
+			glBindBuffer(GL_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->meshVbo);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->meshInidcies);
+			glDrawElements(GL_TRIANGLES, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIndicies().size(), GL_UNSIGNED_INT, 0);
+
 
 			// Simple camera system. 
 			// TODO make a camera system.
@@ -79,7 +82,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 			if (glfwGetKey(pWin, GLFW_KEY_A) == GLFW_PRESS)
 			{
 				m_cameraPos -= right * m_speed;
-			}	
+			}
 
 			glm::mat4 ProjectionMatrix = glm::perspective(90.0f, 1280.0f / 720.0f, 0.1f, 1000.0f);
 			glm::mat4 ViewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + direction, glm::vec3(0, 1, 0));

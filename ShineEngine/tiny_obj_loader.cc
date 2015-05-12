@@ -459,7 +459,7 @@ std::string LoadMtl(std::map<std::string, int> &material_map,
       // set new mtl name
       char namebuf[4096];
       token += 7;
-      sscanf_s(token, "%s", namebuf);
+      sscanf(token, "%s", namebuf);
       material.name = namebuf;
       continue;
     }

@@ -24,7 +24,7 @@ DWORD WINAPI listen(LPVOID lpParam)
 			if (!reloaded)
 			{
 				lastChange = time(0);
-				printf("[SHADERSYS] Recompiling shader %i...", ((IShader*)lpParam)->GetId());
+				gSys->Log("[SHADERSYS] Recompiling shader...");
 				((CShader*)lpParam)->m_shouldReload = true;
 			}			
 		}

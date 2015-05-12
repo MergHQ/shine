@@ -32,12 +32,6 @@ IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 		return nullptr;
 	}
 
-	if (pMesh->verts.empty())
-	{
-		gSys->Log("[MESHSYS]Please consider addaing verticies to your mesh.");
-		return nullptr;
-	}
-
 	if (pMesh->pShader == nullptr)
 	{
 		printf("[MESHSYS]Please consider addaing a shader to your mesh.");

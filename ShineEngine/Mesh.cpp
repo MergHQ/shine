@@ -9,7 +9,7 @@ CMesh::CMesh(SMeshParams* pMesh)
 {
 	m_meshId = pMesh->id;
 	m_meshName = pMesh->name;
-	m_verticies = pMesh->verts;
+	m_file = pMesh->fileName;
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
@@ -34,20 +34,41 @@ void CMesh::SetRotation(glm::vec3 axis, float rot)
 
 void CMesh::CreateVaosAndShit()
 {
+
+	std::string inputfile = m_file;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+
+	std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
+
+	if (!err.empty()) 
+	{
+		gSys->Log("[MESHSYS] Cannot find the object file specified.");
+		exit(1);
+	}	
+	m_verticies = shapes[0].mesh.positions;
+	m_indiciesVector = shapes[0].mesh.indices;
+
+
 	GLuint vbo = 0;
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_verticies.size(), &m_verticies[0], GL_STATIC_DRAW);
 
+
+	GLuint indicies = 0;
+	glGenBuffers(1, &indicies);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(float), &m_indiciesVector[0], GL_STATIC_DRAW);
+
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	meshVbo = vbo;
 	meshVao = vao;
+	meshInidcies = indicies;
 
 }
 

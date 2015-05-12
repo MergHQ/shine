@@ -105,38 +105,36 @@ void CMainWindow::Init()
 	sparams.f_file = "shaders/frag1.frag";
 	sparams.v_file = "shaders/vertex1.vert";
 
-	SMeshParams mesh;
+	SShaderParams sparams2;
+	sparams2.id = 12313;
+	sparams2.name = "sampleshader2";
+	sparams2.f_file = "shaders/frag2.frag";
+	sparams2.v_file = "shaders/vertex1.vert";
 
-	mesh.name = "sample";
-	mesh.verts = data;
-	mesh.pos = Vec3(0.0f, -1.5f, 1.0f);
-	mesh.pShader = &sparams;
-	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
+	// Create a couple of sample meshes.
 	SMeshParams mesh2;
-
 	mesh2.name = "sample2";
-	mesh2.verts = data;
-	mesh2.pos = Vec3(0.0f, 0.5f, 1.0f);
+	mesh2.fileName = "urmum.obj";
+	mesh2.pos = Vec3(0.0f, 0.0f, 10.0f);
+	mesh2.rotaxis = Vec3(0, 1, 0);
+	mesh2.rotAmmount = 180 * 3.14 / 180.0f;
 	mesh2.pShader = &sparams;
 	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
 
 	SMeshParams mesh3;
-
 	mesh3.name = "sample2";
-	mesh3.verts = data2;
-	mesh3.pos = Vec3(0.0f, 2.0f, 1.0f);
-	mesh3.pShader = &sparams;
+	mesh3.fileName = "test.obj";
+	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
+	mesh3.pShader = &sparams2;
 	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
 
-	float rot = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		gSys->pRenderer->Render(window);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-		rot += 0.01f;
-		pMesh3->SetRotation(Vec3(0, 1, 0), rot);
+
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -144,6 +142,9 @@ void CMainWindow::Init()
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVao);
+			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVbo);
+			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
+
 			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 		}
 	}
