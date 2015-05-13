@@ -53,84 +53,30 @@ void CMainWindow::Init()
 		exit(1);
 	}
 
-	std::vector<float> data2 = 
-	{
-		// Front face
-		-1.0, -1.0, 1.0,
-		1.0, -1.0, 1.0,
-		1.0, 1.0, 1.0,
-		-1.0, 1.0, 1.0,
-
-		// Back face
-		-1.0, -1.0, -1.0,
-		-1.0, 1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, -1.0, -1.0,
-
-		// Top face
-		-1.0, 1.0, -1.0,
-		-1.0, 1.0, 1.0,
-		1.0, 1.0, 1.0,
-		1.0, 1.0, -1.0,
-
-		// Bottom face
-		-1.0, -1.0, -1.0,
-		1.0, -1.0, -1.0,
-		1.0, -1.0, 1.0,
-		-1.0, -1.0, 1.0,
-
-		// Right face
-		1.0, -1.0, -1.0,
-		1.0, 1.0, -1.0,
-		1.0, 1.0, 1.0,
-		1.0, -1.0, 1.0,
-
-		// Left face
-		-1.0, -1.0, -1.0,
-		-1.0, -1.0, 1.0,
-		-1.0, 1.0, 1.0,
-		-1.0, 1.0, -1.0
-	};
-
-	std::vector<float> data
-	{
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f
-	};
-
 	SShaderParams sparams;
 	sparams.id = 123;
 	sparams.name = "sampleshader";
 	sparams.f_file = "shaders/frag1.frag";
 	sparams.v_file = "shaders/vertex1.vert";
 
-	SShaderParams sparams2;
-	sparams2.id = 12313;
-	sparams2.name = "sampleshader2";
-	sparams2.f_file = "shaders/frag2.frag";
-	sparams2.v_file = "shaders/vertex1.vert";
-
-
-	// Create a couple of sample meshes.
-	SMeshParams mesh2;
-	mesh2.name = "sample2";
-	mesh2.fileName = "urmum.obj";
-	mesh2.pos = Vec3(0.0f, 0.0f, 10.0f);
-	mesh2.rotaxis = Vec3(0, 1, 0);
-	mesh2.rotAmmount = 180 * 3.14 / 180.0f;
-	mesh2.pShader = &sparams;
-	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
-
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
-	mesh3.fileName = "test.obj";
+	mesh3.fileName = "boulder1.obj";
 	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
-	mesh3.pShader = &sparams2;
+	mesh3.pShader = &sparams;
 	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
 
+	SMeshParams mesh;
+	mesh.name = "sample2";
+	mesh.fileName = "trees.obj";
+	mesh.pos = Vec3(0.0f, 0.0f, 10.0f);
+	mesh.pShader = &sparams;
+	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+	float rot = 0;
 	while (!glfwWindowShouldClose(window))
 	{
+		rot += 0.001;
+		pMesh->SetRotation(Vec3(0, 1, 0), rot);
 		gSys->pRenderer->Render(window);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
@@ -144,6 +90,7 @@ void CMainWindow::Init()
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVao);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVbo);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
+			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshNormals);
 
 			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 		}

@@ -36,13 +36,15 @@ struct IMesh
 	virtual IShader* CreateShader(SShaderParams* pShaderParams) = 0;
 	virtual std::vector<float> GetVerts() = 0;
 	virtual std::vector<unsigned int> GetIndicies() = 0;
+	virtual std::vector<float> GetNormals() = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
 	virtual void SetPos(glm::vec3 pos) = 0;
 	virtual void SetRotation(glm::vec3 axis, float rot) = 0; //TODO: Make them QUATS!!!
 	virtual glm::mat4 GetWorldTM() = 0;
 	virtual GLuint GetVao() = 0;
 	virtual GLuint GetVbo() = 0;
-	virtual GLuint GetGLInd() = 0;
+	virtual GLuint GetIbo() = 0;
+	virtual GLuint GetNbo() = 0;
 
 };
 

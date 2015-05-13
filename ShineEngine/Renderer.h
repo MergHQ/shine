@@ -6,6 +6,8 @@
 #include <GLFW\glfw3.h>
 #include <glm\glm.hpp>
 
+#define BUFFER_OFFSET(i) ((void*)(i))
+
 class CRenderer
 {
 
@@ -15,7 +17,7 @@ public:
 	void Render(GLFWwindow* pWin);
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
-	float m_speed = 0.1f;
+	float m_speed = 0.001f;
 	float m_sensitivity = 0.001f;
 	double m_oldx = 0, m_oldy = 0;
 

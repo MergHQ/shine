@@ -22,13 +22,15 @@ public:
 	virtual IShader* CreateShader(SShaderParams* pShaderParams);
 	virtual std::vector<float> GetVerts() { return m_verticies; }
 	virtual std::vector<unsigned int> GetIndicies() { return m_indiciesVector; }
+	virtual std::vector<float> GetNormals() { return m_normals; }
 	virtual glm::vec3 GetWorldPos() { return m_worldPos; }
 	virtual void SetPos(glm::vec3 pos);
 	virtual void SetRotation(glm::vec3 axis, float rot);
 	virtual glm::mat4 GetWorldTM(){ return m_tm; }
 	virtual GLuint GetVao() { return meshVao; }
 	virtual GLuint GetVbo() { return meshVbo; }
-	virtual GLuint GetGLInd() { return meshInidcies; }
+	virtual GLuint GetIbo() { return meshInidcies; }
+	virtual GLuint GetNbo() { return meshNormals; }
 	// ~IMesh
 
 	void CreateVaosAndShit();
@@ -36,12 +38,14 @@ public:
 	GLuint meshVao;	
 	GLuint meshVbo;
 	GLuint meshInidcies;
+	GLuint meshNormals;
 private:
 
 	const char* m_meshName;
 	int m_meshId;
 	std::vector<float> m_verticies;
 	std::vector<unsigned int> m_indiciesVector;
+	std::vector<float> m_normals;
 	const char* m_file;
 	glm::vec3 m_worldPos;
 	glm::vec3 m_worldRotAxis;

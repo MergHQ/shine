@@ -20,6 +20,7 @@ CRenderer::~CRenderer()
 
 void CRenderer::Render(GLFWwindow* pWin)
 {
+	glEnable(GL_LIGHTING);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gSys->pMeshSystem != nullptr)
@@ -31,11 +32,20 @@ void CRenderer::Render(GLFWwindow* pWin)
 			gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->Update();
 
 			// Mesh drawing
+
+			// Verticies
 			glBindBuffer(GL_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->meshVbo);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->meshInidcies);
-			glDrawElements(GL_TRIANGLES, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIndicies().size(), GL_UNSIGNED_INT, 0);
 
+			// Indicies
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIbo());
+
+			// Normals
+			glBindBuffer(GL_ARRAY_BUFFER, gSys->pMeshSystem->GetMeshContainer()[iter]->GetNbo());
+			glNormalPointer(GL_FLOAT, gSys->pMeshSystem->GetMeshContainer()[iter]->GetVerts().size(), BUFFER_OFFSET(12));
+
+			glDrawElements(GL_TRIANGLES, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIndicies().size(), GL_UNSIGNED_INT, 0);
+			
 
 			// Simple camera system. 
 			// TODO make a camera system.
