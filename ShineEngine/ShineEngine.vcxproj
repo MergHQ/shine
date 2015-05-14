@@ -84,6 +84,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DefaultCamera.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -93,6 +95,9 @@
     <ClCompile Include="tiny_obj_loader.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="DefaultCamera.h" />
+    <ClInclude Include="ICamera.h" />
     <ClInclude Include="IMesh.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="MainWindow.h" />

@@ -5,6 +5,8 @@
 
 class CRenderer;
 class CMeshSystem;
+class CCamera;
+class CDefaultCamera;
 
 struct IGlobalSystem
 {
@@ -15,8 +17,15 @@ struct IGlobalSystem
 	
 	CRenderer* pRenderer;
 	CMeshSystem* pMeshSystem;
+
 	void Init();
+	void Update();
 	void Log(const char* _Format);
+	CDefaultCamera* GetDefaultCamera() { return m_pDefaultCamera; }
+
+private:
+	CCamera* m_pCamera;
+	CDefaultCamera* m_pDefaultCamera;
 };
 
 #endif

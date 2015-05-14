@@ -30,6 +30,7 @@ struct SMeshParams
 
 struct IMesh
 {
+	virtual ~IMesh(){}
 	virtual const char* GetName() = 0;
 	virtual int GetId() = 0;
 	virtual IShader* GetShader() = 0;

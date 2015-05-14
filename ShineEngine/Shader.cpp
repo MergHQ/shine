@@ -1,3 +1,5 @@
+// Implements IShader.
+
 #include "Shader.h"
 #include <Windows.h>
 #include <GL\glew.h>

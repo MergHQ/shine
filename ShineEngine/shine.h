@@ -13,6 +13,7 @@
 #include "tiny_obj_loader.h"
 #include "Renderer.h"
 #include "MeshSystem.h"
+#include "Camera.h"
 #include <glm\glm.hpp>
 
 // A whole bunch of typedefs. 

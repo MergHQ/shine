@@ -7,6 +7,8 @@
 #include "MainWindow.h"
 #include "GlobalSystem.h"
 #include <Windows.h>
+#include "DefaultCamera.h"
+#include <iostream>
 
 IGlobalSystem* gSys;
 static void error_callback(int error, const char* description)
@@ -61,26 +63,27 @@ void CMainWindow::Init()
 
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
-	mesh3.fileName = "boulder1.obj";
+	mesh3.fileName = "objects/trees.obj";
 	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
 	mesh3.pShader = &sparams;
 	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
 
 	SMeshParams mesh;
-	mesh.name = "sample2";
-	mesh.fileName = "trees.obj";
+	mesh.name = "sample1";
+	mesh.fileName = "objects/boulder1.obj";
 	mesh.pos = Vec3(0.0f, 0.0f, 10.0f);
 	mesh.pShader = &sparams;
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
-	float rot = 0;
+
+	// Set the camera mode
+	gSys->GetDefaultCamera()->SetCameraMode(ICamera::EDITOR);
+
 	while (!glfwWindowShouldClose(window))
 	{
-		rot += 0.001;
-		pMesh->SetRotation(Vec3(0, 1, 0), rot);
 		gSys->pRenderer->Render(window);
+		gSys->Update();
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)

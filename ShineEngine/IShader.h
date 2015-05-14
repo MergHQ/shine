@@ -24,6 +24,7 @@ struct SShaderParams
 
 struct IShader
 {
+	virtual ~IShader(){}
 	virtual const char* GetName() = 0;
 	virtual int GetId() = 0;
 	virtual bool LoadShader(const char* v_shader, const char* f_shader) = 0;

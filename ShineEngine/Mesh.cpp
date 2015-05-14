@@ -1,3 +1,5 @@
+// Implements IMesh.
+
 #include "shine.h"
 #include "Mesh.h"
 #include <GL\glew.h>
@@ -45,30 +47,43 @@ void CMesh::CreateVaosAndShit()
 		gSys->Log("[MESHSYS] Cannot find the object file specified.");
 		exit(1);
 	}	
-	m_verticies = shapes[0].mesh.positions;
-	m_indiciesVector = shapes[0].mesh.indices;
-	m_normals = shapes[0].mesh.normals;
+
+	m_verticies = shapes[m_slot].mesh.positions;
+	m_indiciesVector = shapes[m_slot].mesh.indices;
+	m_normals = shapes[m_slot].mesh.normals;
 
 	GLuint vbo = 0;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_verticies.size(), &m_verticies[0], GL_STATIC_DRAW);
-
-
 	GLuint indicies = 0;
-	glGenBuffers(1, &indicies);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(float), &m_indiciesVector[0], GL_STATIC_DRAW);
-
 	GLuint normals = 0;
-	glGenBuffers(1, &normals);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, normals);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
 
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	glEnableVertexAttribArray(0);
+	if (!m_verticies.empty())
+	{
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_verticies.size(), &m_verticies[0], GL_STATIC_DRAW);
+	}
+
+	if (!m_indiciesVector.empty())
+	{
+		
+		glGenBuffers(1, &indicies);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(float), &m_indiciesVector[0], GL_STATIC_DRAW);
+	}
+
+	if (!m_normals.empty())
+	{
+		
+		glGenBuffers(1, &normals);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, normals);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
+
+	}
+		GLuint vao = 0;
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		glEnableVertexAttribArray(0);
 
 	meshVbo = vbo;
 	meshVao = vao;

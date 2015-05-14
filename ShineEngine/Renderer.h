@@ -15,13 +15,9 @@ public:
 	CRenderer();
 	~CRenderer();
 	void Render(GLFWwindow* pWin);
+	GLFWwindow* GetWin() { return window; }
 private:
-	double m_horizontalAngle = 0, m_verticalAngle = 0;
-	float m_speed = 0.001f;
-	float m_sensitivity = 0.001f;
-	double m_oldx = 0, m_oldy = 0;
-
-	glm::vec3 m_cameraPos;
+	GLFWwindow* window;
 };
 
 #endif

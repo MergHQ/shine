@@ -13,43 +13,61 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Renderer">
-      <UniqueIdentifier>{80150e33-32a7-487b-9978-4446296eb72b}</UniqueIdentifier>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{4a8dd5fe-daea-4559-b617-4e6f4cb995e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\System">
-      <UniqueIdentifier>{bec7a024-ae13-4dcc-acfc-ecdb642e943c}</UniqueIdentifier>
+    <Filter Include="Source Files\Engine\Camera">
+      <UniqueIdentifier>{8ac21d2f-1597-44dc-8402-3600b6d4484d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\OBJLoader">
-      <UniqueIdentifier>{9bf2e221-dc28-4dae-94b0-9371a527fdb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Interfaces">
+    <Filter Include="Source Files\Engine\Interfaces">
       <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\System\Input">
+    <Filter Include="Source Files\Engine\OBJLoader">
+      <UniqueIdentifier>{9bf2e221-dc28-4dae-94b0-9371a527fdb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Renderer">
+      <UniqueIdentifier>{80150e33-32a7-487b-9978-4446296eb72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\System">
+      <UniqueIdentifier>{bec7a024-ae13-4dcc-acfc-ecdb642e943c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\System\Input">
       <UniqueIdentifier>{8667d8f8-36ea-4a08-87cf-bcd1ad030454}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{5c9daf40-3398-4b8c-b3e5-d1256011c23c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Camera">
+      <UniqueIdentifier>{f19d1040-b907-4b69-ad1f-09b302e9d8fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files\Renderer</Filter>
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="tiny_obj_loader.cc">
-      <Filter>Source Files\OBJLoader</Filter>
+      <Filter>Source Files\Engine\OBJLoader</Filter>
     </ClCompile>
     <ClCompile Include="GlobalSystem.cpp">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\Renderer</Filter>
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="MeshSystem.cpp">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Engine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultCamera.cpp">
+      <Filter>Source Files\Game\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,31 +75,40 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainWindow.h">
-      <Filter>Source Files\Renderer</Filter>
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
-      <Filter>Source Files\OBJLoader</Filter>
+      <Filter>Source Files\Engine\OBJLoader</Filter>
     </ClInclude>
     <ClInclude Include="GlobalSystem.h">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>Source Files\Renderer</Filter>
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="MeshSystem.h">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="IMesh.h">
-      <Filter>Source Files\Interfaces</Filter>
+      <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="IShader.h">
-      <Filter>Source Files\Interfaces</Filter>
+      <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>Source Files\Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Engine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultCamera.h">
+      <Filter>Source Files\Game\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

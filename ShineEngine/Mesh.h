@@ -43,6 +43,7 @@ private:
 
 	const char* m_meshName;
 	int m_meshId;
+	const unsigned int m_slot = 0;
 	std::vector<float> m_verticies;
 	std::vector<unsigned int> m_indiciesVector;
 	std::vector<float> m_normals;
