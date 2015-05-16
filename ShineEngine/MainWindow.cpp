@@ -64,6 +64,7 @@ void CMainWindow::Init()
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
 	mesh3.fileName = "objects/trees.obj";
+	mesh3.textureFile = "t.bmp";
 	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
 	mesh3.pShader = &sparams;
 	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
@@ -71,6 +72,7 @@ void CMainWindow::Init()
 	SMeshParams mesh;
 	mesh.name = "sample1";
 	mesh.fileName = "objects/boulder1.obj";
+	mesh.textureFile = "t.bmp";
 	mesh.pos = Vec3(0.0f, 0.0f, 10.0f);
 	mesh.pShader = &sparams;
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);

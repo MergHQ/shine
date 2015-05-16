@@ -123,7 +123,7 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 		glGetShaderiv(vs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, vs);
+			printf( "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, vs);
 		}
 
 

@@ -17,5 +17,5 @@ bool CCamera::Init()
 
 void CCamera::Update(GLFWwindow* pWin)
 {
-	gSys->GetDefaultCamera()->Update(pWin);
+	gSys->GetDefaultCamera()->Update(pWin); // Overriding not working TODO: Fix this!
 }

@@ -39,6 +39,10 @@ public:
 	GLuint meshVbo;
 	GLuint meshInidcies;
 	GLuint meshNormals;
+	unsigned int dataPos;
+	unsigned int width, height;
+	unsigned int imageSize;
+	unsigned char * data;
 private:
 
 	const char* m_meshName;
@@ -48,6 +52,7 @@ private:
 	std::vector<unsigned int> m_indiciesVector;
 	std::vector<float> m_normals;
 	const char* m_file;
+	const char* m_textureFile;
 	glm::vec3 m_worldPos;
 	glm::vec3 m_worldRotAxis;
 	float m_worldRot;

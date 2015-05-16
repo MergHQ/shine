@@ -2,9 +2,9 @@
 #include "shine.h"
 #include <glm\gtc\matrix_transform.hpp>
 
-CDefaultCamera::CDefaultCamera()
+CDefaultCamera::CDefaultCamera():
+m_currentCamerMode(ICamera::EDITOR)
 {
-
 }
 
 CDefaultCamera::~CDefaultCamera()
@@ -93,7 +93,7 @@ void CDefaultCamera::Update(GLFWwindow* pWin)
 	glm::mat4 ViewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_direction, glm::vec3(0, 1, 0));
 
 	// Build the VP matrix
-		m_vpm = ProjectionMatrix * ViewMatrix;
+	m_vpm = ProjectionMatrix * ViewMatrix;
 }
 
 void CDefaultCamera::SetCameraMode(ICamera::CameraMode mode)

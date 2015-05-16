@@ -12,6 +12,7 @@ CMesh::CMesh(SMeshParams* pMesh)
 	m_meshId = pMesh->id;
 	m_meshName = pMesh->name;
 	m_file = pMesh->fileName;
+	m_textureFile = pMesh->textureFile;
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
@@ -84,6 +85,42 @@ void CMesh::CreateVaosAndShit()
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 		glEnableVertexAttribArray(0);
+
+	// Load textures
+	unsigned char header[54]; // 54 byte header
+	unsigned char * data;
+	if (m_textureFile != nullptr && m_textureFile != "")
+	{
+		FILE* pFile = fopen(m_textureFile, "rb");
+
+		if (pFile)
+		{
+			if (fread(header, 1, 54, pFile) != 54)
+				gSys->Log("Not a BMP file");
+
+			if (header[0]!= 'B' || header[1]!= 'M')
+			{
+				gSys->Log("Not a BMP file (Wrong header)");
+			}
+
+			dataPos = *(int*)&(header[0x0A]);
+			imageSize = *(int*)&(header[0x22]);
+			width = *(int*)&(header[0x12]);
+			height = *(int*)&(header[0x16]);
+
+			if (imageSize == 0)    imageSize = width*height * 3; // 3 : one byte for each Red, Green and Blue component
+			if (dataPos == 0)      dataPos = 54;
+
+			data = new unsigned char[imageSize];
+
+			fread(data, 1, imageSize, pFile);
+
+			fclose(pFile);
+		}
+		else gSys->Log("Cannot open file \n");
+	}
+
+	
 
 	meshVbo = vbo;
 	meshVao = vao;

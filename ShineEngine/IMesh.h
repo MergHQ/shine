@@ -17,6 +17,7 @@ struct SMeshParams
 	const char* name;
 	int id;
 	const char* fileName;
+	const char* textureFile;
 	glm::vec3 pos = glm::vec3(0, 0, 0);
 	glm::vec3 rotaxis = glm::vec3(0, 1, 0);
 	float rotAmmount = 0;
