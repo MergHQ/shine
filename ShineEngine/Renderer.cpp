@@ -27,7 +27,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gSys->pMeshSystem != nullptr)
 	{
-		for (int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
+		for (unsigned int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
 		{
 			// Shader drawing
 			GLuint p = gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme();
