@@ -64,7 +64,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 
 			glDrawElements(GL_TRIANGLES, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIndicies().size(), GL_UNSIGNED_INT, 0);
 
-			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetDefaultCamera()->GetVPMatrix() * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
+			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
 
 		}
 		}

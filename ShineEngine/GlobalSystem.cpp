@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "Camera.h"
 #include "DefaultCamera.h"
+#include "FPCamera.h"
 
 
 IGlobalSystem::IGlobalSystem() :
@@ -29,17 +30,19 @@ void IGlobalSystem::Init()
 	Log("- Renderer");
 	pMeshSystem = new CMeshSystem;
 	Log("- Mesh system");
-	m_pCamera = new CCamera;
+	m_pCamera = new CFPCamera;
 	if (m_pCamera->Init())
 		Log("- Camera system");
+	else
+		m_pCamera = new CDefaultCamera;
 	Log("We gucchi!");
 
 	m_pDefaultCamera = new CDefaultCamera;
 }
 
-void IGlobalSystem::Update()
+void IGlobalSystem::Update(float dt)
 {
-	m_pCamera->Update(pRenderer->GetWin());
+	m_pCamera->Update(dt, pRenderer->GetWin());
 }
 
 void IGlobalSystem::Log(const char* _Format)

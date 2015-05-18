@@ -8,6 +8,7 @@
 #include "GlobalSystem.h"
 #include <Windows.h>
 #include "DefaultCamera.h"
+#include "FPCamera.h"
 #include <iostream>
 
 IGlobalSystem* gSys;
@@ -80,10 +81,17 @@ void CMainWindow::Init()
 	// Set the camera mode
 	gSys->GetDefaultCamera()->SetCameraMode(ICamera::EDITOR);
 
+	// Timer variables
+	double lastTime = glfwGetTime();
+	float dt = 0;
 	while (!glfwWindowShouldClose(window))
 	{
+		// Update timer
+		dt = float(glfwGetTime() - lastTime);
+		lastTime = glfwGetTime();
+
 		gSys->pRenderer->Render(window);
-		gSys->Update();
+		gSys->Update(dt);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}

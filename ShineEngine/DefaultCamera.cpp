@@ -17,7 +17,7 @@ bool CDefaultCamera::Init()
 	return true;
 }
 
-void CDefaultCamera::Update(GLFWwindow* pWin)
+void CDefaultCamera::Update(float dt, GLFWwindow* pWin)
 {
 	// Simple camera system. 
 	if (m_currentCamerMode == EDITOR)

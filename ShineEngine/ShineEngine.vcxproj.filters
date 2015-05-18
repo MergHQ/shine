@@ -69,6 +69,9 @@
     <ClCompile Include="DefaultCamera.cpp">
       <Filter>Source Files\Game\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="FPCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="DefaultCamera.h">
       <Filter>Source Files\Game\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FPCamera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
