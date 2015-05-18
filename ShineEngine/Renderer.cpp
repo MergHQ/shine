@@ -27,7 +27,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gSys->pMeshSystem != nullptr)
 	{
-		for (int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
+		for (unsigned int iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
 		{
 			// Shader drawing
 			GLuint p = gSys->pMeshSystem->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme();
@@ -64,7 +64,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 
 			glDrawElements(GL_TRIANGLES, gSys->pMeshSystem->GetMeshContainer()[iter]->GetIndicies().size(), GL_UNSIGNED_INT, 0);
 
-			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetDefaultCamera()->GetVPMatrix() * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
+			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
 
 		}
 		}

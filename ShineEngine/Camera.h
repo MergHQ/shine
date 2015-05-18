@@ -4,6 +4,7 @@
 #pragma once
 
 #include "ICamera.h"
+enum CameraMode;
 
 class CCamera : public ICamera
 {
@@ -13,7 +14,7 @@ public:
 
 	//ICamera
 	virtual bool Init();
-	virtual void Update(GLFWwindow* pWin);
+	virtual void Update(float dt, GLFWwindow* pWin);
 	virtual glm::mat4 GetVPMatrix() { return glm::mat4(); }
 	virtual void SetCameraMode(CameraMode mode) {}
 	//~ICamera

@@ -19,9 +19,10 @@ struct IGlobalSystem
 	CMeshSystem* pMeshSystem;
 
 	void Init();
-	void Update();
+	void Update(float dt);
 	void Log(const char* _Format);
 	CDefaultCamera* GetDefaultCamera() { return m_pDefaultCamera; }
+	CCamera* GetCamera() { return m_pCamera; }
 
 private:
 	CCamera* m_pCamera;

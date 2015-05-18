@@ -12,8 +12,8 @@ public:
 	~CDefaultCamera();
 
 	//CCamera
-	virtual bool Init();
-	virtual void Update(GLFWwindow* pWin);
+	virtual bool Init() override;
+	virtual void Update(float dt, GLFWwindow* pWin) override;
 	virtual glm::mat4 GetVPMatrix() { return m_vpm; }
 	virtual void SetCameraMode(ICamera::CameraMode mode);
 	//~CCamera
