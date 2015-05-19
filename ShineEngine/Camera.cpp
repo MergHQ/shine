@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "DefaultCamera.h"
 #include <GLFW\glfw3.h>
 #include "shine.h"
 
@@ -18,5 +17,4 @@ bool CCamera::Init()
 
 void CCamera::Update(float dt, GLFWwindow* pWin)
 {
-	gSys->GetDefaultCamera()->Update(dt, pWin); // Overriding not working TODO: Fix this!
 }

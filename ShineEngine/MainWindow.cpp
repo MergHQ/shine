@@ -7,7 +7,6 @@
 #include "MainWindow.h"
 #include "GlobalSystem.h"
 #include <Windows.h>
-#include "DefaultCamera.h"
 #include "FPCamera.h"
 #include <iostream>
 
@@ -79,7 +78,7 @@ void CMainWindow::Init()
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
 	// Set the camera mode
-	gSys->GetDefaultCamera()->SetCameraMode(ICamera::EDITOR);
+	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
 
 	// Timer variables
 	double lastTime = glfwGetTime();

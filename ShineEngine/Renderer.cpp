@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "GlobalSystem.h"
 #include "MeshSystem.h"
-#include "DefaultCamera.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -66,6 +65,19 @@ void CRenderer::Render(GLFWwindow* pWin)
 
 			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * gSys->pMeshSystem->GetMeshContainer()[iter]->GetWorldTM()));
 
-		}
+			int HALF_GRID_SIZE = 10;
+			glBegin(GL_LINES);
+			glColor3f(0.75f, 0.75f, 0.75f);
+			for (int i = -HALF_GRID_SIZE; i <= HALF_GRID_SIZE; i++)
+			{
+				glVertex3f((float)i, 0, (float)-HALF_GRID_SIZE);
+				glVertex3f((float)i, 0, (float)HALF_GRID_SIZE);
+
+				glVertex3f((float)-HALF_GRID_SIZE, 0, (float)i);
+				glVertex3f((float)HALF_GRID_SIZE, 0, (float)i);
+			}
+			glEnd();
+			glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * glm::translate(glm::mat4(), Vec3(0,0,0))));
 		}
 	}
+}

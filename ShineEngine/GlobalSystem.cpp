@@ -3,7 +3,6 @@
 #include "MeshSystem.h"
 #include "MainWindow.h"
 #include "Camera.h"
-#include "DefaultCamera.h"
 #include "FPCamera.h"
 
 
@@ -19,7 +18,6 @@ IGlobalSystem::~IGlobalSystem()
 	delete pRenderer;
 	delete pMeshSystem;
 	delete m_pCamera;
-	delete m_pDefaultCamera;
 }
 
 void IGlobalSystem::Init()
@@ -33,11 +31,8 @@ void IGlobalSystem::Init()
 	m_pCamera = new CFPCamera;
 	if (m_pCamera->Init())
 		Log("- Camera system");
-	else
-		m_pCamera = new CDefaultCamera;
 	Log("We gucchi!");
 
-	m_pDefaultCamera = new CDefaultCamera;
 }
 
 void IGlobalSystem::Update(float dt)

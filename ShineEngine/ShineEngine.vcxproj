@@ -85,7 +85,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="DefaultCamera.cpp" />
     <ClCompile Include="FPCamera.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -97,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="DefaultCamera.h" />
     <ClInclude Include="FPCamera.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="IMesh.h" />

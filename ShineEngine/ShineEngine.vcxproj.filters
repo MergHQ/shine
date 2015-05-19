@@ -42,9 +42,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files\Engine\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="tiny_obj_loader.cc">
       <Filter>Source Files\Engine\OBJLoader</Filter>
     </ClCompile>
@@ -66,11 +63,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Engine\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultCamera.cpp">
+    <ClCompile Include="FPCamera.cpp">
       <Filter>Source Files\Game\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="FPCamera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +107,8 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files\Engine\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="DefaultCamera.h">
-      <Filter>Source Files\Game\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="FPCamera.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Game\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

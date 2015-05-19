@@ -15,12 +15,16 @@ public:
 	virtual bool Init();
 	virtual void Update(float dt, GLFWwindow* pWin) override;
 	virtual glm::mat4 GetVPMatrix() { return m_vpmatrix; }
-	virtual void SetCameraMode(CameraMode mode) {}
+	virtual void SetCameraMode(CameraMode mode) { m_currentCameraMode = mode; }
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
 	float m_speed = 0.1f;
 	float m_sensitivity = 0.001f;
+	int m_currentCameraMode;
+	double xpos, ypos;
+	int width, height;
+	double m_oldx = 0, m_oldy = 0;
 	glm::mat4 m_vpmatrix;
 	glm::vec3 m_direction;
 	glm::vec3 m_cameraPos;
