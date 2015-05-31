@@ -85,29 +85,52 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraInput.cpp" />
+    <ClCompile Include="ConsoleInput.cpp" />
+    <ClCompile Include="ConsoleSystem.cpp" />
+    <ClCompile Include="DisableCommand.cpp" />
+    <ClCompile Include="EnableCommand.cpp" />
     <ClCompile Include="FPCamera.cpp" />
+    <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputListener.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MeshSystem.cpp" />
+    <ClCompile Include="SetCommand.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
+    <ClCompile Include="WindowInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraInput.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="ConsoleCommands.h" />
+    <ClInclude Include="ConsoleInput.h" />
+    <ClInclude Include="ConsoleSystem.h" />
+    <ClInclude Include="DisableCommand.h" />
+    <ClInclude Include="EnableCommand.h" />
     <ClInclude Include="FPCamera.h" />
+    <ClInclude Include="GameInput.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="IMesh.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="InputListener.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Option.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SetCommand.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="shine.h" />
     <ClInclude Include="GlobalSystem.h" />
     <ClInclude Include="MeshSystem.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="WindowInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

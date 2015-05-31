@@ -6,6 +6,7 @@
 #include "shine.h"
 #include "IShader.h"
 #include "glm\glm.hpp"
+#include <vector>
 
 /*
 	This struct is used to create a mesh.

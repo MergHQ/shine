@@ -9,6 +9,12 @@
 #include <Windows.h>
 #include "FPCamera.h"
 #include <iostream>
+#include "Input.h"
+#include "WindowInput.h"
+#include "GameInput.h"
+#include "CameraInput.h"
+#include "MeshSystem.h"
+#include "Renderer.h"
 
 IGlobalSystem* gSys;
 static void error_callback(int error, const char* description)
@@ -18,8 +24,7 @@ static void error_callback(int error, const char* description)
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	gSys->pInput->key_callback(window, key, scancode, action, mods);
 }
 
 int main(void)
@@ -42,10 +47,16 @@ void CMainWindow::Init()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
+	glfwSetKeyCallback(window, key_callback);
 
 	// Creating the core systems
 	gSys = new IGlobalSystem();
 	gSys->Init();
+
+	// Add window & game input listener
+	gSys->pInput->addListener(new CWindowInput(), 0);
+	gSys->pInput->addListener(new CGameInput(), 1);
+	gSys->pInput->addListener(new CCameraInput(), 2);
 
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -78,7 +89,7 @@ void CMainWindow::Init()
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
 	// Set the camera mode
-	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
+	gSys->GetCamera()->SetCameraMode(ICamera::GAME);
 
 	// Timer variables
 	double lastTime = glfwGetTime();
@@ -90,7 +101,7 @@ void CMainWindow::Init()
 		lastTime = glfwGetTime();
 
 		gSys->pRenderer->Render(window);
-		gSys->Update(dt);
+		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}

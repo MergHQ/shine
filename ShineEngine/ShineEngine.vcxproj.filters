@@ -40,6 +40,15 @@
     <Filter Include="Source Files\Game\Camera">
       <UniqueIdentifier>{f19d1040-b907-4b69-ad1f-09b302e9d8fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\System\Input\Listeners">
+      <UniqueIdentifier>{8c6c67ad-1dc9-4e0b-9d60-06d9b0c6f4ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\System\Console">
+      <UniqueIdentifier>{77a98c57-5d3f-4657-8f11-788f02487fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\System\Console\Commands">
+      <UniqueIdentifier>{a5fbb322-20fb-43c3-95fc-125e1b10dcf4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny_obj_loader.cc">
@@ -68,6 +77,36 @@
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Engine\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputListener.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowInput.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInput.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleInput.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleSystem.cpp">
+      <Filter>Source Files\Engine\System\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="SetCommand.cpp">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraInput.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="EnableCommand.cpp">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="DisableCommand.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +148,45 @@
     </ClInclude>
     <ClInclude Include="FPCamera.h">
       <Filter>Source Files\Game\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListener.h">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Source Files\Engine\System\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowInput.h">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInput.h">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleInput.h">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleSystem.h">
+      <Filter>Source Files\Engine\System\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="Option.h">
+      <Filter>Source Files\Engine\System\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="SetCommand.h">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleCommands.h">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraInput.h">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="EnableCommand.h">
+      <Filter>Source Files\Engine\System\Console\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="DisableCommand.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

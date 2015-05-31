@@ -2,6 +2,7 @@
 #define _MESH_H_
 
 #pragma once
+#include "IMesh.h"
 #include <GL\glew.h>
 #include "GLFW\glfw3.h"
 #include "glm\glm.hpp"

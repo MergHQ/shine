@@ -14,8 +14,11 @@ public:
 	// CCamera
 	virtual bool Init();
 	virtual void Update(float dt, GLFWwindow* pWin) override;
-	virtual glm::mat4 GetVPMatrix() { return m_vpmatrix; }
+	virtual glm::mat4 GetVPMatrix() { return m_pmatrix * m_vmatrix; }
 	virtual void SetCameraMode(CameraMode mode) { m_currentCameraMode = mode; }
+	virtual void SetCameraSpeed(float speed) { m_speed = speed; }
+	virtual void setMovement(bool forward, bool backwards, bool right, bool left) override;
+	void move(GLFWwindow *window, float delta);
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
@@ -25,7 +28,9 @@ private:
 	double xpos, ypos;
 	int width, height;
 	double m_oldx = 0, m_oldy = 0;
-	glm::mat4 m_vpmatrix;
+	bool m_forward = false, m_backwards = false, m_right = false, m_left = false;
+	glm::mat4 m_vmatrix;
+	glm::mat4 m_pmatrix;
 	glm::vec3 m_direction;
 	glm::vec3 m_cameraPos;
 };

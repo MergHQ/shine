@@ -6,6 +6,8 @@
 class CRenderer;
 class CMeshSystem;
 class CCamera;
+class CInput;
+class CConsoleSystem;
 
 struct IGlobalSystem
 {
@@ -14,8 +16,10 @@ struct IGlobalSystem
 
 	bool IsRunning;
 	
+	CInput* pInput;
 	CRenderer* pRenderer;
 	CMeshSystem* pMeshSystem;
+	CConsoleSystem* pConsoleSystem;
 
 	void Init();
 	void Update(float dt);

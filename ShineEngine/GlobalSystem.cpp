@@ -4,19 +4,24 @@
 #include "MainWindow.h"
 #include "Camera.h"
 #include "FPCamera.h"
-
+#include "Input.h"
+#include "ConsoleSystem.h"
 
 IGlobalSystem::IGlobalSystem() :
+pInput(nullptr),
 pRenderer(nullptr),
 pMeshSystem(nullptr),
+pConsoleSystem(nullptr),
 m_pCamera(nullptr)
 {
 }
 
 IGlobalSystem::~IGlobalSystem()
 {
+	delete pInput;
 	delete pRenderer;
 	delete pMeshSystem;
+	delete pConsoleSystem;
 	delete m_pCamera;
 }
 
@@ -24,10 +29,14 @@ void IGlobalSystem::Init()
 {
 	Log("Initializing systems...");
 
+	pInput = new CInput;
+	Log("- Input");
 	pRenderer = new CRenderer;
 	Log("- Renderer");
 	pMeshSystem = new CMeshSystem;
 	Log("- Mesh system");
+	pConsoleSystem = new CConsoleSystem;
+	Log("- Console system");
 	m_pCamera = new CFPCamera;
 	if (m_pCamera->Init())
 		Log("- Camera system");

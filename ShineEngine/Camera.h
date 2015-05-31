@@ -19,8 +19,8 @@ public:
 	virtual void SetCameraMode(CameraMode mode) {}
 	//~ICamera
 
-private:
-
+	virtual void SetCameraSpeed(float speed) {}
+	virtual void setMovement(bool forward, bool backwards, bool right, bool left){}
 };
 
 

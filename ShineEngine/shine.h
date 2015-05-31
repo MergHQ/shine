@@ -5,16 +5,9 @@
 
 #define DEV_MODE
 
-#include <vector>
 #include <string>
-#include <cerrno>
-#include "GlobalSystem.h"
-#include "MainWindow.h"
-#include "tiny_obj_loader.h"
-#include "Renderer.h"
-#include "MeshSystem.h"
-#include "Camera.h"
 #include <glm\glm.hpp>
+#include "GlobalSystem.h"
 
 // A whole bunch of typedefs. 
 typedef std::string string;
