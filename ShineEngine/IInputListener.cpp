@@ -1,4 +1,4 @@
-#include "InputListener.h"
+#include "IInputListener.h"
 
 IInputListener::IInputListener()
 {

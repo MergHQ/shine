@@ -1,7 +1,7 @@
 #ifndef CAMERA_INPUT_H
 #define CAMERA_INPUT_H
 
-#include "InputListener.h"
+#include "IInputListener.h"
 
 class CCameraInput :	public IInputListener
 {

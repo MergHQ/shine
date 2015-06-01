@@ -1,5 +1,5 @@
 #include "Input.h"
-#include "InputListener.h"
+#include "IInputListener.h"
 
 CInput::CInput() {}
 

@@ -81,9 +81,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Engine\System\Input</Filter>
     </ClCompile>
-    <ClCompile Include="InputListener.cpp">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClCompile>
     <ClCompile Include="WindowInput.cpp">
       <Filter>Source Files\Engine\System\Input\Listeners</Filter>
     </ClCompile>
@@ -106,7 +103,10 @@
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClCompile>
     <ClCompile Include="DisableCommand.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine\System\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="IInputListener.cpp">
+      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +149,6 @@
     <ClInclude Include="FPCamera.h">
       <Filter>Source Files\Game\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="InputListener.h">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Source Files\Engine\System\Input</Filter>
     </ClInclude>
@@ -186,7 +183,10 @@
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="DisableCommand.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Engine\System\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="IInputListener.h">
+      <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

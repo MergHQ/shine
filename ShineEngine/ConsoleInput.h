@@ -1,7 +1,7 @@
 #ifndef CONSOLE_INPUT_H
 #define CONSOLE_INPUT_H
 
-#include "InputListener.h"
+#include "IInputListener.h"
 #include <string>
 
 class CConsoleInput : public IInputListener

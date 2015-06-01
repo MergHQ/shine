@@ -1,7 +1,7 @@
 #ifndef GAME_INPUT_H
 #define GAME_INPUT_H
 
-#include "InputListener.h"
+#include "IInputListener.h"
 
 class CGameInput : public IInputListener
 {

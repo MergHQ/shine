@@ -1,7 +1,7 @@
 #ifndef WINDOW_INPUT_H
 #define WINDOW_INPUT_H
 
-#include "InputListener.h"
+#include "IInputListener.h"
 
 class CWindowInput : public IInputListener
 {

@@ -3,9 +3,8 @@
 
 struct GLFWwindow;
 
-class IInputListener
+struct IInputListener
 {
-public:
 	IInputListener();
 	~IInputListener();
 

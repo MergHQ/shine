@@ -94,7 +94,7 @@
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="InputListener.cpp" />
+    <ClCompile Include="IInputListener.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -118,7 +118,7 @@
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="IMesh.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="InputListener.h" />
+    <ClInclude Include="IInputListener.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mesh.h" />

@@ -3,7 +3,7 @@
 
 #pragma once
 
-class IInputListener;
+struct IInputListener;
 struct GLFWwindow;
 #include <vector>
 
