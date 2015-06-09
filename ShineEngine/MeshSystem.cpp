@@ -61,7 +61,7 @@ void CMeshSystem::DeleteMesh(int id)
 				mesh_instances.erase(mesh_instances.begin() + iter);
 				shader_instances.erase(shader_instances.begin() + iter);
 				delete pMesh;
-				delete shader_instances[iter];
+				//delete shader_instances[iter];
 			}
 		}
 	}

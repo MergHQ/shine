@@ -18,6 +18,7 @@ public:
 	GLFWwindow* GetWin() { return window; }
 private:
 	GLFWwindow* window;
+	float time;
 };
 
 #endif

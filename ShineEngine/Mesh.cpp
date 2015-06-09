@@ -56,10 +56,12 @@ void CMesh::CreateVaosAndShit()
 	m_verticies = shapes[m_slot].mesh.positions;
 	m_indiciesVector = shapes[m_slot].mesh.indices;
 	m_normals = shapes[m_slot].mesh.normals;
+	m_texcoords = shapes[m_slot].mesh.texcoords;
 
 	GLuint vbo = 0;
 	GLuint indicies = 0;
 	GLuint normals = 0;
+	GLuint tex_coords = 0; // TODO: Fix shit variable naming
 
 	if (!m_verticies.empty())
 	{
@@ -81,9 +83,16 @@ void CMesh::CreateVaosAndShit()
 	{
 		
 		glGenBuffers(1, &normals);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, normals);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, normals);
+		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
 
+	}
+
+	if (!m_texcoords.empty())
+	{
+		glGenBuffers(1, &tex_coords);
+		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
+		glBufferData(GL_ARRAY_BUFFER, m_texcoords.size() * sizeof(float), &m_texcoords[0], GL_STATIC_DRAW);
 	}
 		GLuint vao = 0;
 		glGenVertexArrays(1, &vao);
@@ -124,12 +133,28 @@ void CMesh::CreateVaosAndShit()
 		else gSys->Log("Cannot open file \n");
 	}
 
-	
+
+	GLuint textureID = 0;
+	glGenTextures(1, &textureID);
+
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// Give the image to OpenGL
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	meshVbo = vbo;
 	meshVao = vao;
 	meshInidcies = indicies;
 	meshNormals = normals;
+	meshTexcoords = tex_coords;
+	meshTextureId = textureID;
 
 }
 

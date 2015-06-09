@@ -40,6 +40,7 @@ struct IMesh
 	virtual std::vector<float> GetVerts() = 0;
 	virtual std::vector<unsigned int> GetIndicies() = 0;
 	virtual std::vector<float> GetNormals() = 0;
+	virtual std::vector<float> GetTexCoords() = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
 	virtual void SetPos(glm::vec3 pos) = 0;
 	virtual void SetRotation(glm::vec3 axis, float rot) = 0; //TODO: Make them QUATS!!!
@@ -48,6 +49,8 @@ struct IMesh
 	virtual GLuint GetVbo() = 0;
 	virtual GLuint GetIbo() = 0;
 	virtual GLuint GetNbo() = 0;
+	virtual GLuint GetTbo() = 0;
+	virtual GLuint GetTextureId() = 0;
 
 };
 

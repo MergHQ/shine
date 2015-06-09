@@ -1,10 +1,11 @@
 #include "WindowInput.h"
 #include <GLFW\glfw3.h>
+#include "shine.h"
+#include "Input.h"
 
 CWindowInput::CWindowInput()
-	: IInputListener()
 {
-
+	gSys->pInput->addListener(this);
 }
 
 CWindowInput::~CWindowInput()
@@ -17,5 +18,5 @@ bool CWindowInput::key_callback(GLFWwindow* window, int key, int scancode, int a
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	return false;
+	return true;
 }

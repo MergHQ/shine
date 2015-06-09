@@ -8,6 +8,9 @@ class CMeshSystem;
 class CCamera;
 class CInput;
 class CConsoleSystem;
+class CConsoleInput;
+class CGameInput;
+class CWindowInput;
 
 struct IGlobalSystem
 {
@@ -21,13 +24,19 @@ struct IGlobalSystem
 	CMeshSystem* pMeshSystem;
 	CConsoleSystem* pConsoleSystem;
 
+
 	void Init();
 	void Update(float dt);
 	void Log(const char* _Format);
 	CCamera* GetCamera() { return m_pCamera; }
 
 private:
-	CCamera* m_pCamera;
+	CCamera* m_pCamera;	
+
+	// Smaller systems we don't need a public pointer to.
+	CConsoleInput* m_pConIp;
+	CGameInput* m_pGameIp;
+	CWindowInput* m_pWinIp;
 };
 
 #endif

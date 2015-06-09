@@ -18,6 +18,7 @@ typedef glm::quat Quat;
 typedef glm::mat2 Mat2;
 typedef glm::mat3x4 Mat34;
 typedef glm::mat4x4 Mat44;
+typedef unsigned int uint;
 
 extern IGlobalSystem* gSys;
 

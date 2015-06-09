@@ -4,8 +4,9 @@
 #pragma once
 
 #include "Camera.h"
+#include "IInputListener.h"
 
-class CFPCamera : public CCamera
+class CFPCamera : public CCamera, public IInputListener
 {
 public:
 	CFPCamera();
@@ -18,11 +19,17 @@ public:
 	virtual void SetCameraMode(CameraMode mode) { m_currentCameraMode = mode; }
 	virtual void SetCameraSpeed(float speed) { m_speed = speed; }
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left) override;
+	//~CCamera
+
+	//IInputListener
+	virtual bool key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	//~IInputListener
+
 	void move(GLFWwindow *window, float delta);
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
-	float m_speed = 0.1f;
+	float m_speed = 0.7f;
 	float m_sensitivity = 0.001f;
 	int m_currentCameraMode;
 	double xpos, ypos;

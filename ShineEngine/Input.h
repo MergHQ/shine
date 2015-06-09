@@ -14,8 +14,8 @@ public:
 	~CInput();
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	int addListener(IInputListener *listener, int index);
-	void removeListener(int index);
+	int addListener(IInputListener *listener);
+	void removeListener(const IInputListener* listener);
 	void clearListeners();
 private:
 	std::vector<IInputListener*> listeners;

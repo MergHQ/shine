@@ -12,7 +12,6 @@
 #include "Input.h"
 #include "WindowInput.h"
 #include "GameInput.h"
-#include "CameraInput.h"
 #include "MeshSystem.h"
 #include "Renderer.h"
 
@@ -53,11 +52,6 @@ void CMainWindow::Init()
 	gSys = new IGlobalSystem();
 	gSys->Init();
 
-	// Add window & game input listener
-	gSys->pInput->addListener(new CWindowInput(), 0);
-	gSys->pInput->addListener(new CGameInput(), 1);
-	gSys->pInput->addListener(new CCameraInput(), 2);
-
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -74,7 +68,7 @@ void CMainWindow::Init()
 
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
-	mesh3.fileName = "objects/trees.obj";
+	mesh3.fileName = "objects/test.obj";
 	mesh3.textureFile = "t.bmp";
 	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
 	mesh3.pShader = &sparams;
@@ -82,18 +76,19 @@ void CMainWindow::Init()
 
 	SMeshParams mesh;
 	mesh.name = "sample1";
-	mesh.fileName = "objects/boulder1.obj";
+	mesh.fileName = "objects/well.obj";
 	mesh.textureFile = "t.bmp";
-	mesh.pos = Vec3(0.0f, 0.0f, 10.0f);
+	mesh.pos = Vec3(10.0f, 3.0f, 150.0f);
 	mesh.pShader = &sparams;
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
 	// Set the camera mode
-	gSys->GetCamera()->SetCameraMode(ICamera::GAME);
+	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
 
 	// Timer variables
 	double lastTime = glfwGetTime();
 	float dt = 0;
+	float t = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		// Update timer
@@ -104,6 +99,10 @@ void CMainWindow::Init()
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
+		t += 0.01;
+		pMesh->SetRotation(Vec3(0, 1, 0), t);
+
+
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -114,6 +113,8 @@ void CMainWindow::Init()
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVbo);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshNormals);
+			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTexcoords);
+			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTextureId);
 
 			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
 		}
@@ -131,6 +132,7 @@ void CMainWindow::Init()
 		}
 	}
 
+	gSys->pInput->clearListeners();
 	glfwDestroyWindow(window);
 	delete gSys;
 	glfwTerminate();

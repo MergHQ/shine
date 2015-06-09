@@ -6,6 +6,9 @@
 #include "FPCamera.h"
 #include "Input.h"
 #include "ConsoleSystem.h"
+#include "ConsoleInput.h"
+#include "GameInput.h"
+#include "WindowInput.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
@@ -23,8 +26,12 @@ IGlobalSystem::~IGlobalSystem()
 	delete pMeshSystem;
 	delete pConsoleSystem;
 	delete m_pCamera;
-}
 
+	delete m_pConIp;
+	delete m_pGameIp;
+	delete m_pWinIp;
+}
+ 
 void IGlobalSystem::Init()
 {
 	Log("Initializing systems...");
@@ -41,6 +48,14 @@ void IGlobalSystem::Init()
 	if (m_pCamera->Init())
 		Log("- Camera system");
 	Log("We gucchi!");
+
+
+	//--------------
+
+	m_pConIp = new CConsoleInput;
+	m_pGameIp = new CGameInput;
+	m_pWinIp = new CWindowInput;
+	
 
 }
 

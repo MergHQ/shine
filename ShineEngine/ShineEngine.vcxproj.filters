@@ -22,9 +22,6 @@
     <Filter Include="Source Files\Engine\Interfaces">
       <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\OBJLoader">
-      <UniqueIdentifier>{9bf2e221-dc28-4dae-94b0-9371a527fdb1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine\Renderer">
       <UniqueIdentifier>{80150e33-32a7-487b-9978-4446296eb72b}</UniqueIdentifier>
     </Filter>
@@ -49,10 +46,19 @@
     <Filter Include="Source Files\Engine\System\Console\Commands">
       <UniqueIdentifier>{a5fbb322-20fb-43c3-95fc-125e1b10dcf4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Utils">
+      <UniqueIdentifier>{d658f723-657c-4d8c-865f-d239f40fbd1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Utils\OBJLoader">
+      <UniqueIdentifier>{9bf2e221-dc28-4dae-94b0-9371a527fdb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Utils\Json">
+      <UniqueIdentifier>{38075fe3-4d39-4a98-80d3-6bc2066919ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny_obj_loader.cc">
-      <Filter>Source Files\Engine\OBJLoader</Filter>
+      <Filter>Source Files\Engine\Utils\OBJLoader</Filter>
     </ClCompile>
     <ClCompile Include="GlobalSystem.cpp">
       <Filter>Source Files\Engine\System</Filter>
@@ -96,17 +102,20 @@
     <ClCompile Include="SetCommand.cpp">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="CameraInput.cpp">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClCompile>
     <ClCompile Include="EnableCommand.cpp">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClCompile>
     <ClCompile Include="DisableCommand.cpp">
       <Filter>Source Files\Engine\System\Console</Filter>
     </ClCompile>
-    <ClCompile Include="IInputListener.cpp">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialSystem.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonTool.cpp">
+      <Filter>Source Files\Engine\Utils\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +126,7 @@
       <Filter>Source Files\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
-      <Filter>Source Files\Engine\OBJLoader</Filter>
+      <Filter>Source Files\Engine\Utils\OBJLoader</Filter>
     </ClInclude>
     <ClInclude Include="GlobalSystem.h">
       <Filter>Source Files\Engine\System</Filter>
@@ -176,9 +185,6 @@
     <ClInclude Include="ConsoleCommands.h">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="CameraInput.h">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClInclude>
     <ClInclude Include="EnableCommand.h">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
@@ -187,6 +193,21 @@
     </ClInclude>
     <ClInclude Include="IInputListener.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialSystem.h">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="IMaterial.h">
+      <Filter>Source Files\Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ITexture.h">
+      <Filter>Source Files\Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonTool.h">
+      <Filter>Source Files\Engine\Utils\Json</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

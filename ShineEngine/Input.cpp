@@ -1,5 +1,6 @@
 #include "Input.h"
 #include "IInputListener.h"
+#include "shine.h"
 
 CInput::CInput() {}
 
@@ -7,27 +8,29 @@ CInput::~CInput(){}
 
 void CInput::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	for (unsigned int i = 0; i < listeners.size(); i++)
+	for (uint i = 0; i < listeners.size(); i++)
 	{
-		if (listeners.at(i)->key_callback(window, key, scancode, action, mods))
-			return;
+			if (listeners[i]->key_callback(window, key, scancode, action, mods))
+				return;
+	
 	}
 }
 
-int CInput::addListener(IInputListener *listener, int index)
+int CInput::addListener(IInputListener *listener)
 {
-	listeners.insert(listeners.begin() + index, listener);
-	// Setting up indices for listeners
-	for (unsigned int i = 0; i < listeners.size(); i++)
-	{
-		listeners.at(i)->setIndex(i);
-	}
-	return listeners.size() - 1;
+	listeners.push_back(listener);
+	return listeners.size();
 }
 
-void CInput::removeListener(int index)
+void CInput::removeListener(const IInputListener* listener)
 {
-	listeners.erase(listeners.begin() + index);
+	for (uint i = 0; i < listeners.size(); i++)
+	{
+		if (listeners[i] == listener)
+		{
+			listeners.erase(listeners.begin() + i);
+		}
+	}
 }
 
 void CInput::clearListeners()

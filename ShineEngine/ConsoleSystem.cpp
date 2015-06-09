@@ -41,8 +41,8 @@ Command* CConsoleSystem::validateCommand(std::vector<std::string> words)
 					double currVal = currOpt.m_values.at(j);
 					if (std::stod(words[2]) == currVal)						// Checks if value exists
 					{
-						CSetCommand *cmd = new CSetCommand(currOpt, currVal);
-						return cmd;
+						CSetCommand cmd(currOpt, currVal);
+						return &cmd;
 					}
 				}
 				break;

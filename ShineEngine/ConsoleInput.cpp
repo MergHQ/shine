@@ -8,6 +8,7 @@
 CConsoleInput::CConsoleInput()
 	: caps((GetKeyState(VK_CAPITAL) & 0x0001) != 0) // Uses Windows API
 {
+	gSys->pInput->addListener(this);
 }
 
 
@@ -19,10 +20,9 @@ bool CConsoleInput::key_callback(GLFWwindow* window, int key, int scancode, int 
 {
 	if (key == GLFW_KEY_TAB && action == GLFW_RELEASE)
 	{
-		gSys->pInput->removeListener(m_index);
+		gSys->pInput->removeListener(this);
 		gSys->Log("Console inactive");
 		text = "";
-		return true;
 	}
 
 	if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
@@ -31,9 +31,8 @@ bool CConsoleInput::key_callback(GLFWwindow* window, int key, int scancode, int 
 		gSys->pConsoleSystem->handleCommand(str);
 		gSys->Log(str);
 		gSys->Log("Console inactive");
-		gSys->pInput->removeListener(m_index);
+		gSys->pInput->removeListener(this);
 		text = "";
-		return true;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_RELEASE) // CAPS functionality

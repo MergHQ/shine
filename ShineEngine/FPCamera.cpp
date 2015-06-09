@@ -1,8 +1,10 @@
 #include "FPCamera.h"
 #include "shine.h"
+#include "Input.h"
 #include <glm\gtc\matrix_transform.hpp>
 #include <stdio.h>
 #include <iostream>
+
 
 CFPCamera::CFPCamera()
 {
@@ -19,6 +21,7 @@ CFPCamera::~CFPCamera()
 
 bool CFPCamera::Init()
 {
+	gSys->pInput->addListener(this);
 	return true;
 }
 
@@ -47,6 +50,22 @@ void CFPCamera::Update(float dt, GLFWwindow* pWin)
 	// Construct View Matrix
 	m_vmatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_direction, glm::vec3(0, 1, 0));
 }
+
+bool CFPCamera::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	bool move =
+		glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS ||
+		glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+
+	setMovement(
+		glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS, glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
+		glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS, glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS
+		);
+	return move;
+}
+
 
 void CFPCamera::setMovement(bool forward, bool backwards, bool right, bool left)
 {
