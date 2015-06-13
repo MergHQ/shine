@@ -17,25 +17,26 @@ CMaterial::~CMaterial()
 
 void CMaterial::ParseMtlFile()
 {
+	rapidjson::Document mtl;
 
 	SJsonParser parser;
 	parser.file = m_fileName;
 	/* This lib does some weird shit
 	so you can't have a function return a
-	Document var straight. 
+	Document var straight.
 	Thats why we need to do this*/
+	parser.IpVar = &mtl;
 	parser.Run();
 
-	//rapidjson::Document mtl = parser.result;
 
-	if (parser.result.IsObject())
+	if (mtl.IsObject())
 	{
 		// Handle info
-		gSys->Log(parser.result["material_name"].GetString());
+		gSys->Log(mtl["material_name"].GetString());
 		
-		m_matName = parser.result["material_name"].GetString();
+		m_matName = mtl["material_name"].GetString();
 
-		const rapidjson::Value& a = parser.result["textures"];
+		const rapidjson::Value& a = mtl["textures"];
 		if (a.IsArray())
 		{
 			for (rapidjson::SizeType i = 0; i < a.Size(); i++)

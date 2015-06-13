@@ -10,6 +10,6 @@ void SJsonParser::Run()
 	if (pFile != nullptr)
 	{
 		rapidjson::FileStream s(pFile);
-		result.ParseStream<0>(s);
+		IpVar->ParseStream<0>(s);
 	}
 }
