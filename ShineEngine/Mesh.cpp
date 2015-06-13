@@ -64,17 +64,21 @@ void CMesh::CreateVaosAndShit()
 	GLuint normals = 0;
 	GLuint tex_coords = 0; // TODO: Fix shit variable naming
 
+	GLuint vao = 0;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
 	if (!m_verticies.empty())
 	{
-
+		glEnableVertexAttribArray(0);
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_verticies.size(), &m_verticies[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *) NULL);
 	}
 
 	if (!m_indiciesVector.empty())
 	{
-		
 		glGenBuffers(1, &indicies);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(uint), &m_indiciesVector[0], GL_STATIC_DRAW);
@@ -82,23 +86,23 @@ void CMesh::CreateVaosAndShit()
 
 	if (!m_normals.empty())
 	{
-		
+		//glEnableVertexAttribArray(1);
 		glGenBuffers(1, &normals);
 		glBindBuffer(GL_ARRAY_BUFFER, normals);
 		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
-
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *) NULL);
 	}
 
 	if (!m_texcoords.empty())
 	{
+		glEnableVertexAttribArray(2);
 		glGenBuffers(1, &tex_coords);
 		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
 		glBufferData(GL_ARRAY_BUFFER, m_texcoords.size() * sizeof(float), &m_texcoords[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
-		GLuint vao = 0;
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glEnableVertexAttribArray(0);
+
+	glBindVertexArray(NULL);
 
 	// Load textures
 	unsigned char header[54]; // 54 byte header for BMP files.
@@ -139,13 +143,14 @@ void CMesh::CreateVaosAndShit()
 	glGenTextures(1, &textureID);
 
 	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glEnable(GL_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Give the image to OpenGL
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
