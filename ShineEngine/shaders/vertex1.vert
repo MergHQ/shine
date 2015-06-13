@@ -5,6 +5,7 @@ layout(location = 1) in vec3 np;
 out vec3 normalPos;
 out vec3 vertexPos;
 out float sh;
+out mat4 outmvp;
 
 uniform mat4 MVP;
 uniform float shp;
@@ -14,4 +15,5 @@ void main () {
   vertexPos = vp;
   normalPos = np;
   sh = shp;
+  outmvp = MVP;
 };

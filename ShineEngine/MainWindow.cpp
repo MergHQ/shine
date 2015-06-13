@@ -49,11 +49,6 @@ void CMainWindow::Init()
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, key_callback);
 
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS);
-
 	// Creating the core systems
 	gSys = new IGlobalSystem();
 	gSys->Init();

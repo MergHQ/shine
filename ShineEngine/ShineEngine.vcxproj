@@ -103,6 +103,7 @@
     <ClCompile Include="SetCommand.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
+    <ClCompile Include="Tools.cpp" />
     <ClCompile Include="WindowInput.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +136,7 @@
     <ClInclude Include="GlobalSystem.h" />
     <ClInclude Include="MeshSystem.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="Tools.h" />
     <ClInclude Include="WindowInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

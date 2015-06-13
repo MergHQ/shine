@@ -14,6 +14,7 @@ class CRenderer
 public:
 	CRenderer();
 	~CRenderer();
+	void Init();
 	void Render(GLFWwindow* pWin);
 	GLFWwindow* GetWin() { return window; }
 private:

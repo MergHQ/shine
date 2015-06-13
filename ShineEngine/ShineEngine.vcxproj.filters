@@ -117,6 +117,9 @@
     <ClCompile Include="JsonTool.cpp">
       <Filter>Source Files\Engine\Utils\Json</Filter>
     </ClCompile>
+    <ClCompile Include="Tools.cpp">
+      <Filter>Source Files\Engine\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="JsonTool.h">
       <Filter>Source Files\Engine\Utils\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h">
+      <Filter>Source Files\Engine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

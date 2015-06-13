@@ -20,6 +20,13 @@ CRenderer::~CRenderer()
 {
 }
 
+void CRenderer::Init()
+{
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+}
+
 void CRenderer::Render(GLFWwindow* pWin)
 {
 	window = pWin;
@@ -49,6 +56,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, pMesh->GetTextureId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 0);
+				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
