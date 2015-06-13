@@ -59,10 +59,10 @@ void CRenderer::Render(GLFWwindow* pWin)
 
 				// Textures
 				// Create one OpenGL texture
+				glEnable(GL_TEXTURE);
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, pMesh->GetTextureId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 0);
-
-
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
