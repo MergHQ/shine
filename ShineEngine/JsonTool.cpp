@@ -10,8 +10,6 @@ void SJsonParser::Run()
 	if (pFile != nullptr)
 	{
 		rapidjson::FileStream s(pFile);
-		rapidjson::Document d;
-		d.ParseStream<0>(s);
-		OpFile = &d;
+		result.ParseStream<0>(s);
 	}
 }

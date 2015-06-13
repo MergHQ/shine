@@ -11,7 +11,7 @@ struct SJsonParser
 {
 public:
 	const char* file;
-	rapidjson::Document* OpFile;
+	rapidjson::Document result;
 	void Run();
 };
 

@@ -1,10 +1,20 @@
 #include "Material.h"
 #include "MaterialSystem.h"
 
+CMaterialSystem::CMaterialSystem()
+{
+
+}
+
+CMaterialSystem::~CMaterialSystem()
+{
+
+}
+
 IMaterial* CMaterialSystem::GetMaterialById(int id)
 {
 	for (unsigned int i = 0; i < m_materialContainer.size(); i++)
-		if (m_materialContainer[i]->GetMaterialID() == id)
+		if (m_materialContainer[i]->GetMaterialId() == id)
 			return m_materialContainer[i];
 
 	return nullptr;
@@ -42,7 +52,7 @@ IMaterial* CMaterialSystem::LoadMaterial(const char* file)
 	return nullptr;
 }
 
-void CMaterialSystem::AddMaterial(IMaterial* pM)
+void CMaterialSystem::AddMaterial(CMaterial* pM)
 {
 	m_materialContainer.push_back(pM);
 }

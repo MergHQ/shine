@@ -1,0 +1,17 @@
+{
+	"material_name" : "mymaterial",
+	"textures":[
+		{
+			"texture":"t",
+			"type": "DIFFUSE",
+			"vshader" : "vertex1",
+			"fshader" : "frag1"
+		},
+		{
+			"texture":"t",
+			"type": "SPECULAR",
+			"vshader" : "vertex1",
+			"fshader" : "frag1"
+		}
+	]
+}

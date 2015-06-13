@@ -62,7 +62,7 @@ private:
 	const char* m_textureFile;
 	glm::vec3 m_worldPos;
 	glm::vec3 m_worldRotAxis;
-	float m_worldRot;
+	float m_worldRotScalar;
 	IShader* m_pIShader;
 	glm::mat4 m_tm;
 	

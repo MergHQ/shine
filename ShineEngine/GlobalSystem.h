@@ -11,6 +11,7 @@ class CConsoleSystem;
 class CConsoleInput;
 class CGameInput;
 class CWindowInput;
+class CMaterialSystem;
 
 struct IGlobalSystem
 {
@@ -23,6 +24,7 @@ struct IGlobalSystem
 	CRenderer* pRenderer;
 	CMeshSystem* pMeshSystem;
 	CConsoleSystem* pConsoleSystem;
+	CMaterialSystem* pMaterialSystem;
 
 
 	void Init();

@@ -9,12 +9,14 @@
 #include "ConsoleInput.h"
 #include "GameInput.h"
 #include "WindowInput.h"
+#include "MaterialSystem.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
 pRenderer(nullptr),
 pMeshSystem(nullptr),
 pConsoleSystem(nullptr),
+pMaterialSystem(nullptr),
 m_pCamera(nullptr)
 {
 }
@@ -26,6 +28,7 @@ IGlobalSystem::~IGlobalSystem()
 	delete pMeshSystem;
 	delete pConsoleSystem;
 	delete m_pCamera;
+	delete pMaterialSystem;
 
 	delete m_pConIp;
 	delete m_pGameIp;
@@ -42,6 +45,8 @@ void IGlobalSystem::Init()
 	Log("- Renderer");
 	pMeshSystem = new CMeshSystem;
 	Log("- Mesh system");
+	pMaterialSystem = new CMaterialSystem;
+	Log("- Material System");
 	pConsoleSystem = new CConsoleSystem;
 	Log("- Console system");
 	m_pCamera = new CFPCamera;

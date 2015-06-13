@@ -20,9 +20,9 @@ CMesh::CMesh(SMeshParams* pMesh)
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
-	m_worldRot = pMesh->rotAmmount;
+	m_worldRotScalar = pMesh->rotAmmount;
 	m_pIShader = CreateShader(pMesh->pShader);
-	BuildTM(m_worldPos, m_worldRotAxis, m_worldRot);
+	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
 CMesh::~CMesh() {}
@@ -30,13 +30,14 @@ CMesh::~CMesh() {}
 void CMesh::SetPos(Vec3 pos)
 {
 	m_worldPos = pos;
+	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
 void CMesh::SetRotation(glm::vec3 axis, float rot)
 {
 	m_worldRotAxis = axis;
-	m_worldRot = rot;
-	BuildTM(m_worldPos, m_worldRotAxis, m_worldRot);
+	m_worldRotScalar = rot;
+	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
 void CMesh::CreateVaosAndShit()
@@ -49,7 +50,7 @@ void CMesh::CreateVaosAndShit()
 
 	if (!err.empty()) 
 	{
-		gSys->Log("[MESHSYS] Cannot find the object file specified.");
+		gSys->Log("[MESHSYS] Cannot find the .obj file specified.");
 		exit(1);
 	}	
 
@@ -76,7 +77,7 @@ void CMesh::CreateVaosAndShit()
 		
 		glGenBuffers(1, &indicies);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(float), &m_indiciesVector[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(uint), &m_indiciesVector[0], GL_STATIC_DRAW);
 	}
 
 	if (!m_normals.empty())
@@ -100,7 +101,7 @@ void CMesh::CreateVaosAndShit()
 		glEnableVertexAttribArray(0);
 
 	// Load textures
-	unsigned char header[54]; // 54 byte header
+	unsigned char header[54]; // 54 byte header for BMP files.
 	unsigned char * data;
 	if (m_textureFile != nullptr && m_textureFile != "")
 	{
@@ -130,7 +131,7 @@ void CMesh::CreateVaosAndShit()
 
 			fclose(pFile);
 		}
-		else gSys->Log("Cannot open file \n");
+		else gSys->Log("Cannot open file");
 	}
 
 

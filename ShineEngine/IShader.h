@@ -10,6 +10,7 @@
 	This struct is used to create a shader.
 */
 
+
 struct SShaderParams
 {
 	const char* name;

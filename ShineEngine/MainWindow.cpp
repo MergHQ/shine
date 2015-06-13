@@ -14,6 +14,7 @@
 #include "GameInput.h"
 #include "MeshSystem.h"
 #include "Renderer.h"
+#include "MaterialSystem.h"
 
 IGlobalSystem* gSys;
 static void error_callback(int error, const char* description)
@@ -63,8 +64,8 @@ void CMainWindow::Init()
 	SShaderParams sparams;
 	sparams.id = 123;
 	sparams.name = "sampleshader";
-	sparams.f_file = "shaders/frag1.frag";
-	sparams.v_file = "shaders/vertex1.vert";
+	sparams.f_file = "shaders/texshader.frag";
+	sparams.v_file = "shaders/texshader.vert";
 
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
@@ -82,13 +83,14 @@ void CMainWindow::Init()
 	mesh.pShader = &sparams;
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
+	gSys->pMaterialSystem->LoadMaterial("m.mtl");
+
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
 
 	// Timer variables
 	double lastTime = glfwGetTime();
 	float dt = 0;
-	float t = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		// Update timer
@@ -99,10 +101,6 @@ void CMainWindow::Init()
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-		t += 0.01;
-		pMesh->SetRotation(Vec3(0, 1, 0), t);
-
-
 	}
 
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
@@ -121,7 +119,8 @@ void CMainWindow::Init()
 	}
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
 	{
-		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
+		gSys->Log("Purging shaders and meshes.");
+		for (uint iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			if (pMeshSys->GetMeshContainer()[iter] != nullptr)
 			{
@@ -130,10 +129,14 @@ void CMainWindow::Init()
 				delete pMeshSys->GetShaderConteainer()[iter];
 			}
 		}
+
+		for (uint j = 0; j < gSys->pMaterialSystem->GetMaterialContainer().size(); j++)
+			delete gSys->pMaterialSystem->GetMaterialContainer()[j];
 	}
 
 	gSys->pInput->clearListeners();
 	glfwDestroyWindow(window);
+	gSys->Log("Bye.");
 	delete gSys;
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
