@@ -34,7 +34,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 	glClearColor(1.0f, 1.0f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	GLuint p = 0;
-	time += 0.01f;
+	time += 0.08f;
 	if (gSys->pMeshSystem != nullptr)
 	{
 		for (uint iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
@@ -56,6 +56,8 @@ void CRenderer::Render(GLFWwindow* pWin)
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, pMesh->GetTextureId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 0);
+				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);

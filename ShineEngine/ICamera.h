@@ -21,6 +21,7 @@ struct ICamera
 	virtual void Update(float dt, GLFWwindow* pWin) = 0;
 	virtual glm::mat4 GetVPMatrix() = 0;
 	virtual void SetCameraMode(ICamera::CameraMode mode) = 0;
+	virtual glm::vec3 GetWorldPos() = 0;
 
 };
 

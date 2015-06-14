@@ -39,7 +39,7 @@ void CMainWindow::Init()
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
-	window = glfwCreateWindow(1280, 720, "Shine - Render Window", NULL, NULL);
+	window = glfwCreateWindow(1920, 1080, "Shine - Render Window", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -64,8 +64,7 @@ void CMainWindow::Init()
 	SShaderParams sparams;
 	sparams.id = 123;
 	sparams.name = "sampleshader";
-	sparams.f_file = "shaders/texshader.frag";
-	sparams.v_file = "shaders/texshader.vert";
+	sparams.s_file = "shaders/tests/texshader.ss";
 
 	SMeshParams mesh3;
 	mesh3.name = "sample2";

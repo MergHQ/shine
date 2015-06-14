@@ -19,6 +19,7 @@ public:
 	virtual void SetCameraMode(CameraMode mode) { m_currentCameraMode = mode; }
 	virtual void SetCameraSpeed(float speed) { m_speed = speed; }
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left) override;
+	virtual glm::vec3 GetWorldPos() { return m_cameraPos; }
 	//~CCamera
 
 	//IInputListener

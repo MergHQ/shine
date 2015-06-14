@@ -9,11 +9,12 @@
 #include <string>
 #include <ctime>
 #include "shine.h"
+#include "Tools.h"
 
 
 DWORD WINAPI listen(LPVOID lpParam)
 {
-	HANDLE fileChangeHandle = FindFirstChangeNotification(L"shaders/", false, 0x00000010);
+	HANDLE fileChangeHandle = FindFirstChangeNotification(L"shaders/", true, 0x00000010);
 
 	time_t lastChange = time(0);
 	bool reloaded = false;
@@ -39,9 +40,8 @@ m_firstTime(true)
 {
 	m_name = pShaderParams->name;
 	m_id = pShaderParams->id;
-	m_v_file = pShaderParams->v_file;
-	m_f_file = pShaderParams->f_file;
-	LoadShader(pShaderParams->v_file, pShaderParams->f_file);
+	m_sfile = pShaderParams->s_file;
+	LoadShader(m_sfile);
 
 #ifdef DEV_MODE
 	HANDLE listeningThread = CreateThread(NULL, 0, listen, this, 0, NULL);
@@ -61,17 +61,15 @@ bool CShader::Reload()
 {
 	if (!m_firstTime)
 	{
-		LoadShader(m_v_file, m_f_file);
+		LoadShader(m_sfile);
 		return true;
 	}
 	return false;
 }
 
-bool CShader::LoadShader(const char* v_shader, const char* f_shader)
+bool CShader::LoadShader(const char* shader)
 {
-	//========================================
 	// Load shaders from files.
-	//========================================
 
 	// Check if a shader is already loaded on this instance.
 
@@ -80,39 +78,32 @@ bool CShader::LoadShader(const char* v_shader, const char* f_shader)
 		glDeleteProgram(sprog);
 	}
 
-	std::ifstream vshader(v_shader);
-	std::ifstream fshader(f_shader);
+	std::ifstream shader_stream(shader);
 
-	std::string vshadercont = "";
-	std::string fshadercont = "";
+	std::string shadercont = "";
 
-	if (!vshader.is_open() || !fshader.is_open())
+	if (!shader_stream.is_open())
 		return false;
 
 	std::string line = "";
-	while (!vshader.eof())
+	while (!shader_stream.eof())
 	{
-		std::getline(vshader, line);
-		vshadercont.append(line + "\n");
+		std::getline(shader_stream, line);
+		shadercont.append(line + "\n");
 	}
 
 	line = "";
 
-	while (!fshader.eof())
-	{
-		std::getline(fshader, line);
-		fshadercont.append(line + "\n");
-	}
+	shader_stream.close();
+	
+	SSplitString ss;
 
-	vshader.close();
-	fshader.close();
 
-	const char* vertex_content= vshadercont.c_str();
-	const char* fragment_content = fshadercont.c_str();
+	std::vector<std::string> shaders = ss.Split(shadercont, '@');
+	const char* vertex_content = shaders[0].c_str();
+	const char* fragment_content = shaders[1].c_str();
 
-	//=========================================
 	//Create shaders.
-	//=========================================
 
 	if(vertex_content != "" && fragment_content != "")
 	{

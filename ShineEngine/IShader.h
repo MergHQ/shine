@@ -15,8 +15,7 @@ struct SShaderParams
 {
 	const char* name;
 	int id;
-	const char* v_file;
-	const char* f_file;
+	const char* s_file;
 };
 
 /*
@@ -28,11 +27,10 @@ struct IShader
 	virtual ~IShader(){}
 	virtual const char* GetName() = 0;
 	virtual int GetId() = 0;
-	virtual bool LoadShader(const char* v_shader, const char* f_shader) = 0;
+	virtual bool LoadShader(const char* shader) = 0;
 	virtual bool Reload() = 0;
 	virtual GLuint GetShaderProgramme() = 0;
-	virtual const char* GetVFile() = 0;
-	virtual const char* GetFFile() = 0;
+	virtual const char* GetFileName() = 0;
 	virtual void Update() = 0;
 };
 

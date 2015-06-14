@@ -177,15 +177,9 @@ IShader* CMesh::CreateShader(SShaderParams* pShaderParams)
 		return nullptr;
 	}
 
-	if (pShaderParams->f_file == "")
+	if (pShaderParams->s_file == "")
 	{
 		gSys->Log("[SHADERSYS] No frag shader path specified!");
-		return nullptr;
-	}
-
-	if (pShaderParams->v_file == "")
-	{
-		gSys->Log("[SHADERSYS] No vert shader path specified!");
 		return nullptr;
 	}
 

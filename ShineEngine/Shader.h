@@ -14,11 +14,10 @@ public:
 	// IShader
 	virtual const char* GetName() { return m_name; };
 	virtual int GetId() { return m_id; };
-	virtual bool LoadShader(const char* v_shader, const char* f_shader);
+	virtual bool LoadShader(const char* shader);
 	virtual bool Reload();
 	virtual GLuint GetShaderProgramme() { return sprog; };
-	virtual const char* GetVFile() { return m_v_file; }
-	virtual const char* GetFFile() { return m_f_file; }
+	virtual const char* GetFileName() { return m_sfile; }
 	virtual void Update();
 	// ~IShader
 
@@ -27,8 +26,7 @@ public:
 private:
 	const char* m_name;
 	int m_id;
-	const char* m_v_file;
-	const char* m_f_file;
+	const char* m_sfile;
 	GLuint sprog;
 	bool m_firstTime;
 
