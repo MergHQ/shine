@@ -41,6 +41,8 @@ void main () {
 	
 	vec3 N = normalize(oNp);
 	vec3 V = normalize(CamWPos - v_p);
+	// Fake ambient light
+	vec4 ambient = vec4(0.1, 0.4, 0.8, 1.0);
 	float fresnel = pow(1 - dot(N, V), shp_);
-	frag_colour = texture(texsamp, UV)/* * vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/;
+	frag_colour = texture(texsamp, UV) + (ambient / 5.0);/* * vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
 };

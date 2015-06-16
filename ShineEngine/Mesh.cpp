@@ -9,6 +9,7 @@
 #include <GL\glew.h>
 #include "GLFW\glfw3.h"
 #include <glm\gtc\matrix_transform.hpp>
+#include "MaterialSystem.h"
 
 
 CMesh::CMesh(SMeshParams* pMesh)
@@ -16,12 +17,12 @@ CMesh::CMesh(SMeshParams* pMesh)
 	m_meshId = pMesh->id;
 	m_meshName = pMesh->name;
 	m_file = pMesh->fileName;
-	m_textureFile = pMesh->textureFile;
 	CreateVaosAndShit();
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
 	m_worldRotScalar = pMesh->rotAmmount;
-	m_pIShader = CreateShader(pMesh->pShader);
+	if(IMaterial* pMaterial = gSys->pMaterialSystem->LoadMaterial("m.mtl"))
+		m_pMaterial = pMaterial;
 	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
@@ -104,94 +105,13 @@ void CMesh::CreateVaosAndShit()
 
 	glBindVertexArray(NULL);
 
-	// Load textures
-	unsigned char header[54]; // 54 byte header for BMP files.
-	unsigned char * data;
-	if (m_textureFile != nullptr && m_textureFile != "")
-	{
-		FILE* pFile = fopen(m_textureFile, "rb");
-
-		if (pFile)
-		{
-			if (fread(header, 1, 54, pFile) != 54)
-				gSys->Log("Not a BMP file");
-
-			if (header[0]!= 'B' || header[1]!= 'M')
-			{
-				gSys->Log("Not a BMP file (Wrong header)");
-			}
-
-			dataPos = *(int*)&(header[0x0A]);
-			imageSize = *(int*)&(header[0x22]);
-			width = *(int*)&(header[0x12]);
-			height = *(int*)&(header[0x16]);
-
-			if (imageSize == 0)    imageSize = width*height * 3; // 3 : one byte for each Red, Green and Blue component
-			if (dataPos == 0)      dataPos = 54;
-
-			data = new unsigned char[imageSize];
-
-			fread(data, 1, imageSize, pFile);
-
-			fclose(pFile);
-		}
-		else gSys->Log("Cannot open file");
-	}
-
-
-	GLuint textureID = 0;
-	glGenTextures(1, &textureID);
-
-	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glEnable(GL_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
 
 	meshVbo = vbo;
 	meshVao = vao;
 	meshInidcies = indicies;
 	meshNormals = normals;
 	meshTexcoords = tex_coords;
-	meshTextureId = textureID;
 
-}
-
-IShader* CMesh::CreateShader(SShaderParams* pShaderParams)
-{
-	if (pShaderParams->id == 0)
-	{
-		pShaderParams->id = rand() * 1000;
-	}
-
-	if (pShaderParams->name == "")
-	{
-		gSys->Log("[SHADERSYS] You didn't name your shader!");
-		return nullptr;
-	}
-
-	if (pShaderParams->s_file == "")
-	{
-		gSys->Log("[SHADERSYS] No frag shader path specified!");
-		return nullptr;
-	}
-
-	CShader* pNShader = new CShader(pShaderParams);
-
-	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
-	{
-		// Control the shaderz.
-		pMeshSys->AddToShaderContainer(pNShader);
-	} else return nullptr;
-
-	return pNShader;
 }
 
 void CMesh::BuildTM(Vec3 pos, glm::vec3 axis, float rot)

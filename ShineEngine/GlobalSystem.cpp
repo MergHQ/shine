@@ -70,9 +70,9 @@ void IGlobalSystem::Update(float dt)
 	m_pCamera->Update(dt, pRenderer->GetWin());
 }
 
-void IGlobalSystem::Log(const char* _Format)
+void IGlobalSystem::Log(std::string log)
 {
-	printf("%s \n",_Format);
+	printf("%s \n",log.c_str());
 }
 
 

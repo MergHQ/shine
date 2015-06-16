@@ -61,28 +61,19 @@ void CMainWindow::Init()
 		exit(1);
 	}
 
-	SShaderParams sparams;
-	sparams.id = 123;
-	sparams.name = "sampleshader";
-	sparams.s_file = "shaders/tests/texshader.ss";
-
 	SMeshParams mesh3;
 	mesh3.name = "sample2";
 	mesh3.fileName = "objects/test.obj";
-	mesh3.textureFile = "t.bmp";
 	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
-	mesh3.pShader = &sparams;
+	mesh3.m_materialFile = "m.mtl";
 	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
 
 	SMeshParams mesh;
 	mesh.name = "sample1";
 	mesh.fileName = "objects/well.obj";
-	mesh.textureFile = "t.bmp";
 	mesh.pos = Vec3(10.0f, 3.0f, 150.0f);
-	mesh.pShader = &sparams;
+	mesh3.m_materialFile = "m.mtl";
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
-
-	gSys->pMaterialSystem->LoadMaterial("m.mtl");
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
@@ -102,6 +93,17 @@ void CMainWindow::Init()
 		glfwSwapBuffers(window);
 	}
 
+	Release();
+
+	glfwDestroyWindow(window);
+	gSys->Log("Bye.");
+	delete gSys;
+	glfwTerminate();
+	exit(EXIT_SUCCESS);
+}
+
+void CMainWindow::Release()
+{
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
 	{
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
@@ -111,21 +113,21 @@ void CMainWindow::Init()
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshNormals);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTexcoords);
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTextureId);
+			//glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTextureId);
 
-			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetShader()->GetShaderProgramme());
+			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetMaterial()->GetShader()->GetShaderProgramme());
 		}
 	}
+
 	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
 	{
-		gSys->Log("Purging shaders and meshes.");
+		gSys->Log("Purging shaders, meshes, textures and materials.");
 		for (uint iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
 			if (pMeshSys->GetMeshContainer()[iter] != nullptr)
 			{
 				// Delete all the meshes and shaders from memory, so we avoid memory leaks.
 				delete pMeshSys->GetMeshContainer()[iter];
-				delete pMeshSys->GetShaderConteainer()[iter];
 			}
 		}
 
@@ -134,11 +136,6 @@ void CMainWindow::Init()
 	}
 
 	gSys->pInput->clearListeners();
-	glfwDestroyWindow(window);
-	gSys->Log("Bye.");
-	delete gSys;
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
 }
 
 

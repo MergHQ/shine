@@ -5,6 +5,7 @@
 
 #include <vector>
 #include "ITexture.h"
+#include "IShader.h"
 
 struct IMaterial
 {
@@ -13,6 +14,7 @@ struct IMaterial
 	virtual int GetMaterialId() = 0;
 	virtual const char* GetMaterialName() = 0;
 	virtual std::vector<ITexture*> GetTextures() = 0;
+	virtual IShader* GetShader() = 0;
 
 };
 

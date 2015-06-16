@@ -23,7 +23,7 @@ IMaterial* CMaterialSystem::GetMaterialById(int id)
 IMaterial* CMaterialSystem::GetMaterialByName(const char* name)
 {
 	// Bad way to iterate :(
-	for (unsigned int i = 0; i < m_materialContainer.size(); i++)
+	for (uint i = 0; i < m_materialContainer.size(); i++)
 		if (m_materialContainer[i]->GetMaterialName() == name)
 			return m_materialContainer[i];
 	return nullptr;

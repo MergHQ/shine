@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <string>
+
 class CRenderer;
 class CMeshSystem;
 class CCamera;
@@ -29,7 +31,7 @@ struct IGlobalSystem
 
 	void Init();
 	void Update(float dt);
-	void Log(const char* _Format);
+	void Log(std::string log);
 	CCamera* GetCamera() { return m_pCamera; }
 
 private:

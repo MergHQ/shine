@@ -102,6 +102,7 @@
     <ClCompile Include="MeshSystem.cpp" />
     <ClCompile Include="SetCommand.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="WindowInput.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="MeshSystem.h" />
     <ClInclude Include="tiny_obj_loader.h" />
     <ClInclude Include="Tools.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="WindowInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

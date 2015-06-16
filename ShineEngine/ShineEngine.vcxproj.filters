@@ -120,6 +120,9 @@
     <ClCompile Include="Tools.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="Tools.h">
       <Filter>Source Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

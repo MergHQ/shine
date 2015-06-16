@@ -10,7 +10,8 @@
 #include <ctime>
 #include "shine.h"
 #include "Tools.h"
-
+#include "JsonTool.h"
+#include <rapidjson\document.h>
 
 DWORD WINAPI listen(LPVOID lpParam)
 {
@@ -78,12 +79,14 @@ bool CShader::LoadShader(const char* shader)
 		glDeleteProgram(sprog);
 	}
 
-	std::ifstream shader_stream(shader);
+	std::ifstream shader_stream(m_sfile);
 
 	std::string shadercont = "";
 
 	if (!shader_stream.is_open())
+	{
 		return false;
+	}
 
 	std::string line = "";
 	while (!shader_stream.eof())

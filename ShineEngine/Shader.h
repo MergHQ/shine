@@ -4,6 +4,7 @@
 #pragma once
 
 #include "IShader.h"
+#include "IMaterial.h"
 
 class CShader : public IShader
 {

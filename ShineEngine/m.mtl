@@ -1,17 +1,17 @@
 {
 	"material_name" : "mymaterial",
+	"shading" : "shaders/tests/texshader.ss",
+	"shaderparams":[],
 	"textures":[
 		{
-			"texture":"t",
-			"type": "DIFFUSE",
-			"vshader" : "vertex1",
-			"fshader" : "frag1"
+			"texture":"t.bmp",
+			"texname":"test_diff",
+			"type": "DIFFUSE"
 		},
 		{
 			"texture":"t",
-			"type": "SPECULAR",
-			"vshader" : "vertex1",
-			"fshader" : "frag1"
+			"texname":"test_spec",
+			"type": "SPECULAR"
 		}
 	]
 }

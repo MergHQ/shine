@@ -42,10 +42,11 @@ void CRenderer::Render(GLFWwindow* pWin)
 			if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
 			{
 				// Shader drawing
-				if (pMesh->GetShader())
-					p = pMesh->GetShader()->GetShaderProgramme();
+				if (pMesh->GetMaterial()->GetShader())
+					p = pMesh->GetMaterial()->GetShader()->GetShaderProgramme();
 				glUseProgram(p);
-				pMesh->GetShader()->Update();
+				if (pMesh->GetMaterial()->GetShader())
+					pMesh->GetMaterial()->GetShader()->Update();
 
 				glBindVertexArray(pMesh->GetVao());
 
@@ -54,15 +55,16 @@ void CRenderer::Render(GLFWwindow* pWin)
 				// Textures
 				// Create one OpenGL texture
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, pMesh->GetTextureId());
+				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 0);
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+				//glm::mat4 model = glm::rotate(pMesh->GetWorldTM(), pMesh->GetRotation().w, glm::vec3(pMesh->GetRotation().x, pMesh->GetRotation().y, pMesh->GetRotation().z));
+				//glm::mat3 inv_transp = glm::transpose(glm::inverse(glm::mat3(model)));
+				//glUniform3fv(glGetUniformLocation(p, "3x3_inv_transp"), 1, GL_FALSE, glm::value_ptr(inv_transp));
 				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
-
-				//glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 
 				glBindVertexArray(NULL);
 			}

@@ -32,7 +32,7 @@ IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 		return nullptr;
 	}
 
-	if (pMesh->pShader == nullptr)
+	if (!pMesh->m_materialFile || pMesh->m_materialFile == "")
 	{
 		printf("[MESHSYS]Please consider addaing a shader to your mesh.");
 		return nullptr;
