@@ -39,7 +39,7 @@ void CMainWindow::Init()
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
-	window = glfwCreateWindow(1920, 1080, "Shine - Render Window", NULL, NULL);
+	window = glfwCreateWindow(1280, 720, "Shine - Render Window", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -61,18 +61,11 @@ void CMainWindow::Init()
 		exit(1);
 	}
 
-	SMeshParams mesh3;
-	mesh3.name = "sample2";
-	mesh3.fileName = "objects/test.obj";
-	mesh3.pos = Vec3(0.0f, 0.0f, 5.0f);
-	mesh3.m_materialFile = "m.mtl";
-	IMesh* pMesh3 = gSys->pMeshSystem->CreateMesh(&mesh3);
-
 	SMeshParams mesh;
 	mesh.name = "sample1";
-	mesh.fileName = "objects/well.obj";
-	mesh.pos = Vec3(10.0f, 3.0f, 150.0f);
-	mesh3.m_materialFile = "m.mtl";
+	mesh.fileName = "objects/sponza.obj";
+	mesh.pos = Vec3(0.0f, 0.0f, 5.0f);
+	mesh.m_materialFile = "m.mtl";
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
 
 	// Set the camera mode
@@ -108,7 +101,6 @@ void CMainWindow::Release()
 	{
 		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
 		{
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVao);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVbo);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
 			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshNormals);

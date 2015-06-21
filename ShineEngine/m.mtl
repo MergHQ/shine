@@ -1,6 +1,6 @@
 {
 	"material_name" : "mymaterial",
-	"shading" : "shaders/tests/texshader.ss",
+	"shading" : "shaders/surface_shaders/illum.ss",
 	"shaderparams":[],
 	"textures":[
 		{
@@ -9,7 +9,7 @@
 			"type": "DIFFUSE"
 		},
 		{
-			"texture":"t",
+			"texture":"t.bmp",
 			"texname":"test_spec",
 			"type": "SPECULAR"
 		}

@@ -8,6 +8,7 @@
 #include "glm\glm.hpp"
 #include "IMaterial.h"
 #include "Material.h"
+#include "tiny_obj_loader.h"
 
 
 
@@ -15,7 +16,7 @@ class CMesh : public IMesh
 {
 public:
 	CMesh(SMeshParams* pMesh);
-	~CMesh();
+	CMesh::~CMesh();
 
 
 	// IMesh
@@ -40,14 +41,16 @@ public:
 
 	void CreateVaosAndShit();
 	void BuildTM(glm::vec3 pos, glm::vec3 axis, float rot);
-	GLuint meshVao;	
+	GLuint meshVao;
 	GLuint meshVbo;
 	GLuint meshInidcies;
 	GLuint meshNormals;
 	GLuint meshTexcoords;
 
+
 private:
 
+	std::vector<tinyobj::shape_t> ReadCompiledObj(std::istream* stream);
 	const char* m_meshName;
 	int m_meshId;
 	const unsigned int m_slot = 0;
@@ -61,7 +64,7 @@ private:
 	glm::vec3 m_worldRotAxis;
 	float m_worldRotScalar;
 	glm::mat4 m_tm;
-	
+
 
 };
 #endif

@@ -18,6 +18,7 @@ public:
 	virtual glm::mat4 GetVPMatrix() { return glm::mat4(); }
 	virtual void SetCameraMode(CameraMode mode) {}
 	virtual glm::vec3 GetWorldPos() = 0;
+	virtual glm::mat4 GetViewMatrix() = 0;
 	//~ICamera
 
 	virtual void SetCameraSpeed(float speed) {}

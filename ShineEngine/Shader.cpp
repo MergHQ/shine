@@ -117,7 +117,7 @@ bool CShader::LoadShader(const char* shader)
 		glGetShaderiv(vs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			printf( "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, vs);
+			printf("Error compiling vert shader");
 		}
 
 
@@ -127,7 +127,7 @@ bool CShader::LoadShader(const char* shader)
 		glGetShaderiv(fs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, fs);
+			printf("Error compiling frag shader");
 		}
 
 		GLuint shader_programme = glCreateProgram();
@@ -137,7 +137,7 @@ bool CShader::LoadShader(const char* shader)
 		glGetProgramiv(shader_programme, GL_LINK_STATUS, &s);
 		if (!s)
 		{
-			fprintf(stderr, "Error compiling shader type %d: '%s'\n", GL_VERTEX_SHADER, shader_programme);
+			printf("Error creating shader prog");
 		}
 
 		sprog = shader_programme;

@@ -22,6 +22,7 @@ struct ICamera
 	virtual glm::mat4 GetVPMatrix() = 0;
 	virtual void SetCameraMode(ICamera::CameraMode mode) = 0;
 	virtual glm::vec3 GetWorldPos() = 0;
+	virtual glm::mat4 GetViewMatrix() = 0;
 
 };
 

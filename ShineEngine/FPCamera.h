@@ -20,6 +20,7 @@ public:
 	virtual void SetCameraSpeed(float speed) { m_speed = speed; }
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left) override;
 	virtual glm::vec3 GetWorldPos() { return m_cameraPos; }
+	virtual glm::mat4 GetViewMatrix() { return m_vmatrix; }
 	//~CCamera
 
 	//IInputListener
@@ -27,6 +28,7 @@ public:
 	//~IInputListener
 
 	void move(GLFWwindow *window, float delta);
+	
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
