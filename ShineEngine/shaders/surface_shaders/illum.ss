@@ -8,7 +8,8 @@ out vec3 oNp;
 out vec3 v_p;
 out vec3 CamWPos;
 out float shp_;
-out vec3 vs_light;
+out vec4 lightPosW;
+out vec4 eyeCoord;
 
 uniform mat4 MVP;
 uniform mat4 Obj2World;
@@ -21,20 +22,13 @@ void main () {
 	gl_Position = MVP * vec4(vp, 1.0);
 	v_p = (Obj2World * vec4(vp, 1.0)).xyz;
 	UV = vUV;
-	
 	// Convert surface normal pos to worldspace.
 	oNp = (Obj2World * vec4(np, 1.0)).xyz;
 	CamWPos = CamPosW;
 	shp_ = shp;
-	
-	vec4 eyeCoord = Obj2World * vec4(vp, 1.0);
-	
+	eyeCoord = Obj2World * vec4(vp, 1.0);
 	// Put light in eye space
-	vec4 lightPos = Obj2World * vec4(10,1,10, 1);
-
-	// Light vector
-	vec3 s = normalize(vec3(lightPos - eyeCoord));
-	vs_light = vec3(0.12, 0.12, 0.12) * max(dot(s, oNp), 0.0);
+	lightPosW = Obj2World * vec4(10 + shp * 7 ,1, 10, 1);
 };
 
 //@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
@@ -46,12 +40,35 @@ in vec3 oNp;
 in vec3 v_p;
 in vec3 CamWPos;
 in float shp_;
-in vec3 vs_light;
+in vec4 lightPosW;
+in vec4 eyeCoord;
 
 out vec4 frag_colour;
+
 uniform sampler2D texsamp;
 
 void main () {
 	
-	frag_colour = vec4(vs_light, 1) * vec4(1,1,1,1);/*texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
+	//Diffuse
+	vec3 s = normalize(vec3(lightPosW - eyeCoord));
+	vec4 diffuse = vec4(vec3((0.12, 0.12, 0.12) * max(dot(s, oNp), 0.0)), 1);
+	
+	// Specular
+	vec3 normalDir = normalize(oNp);
+	vec3 dVertexLight = vec3(lightPosW.xyz - v_p);
+	float dist = length(dVertexLight);
+	vec3 lightDir = normalize(dVertexLight);
+	float attenuation = 1.0 / dist;
+	
+	vec4 specularity;
+	if(dot(normalDir,lightDir) < 0.0)
+	{
+		specularity = vec4(0.0,0.0,0.0,0.0);
+	}
+	else
+	{
+		specularity = attenuation * vec4(vec3(1.0,1.0 ,0.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
+	}
+	
+	frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
 };

@@ -34,7 +34,7 @@ void CRenderer::Render(GLFWwindow* pWin)
 	glClearColor(1.0f, 1.0f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	GLuint p = 0;
-	time += 0.08f;
+	time += 0.008f;
 	if (gSys->pMeshSystem != nullptr)
 	{
 		for (uint iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
