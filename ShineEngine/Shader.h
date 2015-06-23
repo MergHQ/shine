@@ -30,6 +30,7 @@ private:
 	const char* m_sfile;
 	GLuint sprog;
 	bool m_firstTime;
+	int time;
 
 
 };

@@ -12,6 +12,7 @@
 #include "Tools.h"
 #include "JsonTool.h"
 #include <rapidjson\document.h>
+#include <io.h>
 
 DWORD WINAPI listen(LPVOID lpParam)
 {
@@ -56,6 +57,8 @@ void CShader::Update()
 		m_shouldReload = false;
 		Reload();
 	}
+
+
 }
 
 bool CShader::Reload()
@@ -100,8 +103,6 @@ bool CShader::LoadShader(const char* shader)
 	shader_stream.close();
 	
 	SSplitString ss;
-
-
 	std::vector<std::string> shaders = ss.Split(shadercont, '@');
 	const char* vertex_content = shaders[0].c_str();
 	const char* fragment_content = shaders[1].c_str();

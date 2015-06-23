@@ -70,5 +70,5 @@ void main () {
 		specularity = attenuation * vec4(vec3(1.0,1.0 ,0.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
 	}
 	
-	frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
+	frag_colour = (diffuse + specularity) * vec4(1.0,1.0,1.0,1.0);/*texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
 };
