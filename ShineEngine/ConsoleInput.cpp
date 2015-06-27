@@ -33,7 +33,7 @@ bool CConsoleInput::key_callback(GLFWwindow* window, int key, int scancode, int 
 		gSys->Log("Console inactive");
 		gSys->pInput->removeListener(this);
 		text = "";
-	}
+	}	
 
 	if (glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_RELEASE) // CAPS functionality
 	{

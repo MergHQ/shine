@@ -109,8 +109,6 @@ bool CShader::LoadShader(const char* shader)
 
 	//Create shaders.
 
-	if(vertex_content != "" && fragment_content != "")
-	{
 		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vs, 1, &vertex_content, NULL);
 		glCompileShader(vs);
@@ -118,14 +116,14 @@ bool CShader::LoadShader(const char* shader)
 		glGetShaderiv(vs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			printf("Error compiling vert shader");
+			printf("Error compiling vert shade");
 		}
 
 
 		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fs, 1, &fragment_content, NULL);
 		glCompileShader(fs);
-		glGetShaderiv(fs, GL_COMPILE_STATUS, &s);
+		glGetShaderiv( fs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
 			printf("Error compiling frag shader");
@@ -147,7 +145,6 @@ bool CShader::LoadShader(const char* shader)
 		glDeleteShader(fs);
 		m_firstTime = false;
 
-	} else return false;
 
 	return true;
 }

@@ -1,0 +1,17 @@
+{
+	"material_name" : "mymaterial2",
+	"shading" : "shaders/surface_shaders/ssrsurface.ss",
+	"shaderparams":[],
+	"textures":[
+		{
+			"texture":"t.bmp",
+			"texname":"test_diff",
+			"type": "DIFFUSE"
+		},
+		{
+			"texture":"t.bmp",
+			"texname":"test_spec",
+			"type": "SPECULAR"
+		}
+	]
+}

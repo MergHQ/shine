@@ -21,6 +21,7 @@ public:
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left) override;
 	virtual glm::vec3 GetWorldPos() { return m_cameraPos; }
 	virtual glm::mat4 GetViewMatrix() { return m_vmatrix; }
+	virtual glm::mat4 GetProjectionMatrix() { return m_pmatrix; }
 	//~CCamera
 
 	//IInputListener
@@ -32,7 +33,7 @@ public:
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
-	float m_speed = 0.7f;
+	float m_speed = 0.05f;
 	float m_sensitivity = 0.001f;
 	int m_currentCameraMode;
 	double xpos, ypos;

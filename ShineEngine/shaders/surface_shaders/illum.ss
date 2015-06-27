@@ -5,6 +5,7 @@ layout(location = 2) in vec2 vUV;
 
 out vec2 UV;
 out vec3 oNp;
+out vec3 anotherNormal;
 out vec3 v_p;
 out vec3 CamWPos;
 out float shp_;
@@ -24,6 +25,7 @@ void main () {
 	UV = vUV;
 	// Convert surface normal pos to worldspace.
 	oNp = (Obj2World * vec4(np, 1.0)).xyz;
+	anotherNormal = (Obj2World * vec4(np, 0.0)).xyz;
 	CamWPos = CamPosW;
 	shp_ = shp;
 	eyeCoord = Obj2World * vec4(vp, 1.0);
@@ -42,12 +44,16 @@ in vec3 CamWPos;
 in float shp_;
 in vec4 lightPosW;
 in vec4 eyeCoord;
+in vec3 anotherNormal;
 
-out vec4 frag_colour;
+layout(location = 0) out vec4 frag_colour;
+layout(location = 1) out vec3 attachNormal;
 
 uniform sampler2D texsamp;
 
 void main () {
+	
+	attachNormal = normalize(anotherNormal);
 	
 	//Diffuse
 	vec3 s = normalize(vec3(lightPosW - eyeCoord));
@@ -66,9 +72,10 @@ void main () {
 		specularity = vec4(0.0,0.0,0.0,0.0);
 	}
 	else
-	{
+	{ 
 		specularity = attenuation * vec4(vec3(1.0,1.0 ,0.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
 	}
 	
-	frag_colour = (diffuse + specularity) * vec4(1.0,1.0,1.0,1.0);/*texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
+
+	frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
 };

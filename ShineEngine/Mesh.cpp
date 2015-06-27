@@ -23,7 +23,7 @@ CMesh::CMesh(SMeshParams* pMesh)
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
 	m_worldRotScalar = pMesh->rotAmmount;
-	if(IMaterial* pMaterial = gSys->pMaterialSystem->LoadMaterial("m.mtl"))
+	if(IMaterial* pMaterial = gSys->pMaterialSystem->LoadMaterial(pMesh->m_materialFile))
 		m_pMaterial = pMaterial;
 	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
@@ -111,7 +111,7 @@ void CMesh::CreateVaosAndShit()
 	{
 		glEnableVertexAttribArray(2);
 		glGenBuffers(1, &tex_coords);
-		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
+ 		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
 		glBufferData(GL_ARRAY_BUFFER, m_texcoords.size() * sizeof(float), &m_texcoords[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 	}

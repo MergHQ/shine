@@ -60,7 +60,7 @@ void CTexture::Load()
 	glGenTextures(1, &textureID);
 
 	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glEnable(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Give the image to OpenGL

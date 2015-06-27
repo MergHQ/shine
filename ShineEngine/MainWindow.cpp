@@ -49,17 +49,21 @@ void CMainWindow::Init()
 	glfwSwapInterval(1);
 	glfwSetKeyCallback(window, key_callback);
 
-	// Creating the core systems
-	gSys = new IGlobalSystem();
-	gSys->Init();
-
-	// Disable cursor.
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	if (glewInit() != GLEW_OK)
 	{
 		exit(1);
 	}
+
+	// Creating the core systems
+	gSys = new IGlobalSystem();
+	gSys->Init();
+
+	gSys->pRenderer->Init(window);
+
+	// Disable cursor.
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
 
 	SMeshParams mesh;
 	mesh.name = "sample1";
@@ -67,6 +71,13 @@ void CMainWindow::Init()
 	mesh.pos = Vec3(0.0f, 0.0f, 5.0f);
 	mesh.m_materialFile = "m.mtl";
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+
+	SMeshParams mesh2;
+	mesh2.name = "sample1";
+	mesh2.fileName = "objects/cube.obj";
+	mesh2.pos = Vec3(0.0f, 0.0f, 5.0f);
+	mesh2.m_materialFile = "m2.mtl";
+	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
@@ -80,7 +91,7 @@ void CMainWindow::Init()
 		dt = float(glfwGetTime() - lastTime);
 		lastTime = glfwGetTime();
 
-		gSys->pRenderer->Render(window);
+		gSys->pRenderer->Render();
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);

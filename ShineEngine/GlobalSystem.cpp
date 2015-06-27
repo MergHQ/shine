@@ -61,8 +61,6 @@ void IGlobalSystem::Init()
 	m_pGameIp = new CGameInput;
 	m_pWinIp = new CWindowInput;
 	
-	pRenderer->Init();
-
 }
 
 void IGlobalSystem::Update(float dt)

@@ -1,3 +1,19 @@
+/*
+	HOW TO CREATE A NEW MESH:
+	
+	#include "IMesh.h"
+
+	SMeshParams mymesh;
+	mymesh.fileName = "pathtoobjfile";
+	mymesh.m_materialFile = "pathtomaterialfile";
+
+	gSys->pMeshSystem->CreateMesh(&mymesh);
+
+	THATS IT.
+
+
+*/
+
 #ifndef IMESH_H_
 #define IMESH_H_
 
