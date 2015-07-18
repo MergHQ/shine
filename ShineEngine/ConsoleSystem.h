@@ -11,7 +11,7 @@ public:
 	~CConsoleSystem();
 
 	void handleCommand(const char* cmd);
-	Command* validateCommand(std::vector<std::string> words);
+	void executeCommand(std::vector<std::string> words);
 private:
 	IConsoleCommands consoleCommands;
 	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);

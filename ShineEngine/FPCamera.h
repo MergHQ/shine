@@ -12,6 +12,10 @@ public:
 	CFPCamera();
 	~CFPCamera();
 
+	// Operator overloads for using _aligned_malloc alignment 16 and _aligned_free
+	void* operator new(size_t size);
+	void operator delete(void* p);
+
 	// CCamera
 	virtual bool Init();
 	virtual void Update(float dt, GLFWwindow* pWin) override;

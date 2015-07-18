@@ -19,6 +19,21 @@ CFPCamera::~CFPCamera()
 
 }
 
+void* CFPCamera::operator new(size_t size)
+{
+	void *storage = _aligned_malloc(size, 16);
+	if (NULL == storage)
+	{
+		throw "allocation fail : no free memory";
+	}
+	return storage;
+}
+
+void CFPCamera::operator delete(void* p)
+{
+	_aligned_free(p);
+}
+
 bool CFPCamera::Init()
 {
 	gSys->pInput->addListener(this);

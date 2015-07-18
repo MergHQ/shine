@@ -8,7 +8,6 @@
 CConsoleInput::CConsoleInput()
 	: caps((GetKeyState(VK_CAPITAL) & 0x0001) != 0) // Uses Windows API
 {
-	gSys->pInput->addListener(this);
 }
 
 
@@ -21,7 +20,7 @@ bool CConsoleInput::key_callback(GLFWwindow* window, int key, int scancode, int 
 	if (key == GLFW_KEY_TAB && action == GLFW_RELEASE)
 	{
 		gSys->pInput->removeListener(this);
-		gSys->Log("Console inactive");
+		gSys->Log("=== Console inactive ===");
 		text = "";
 	}
 
@@ -30,7 +29,7 @@ bool CConsoleInput::key_callback(GLFWwindow* window, int key, int scancode, int 
 		const char* str = text.c_str();
 		gSys->pConsoleSystem->handleCommand(str);
 		gSys->Log(str);
-		gSys->Log("Console inactive");
+		gSys->Log("=== Console inactive ===");
 		gSys->pInput->removeListener(this);
 		text = "";
 	}	

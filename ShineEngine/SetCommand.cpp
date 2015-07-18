@@ -3,8 +3,7 @@
 #include "Camera.h"
 #include "ICamera.h"
 
-CSetCommand::CSetCommand(Option option, double value)
-	: m_option(option), m_value(value)
+CSetCommand::CSetCommand()
 {
 
 }
@@ -25,6 +24,6 @@ void CSetCommand::execute()
 	}
 	else if (m_option.m_name == "camera_speed")
 	{
-		gSys->GetCamera()->SetCameraSpeed(m_value / 10.0);
+		gSys->GetCamera()->SetCameraSpeed(m_value);
 	}
 }

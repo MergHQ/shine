@@ -19,15 +19,11 @@ void CConsoleSystem::handleCommand(const char* cmd)
 	std::vector<std::string> words = split(cmd, ' ');
 	if (words.size() > 1)
 	{
-		Command *cmd = validateCommand(words);
-		if (cmd != nullptr)
-		{
-			cmd->execute();
-		}
+		executeCommand(words);
 	}
 }
 
-Command* CConsoleSystem::validateCommand(std::vector<std::string> words)
+void CConsoleSystem::executeCommand(std::vector<std::string> words)
 {
 	if (words[0] == "set" && words.size() == 3)
 	{
@@ -39,17 +35,19 @@ Command* CConsoleSystem::validateCommand(std::vector<std::string> words)
 				for (unsigned int j = 0; j < currOpt.m_values.size(); j++)
 				{
 					double currVal = currOpt.m_values.at(j);
-					if (std::stod(words[2]) == currVal)						// Checks if value exists
+					if (std::stod(words[2]) / 100.0 == currVal)						// Checks if value exists
 					{
-						CSetCommand cmd(currOpt, currVal);
-						return &cmd;
+						CSetCommand cmd;
+						cmd.m_option = currOpt;
+						cmd.m_value = currVal;
+						cmd.execute();
+						return;
 					}
 				}
-				break;
+				return;
 			}
 		}
 	}
-	return nullptr;
 }
 
 // -------- Functions for splitting strings -------- //

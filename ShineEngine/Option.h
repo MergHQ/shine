@@ -11,6 +11,7 @@ public:
 	std::vector<double> m_values;
 
 	Option(std::string name) : m_name(name) {}
+	Option(){}
 	~Option(){}
 
 	void setValues(std::vector<double> values)

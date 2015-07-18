@@ -14,7 +14,8 @@ public:
 	~CInput();
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	int addListener(IInputListener *listener);
+	void addListener(IInputListener *listener);
+	void addListener(IInputListener *listener, int index);
 	void removeListener(const IInputListener* listener);
 	void clearListeners();
 private:

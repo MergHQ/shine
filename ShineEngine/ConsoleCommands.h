@@ -32,9 +32,9 @@ public:
 		
 		Option camera_speed("camera_speed");
 		std::vector<double> speed_values;
-		for (double i = 0; i < 5; i += 1) // 0 -> 0.5
+		for (unsigned int i = 0; i <= 10; i++) // 0 -> 0.1
 		{
-			speed_values.push_back(i);
+			speed_values.push_back(i / 100.0);
 		}
 		camera_speed.setValues(speed_values);
 		options.push_back(camera_speed);

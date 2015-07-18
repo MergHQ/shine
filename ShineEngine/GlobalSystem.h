@@ -28,6 +28,9 @@ struct IGlobalSystem
 	CConsoleSystem* pConsoleSystem;
 	CMaterialSystem* pMaterialSystem;
 
+	CConsoleInput* m_pConIp;
+	CGameInput* m_pGameIp;
+	CWindowInput* m_pWinIp;
 
 	void Init();
 	void Update(float dt);
@@ -38,9 +41,6 @@ private:
 	CCamera* m_pCamera;	
 
 	// Smaller systems we don't need a public pointer to.
-	CConsoleInput* m_pConIp;
-	CGameInput* m_pGameIp;
-	CWindowInput* m_pWinIp;
 };
 
 #endif

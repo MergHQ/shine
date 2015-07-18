@@ -16,10 +16,14 @@ void CInput::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	}
 }
 
-int CInput::addListener(IInputListener *listener)
+void CInput::addListener(IInputListener *listener)
 {
 	listeners.push_back(listener);
-	return listeners.size();
+}
+
+void CInput::addListener(IInputListener *listener, int index)
+{
+	listeners.insert(listeners.begin() + index, listener);
 }
 
 void CInput::removeListener(const IInputListener* listener)
