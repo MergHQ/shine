@@ -7,6 +7,7 @@
 #include <glm\glm.hpp>
 #include "IShader.h"
 #include <vector>
+#include "PostProcessor.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -24,11 +25,10 @@ public:
 	GLFWwindow* GetWin() { return window; }
 private:
 	GLFWwindow* window;
-	IShader* pSSRS;
 	float time;
-	int fbowidth, fboheight;
-	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex;
+	GLuint quadvao, quadvbo, quadibo, quaduv;
 	std::vector<GLuint> QuadIndices;
+	CPostProcessor* postprocessor;
 };
 
 #endif

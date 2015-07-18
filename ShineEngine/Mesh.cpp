@@ -130,7 +130,7 @@ void CMesh::CreateVaosAndShit()
 
 void CMesh::BuildTM(Vec3 pos, glm::vec3 axis, float rot)
 {
-	m_tm = glm::translate(glm::mat4(), pos) * glm::rotate(glm::mat4(), rot, axis);
+	m_tm = glm::translate(glm::mat4(), pos) * glm::rotate(glm::mat4(), rot, axis) * glm::scale(Mat44(),Vec3(1,1,1));
 }
 
 std::vector<tinyobj::shape_t> CMesh::ReadCompiledObj(std::istream* stream)

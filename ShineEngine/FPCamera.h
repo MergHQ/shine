@@ -37,7 +37,7 @@ public:
 
 private:
 	double m_horizontalAngle = 0, m_verticalAngle = 0;
-	float m_speed = 0.05f;
+	float m_speed = 0.4f;
 	float m_sensitivity = 0.001f;
 	int m_currentCameraMode;
 	double xpos, ypos;

@@ -8,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <glm\gtc\matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -18,16 +19,11 @@ time(0)
 
 CRenderer::~CRenderer()
 {
-	delete pSSRS;
-	glDeleteBuffers(1, &fbo);
-	glDeleteBuffers(1, &depthtex);
-	glDeleteBuffers(1, &normaltex);
+	delete postprocessor;
 	glDeleteBuffers(1, &quadvao);
 	glDeleteBuffers(1, &quadibo);
 	glDeleteBuffers(1, &quadvbo);
 	glDeleteBuffers(1, &quaduv);
-	glDeleteBuffers(1, &colortex);
-
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
@@ -36,61 +32,11 @@ void CRenderer::Init(GLFWwindow* pWin)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	//TEMP: SSR Shader
-	SShaderParams params;
-	params.s_file = "shaders/pp_shaders/ssr.ss";
-	params.name = "ScreenSpaceReflection";
-
 	window = pWin;
 
-	pSSRS = new CShader(&params);
-
-	if (window)
-		glfwGetFramebufferSize(window, &fbowidth, &fboheight);
-
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	glGenTextures(1, &depthtex);
-	glGenTextures(1, &normaltex);
-	glGenTextures(1, &colortex);
-
-	glGenRenderbuffers(1, &depthtex);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthtex);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, fbowidth, fboheight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthtex);
-
-	glBindTexture(GL_TEXTURE_2D, depthtex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, fbowidth, fboheight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthtex, 0);
-
-	glBindTexture(GL_TEXTURE_2D, colortex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colortex, 0);
-
-	glBindTexture(GL_TEXTURE_2D, normaltex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, normaltex, 0);
-
+	postprocessor = new CPostProcessor;
+	postprocessor->Initialize();
 	 
-	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, DrawBuffers);
-
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE)
-	{
-		gSys->Log("Failed creating framebuffer.");
-	}
 
 	FboQuad();
 }
@@ -98,8 +44,8 @@ void CRenderer::Init(GLFWwindow* pWin)
 void CRenderer::Render()
 {
 
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glViewport(0, 0, fbowidth, fboheight);
+	glBindFramebuffer(GL_FRAMEBUFFER, postprocessor->GetFBO());
+	glViewport(0, 0, postprocessor->fbostats[0], postprocessor->fbostats[1]);
 
 	glEnable(GL_LIGHTING);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -109,31 +55,31 @@ void CRenderer::Render()
 	GLuint p = 0;
 
 	DrawMeshes();
-	ProcessFramebuffer(pSSRS->GetShaderProgramme());
+	ProcessFramebuffer(postprocessor->GetShader()->GetShaderProgramme());
 
 }
 
 void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, fbowidth, fboheight);
+	glViewport(0, 0, postprocessor->fbostats[0], postprocessor->fbostats[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUseProgram(pSSRS->GetShaderProgramme());
+	glUseProgram(postprocessor->GetShader()->GetShaderProgramme());
 
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, colortex);
-	glUniform1i(glGetUniformLocation(pSSRS->GetShaderProgramme(), "diffusetex"), 3);
+	glBindTexture(GL_TEXTURE_2D, postprocessor->textures[0]);
+	glUniform1i(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "diffusetex"), 3);
 	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, depthtex);
-	glUniform1i(glGetUniformLocation(pSSRS->GetShaderProgramme(), "depthtex"), 4);
+	glBindTexture(GL_TEXTURE_2D, postprocessor->textures[1]);
+	glUniform1i(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "depthtex"), 4);
 	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, normaltex);
-	glUniform1i(glGetUniformLocation(pSSRS->GetShaderProgramme(), "normaltex"), 5);
+	glBindTexture(GL_TEXTURE_2D, postprocessor->textures[2]);
+	glUniform1i(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "normaltex"), 5);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(quadvao);
 	glDrawElements(GL_TRIANGLES, QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
@@ -212,7 +158,7 @@ void CRenderer::DrawMeshes()
 				glBindVertexArray(pMesh->GetVao());
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
-				glUniformMatrix4fv(glGetUniformLocation(pSSRS->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
+				glUniformMatrix4fv(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
 
 				// Textures
 				// Create one OpenGL texture
@@ -222,23 +168,23 @@ void CRenderer::DrawMeshes()
 				glActiveTexture(GL_TEXTURE0);
 
 				glActiveTexture(GL_TEXTURE3);
-				glBindTexture(GL_TEXTURE_2D, colortex);
+				glBindTexture(GL_TEXTURE_2D, postprocessor->textures[0]);
 				glUniform1i(glGetUniformLocation(p, "diffusetex"), 3);
 				glActiveTexture(GL_TEXTURE0);
 
 				glActiveTexture(GL_TEXTURE4);
-				glBindTexture(GL_TEXTURE_2D, depthtex);
+				glBindTexture(GL_TEXTURE_2D, postprocessor->textures[1]);
 				glUniform1i(glGetUniformLocation(p, "depthtex"), 4);
 				glActiveTexture(GL_TEXTURE0);
 
 				glActiveTexture(GL_TEXTURE5);
-				glBindTexture(GL_TEXTURE_2D, normaltex);
+				glBindTexture(GL_TEXTURE_2D, postprocessor->textures[2]);
 				glUniform1i(glGetUniformLocation(p, "normaltex"), 5);
 				glActiveTexture(GL_TEXTURE0);
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
-				glm::mat3 inv_transp = glm::transpose(glm::inverse(glm::mat3(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM())));
-				glUniform3fv(glGetUniformLocation(p, "normal_matrix"), 1, glm::value_ptr(inv_transp));
+				glm::mat3 inv_transp = glm::mat3(glm::inverseTranspose(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
+				glUniformMatrix3fv(glGetUniformLocation(p, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(inv_transp));
 				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 				glUniformMatrix4fv(glGetUniformLocation(p, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetProjectionMatrix()));

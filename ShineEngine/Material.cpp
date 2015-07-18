@@ -42,8 +42,7 @@ void CMaterial::ParseMtlFile()
 
 	if (mtl.IsObject())
 	{
-		// Handle info
-		gSys->Log(("Loading material %s", mtl["material_name"].GetString()));
+		// Handle json
 		
 		m_matName = mtl["material_name"].GetString();
 

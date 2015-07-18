@@ -24,13 +24,13 @@ void main () {
 	v_p = (Obj2World * vec4(vp, 1.0)).xyz;
 	UV = vUV;
 	// Convert surface normal pos to worldspace.
-	oNp = (Obj2World * vec4(np, 1.0)).xyz;
-	anotherNormal = (Obj2World * vec4(np, 0.0)).xyz;
+	oNp = normalize(normal_matrix * np);
+	anotherNormal = np;
 	CamWPos = CamPosW;
 	shp_ = shp;
 	eyeCoord = Obj2World * vec4(vp, 1.0);
-	// Put light in eye space
-	lightPosW = Obj2World * vec4(10 + shp * 7 ,1, 10, 1);
+	// Put light in world space
+	lightPosW = Obj2World * vec4(CamPosW, 1);
 };
 
 //@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
@@ -46,18 +46,20 @@ in vec4 lightPosW;
 in vec4 eyeCoord;
 in vec3 anotherNormal;
 
-layout(location = 0) out vec4 frag_colour;
+layout(location = 0) out vec4 frag_colour;	
 layout(location = 1) out vec3 attachNormal;
+//layout(location = 2) out vec3 position;
 
 uniform sampler2D texsamp;
 
 void main () {
 	
-	attachNormal = normalize(anotherNormal);
+	attachNormal = normalize(oNp);
+	//position = normalize(v_p);
 	
 	//Diffuse
-	vec3 s = normalize(vec3(lightPosW - eyeCoord));
-	vec4 diffuse = vec4(vec3((0.12, 0.12, 0.12) * max(dot(s, oNp), 0.0)), 1);
+	vec3 L = normalize(vec3(lightPosW - eyeCoord));
+	vec4 diffuse = vec4(vec3((0.12, 0.12, 0.12) * max(dot(L, oNp), 0.0)), 1);
 	
 	// Specular
 	vec3 normalDir = normalize(oNp);
@@ -75,6 +77,7 @@ void main () {
 	{ 
 		specularity = attenuation * vec4(vec3(1.0,1.0 ,0.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
 	}
-	
-	frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
+
+	//frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
+	frag_colour = vec4(oNp,1);
 };

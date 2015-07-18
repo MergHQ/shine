@@ -98,6 +98,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialSystem.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PostProcessor.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="MeshSystem.cpp" />
     <ClCompile Include="SetCommand.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="MaterialSystem.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Option.h" />
+    <ClInclude Include="PostProcessor.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SetCommand.h" />
     <ClInclude Include="Shader.h" />

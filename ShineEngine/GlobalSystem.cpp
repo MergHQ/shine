@@ -37,7 +37,10 @@ IGlobalSystem::~IGlobalSystem()
  
 void IGlobalSystem::Init()
 {
-	Log("Initializing systems...");
+	Log("*****************************************");
+	Log("S H I N E    E N G I N E");
+	Log("***************************************** \n\n\n\n");
+	Log("Initializing systems...\n\n");
 
 	pInput = new CInput;
 	Log("- Input");
@@ -51,7 +54,7 @@ void IGlobalSystem::Init()
 	Log("- Console system");
 	m_pCamera = new CFPCamera;
 	if (m_pCamera->Init())
-		Log("- Camera system");
+		Log("- Camera system\n\n");
 	Log("We gucchi!");
 
 

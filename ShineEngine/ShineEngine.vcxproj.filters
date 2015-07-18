@@ -123,6 +123,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessor.cpp">
+      <Filter>Source Files\Engine\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Source Files\Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessor.h">
+      <Filter>Source Files\Engine\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
