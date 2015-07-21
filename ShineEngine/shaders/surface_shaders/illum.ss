@@ -48,14 +48,14 @@ in vec3 anotherNormal;
 
 layout(location = 0) out vec4 frag_colour;	
 layout(location = 1) out vec3 attachNormal;
-//layout(location = 2) out vec3 position;
+layout(location = 2) out vec3 position;
 
 uniform sampler2D texsamp;
 
 void main () {
 	
 	attachNormal = normalize(oNp);
-	//position = normalize(v_p);
+	position = normalize(eyeCoord.xyz);
 	
 	//Diffuse
 	vec3 L = normalize(vec3(lightPosW - eyeCoord));
@@ -78,6 +78,5 @@ void main () {
 		specularity = attenuation * vec4(vec3(1.0,1.0,1.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
 	}
 
-	//frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
-	frag_colour = texture(texsamp,UV) * (diffuse + specularity);
+	frag_colour = texture(texsamp, UV) * (specularity + diffuse);
 };

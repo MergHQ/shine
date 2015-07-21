@@ -81,6 +81,12 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindTexture(GL_TEXTURE_2D, postprocessor->textures[2]);
 	glUniform1i(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "normaltex"), 5);
 	glActiveTexture(GL_TEXTURE0);
+
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, postprocessor->textures[3]);
+	glUniform1i(glGetUniformLocation(postprocessor->GetShader()->GetShaderProgramme(), "positiontex"), 6);
+	glActiveTexture(GL_TEXTURE0);
+
 	glBindVertexArray(quadvao);
 	glDrawElements(GL_TRIANGLES, QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
@@ -180,6 +186,11 @@ void CRenderer::DrawMeshes()
 				glActiveTexture(GL_TEXTURE5);
 				glBindTexture(GL_TEXTURE_2D, postprocessor->textures[2]);
 				glUniform1i(glGetUniformLocation(p, "normaltex"), 5);
+				glActiveTexture(GL_TEXTURE0);
+
+				glActiveTexture(GL_TEXTURE6);
+				glBindTexture(GL_TEXTURE_2D, postprocessor->textures[3]);
+				glUniform1i(glGetUniformLocation(p, "positiontex"), 6);
 				glActiveTexture(GL_TEXTURE0);
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));

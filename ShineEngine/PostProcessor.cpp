@@ -16,13 +16,14 @@ CPostProcessor::~CPostProcessor()
 	glDeleteBuffers(1, &depthtex);
 	glDeleteBuffers(1, &normaltex);
 	glDeleteBuffers(1, &colortex);
+	glDeleteBuffers(1, &positiontex);
 }
 
 void CPostProcessor::Initialize()
 {
 	SShaderParams params;
 	params.s_file = "shaders/pp_shaders/DeferredRenderPass.ss";
-	params.name = "DefferedRender";
+	params.name = "DefferedRenderShader";
 
 	pSSRS = new CShader(&params);
 
@@ -68,17 +69,17 @@ void CPostProcessor::Initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1_EXT, normaltex, 0);
 
-	//glBindTexture(GL_TEXTURE_2D, positiontex);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2_EXT, positiontex, 0);
+	glBindTexture(GL_TEXTURE_2D, positiontex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2_EXT, positiontex, 0);
 
 
-	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT };
-	glDrawBuffers(2, DrawBuffers);
+	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT };
+	glDrawBuffers(3, DrawBuffers);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
