@@ -30,7 +30,7 @@ void main () {
 	shp_ = shp;
 	eyeCoord = Obj2World * vec4(vp, 1.0);
 	// Put light in eye space
-	lightPosW = Obj2World * vec4(10 + shp * 7 ,1, 10, 1);
+	lightPosW = Obj2World * vec4(CamPosW, 1);
 	PM = ProjectionMatrix;
 };
 

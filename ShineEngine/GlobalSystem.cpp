@@ -37,6 +37,7 @@ IGlobalSystem::~IGlobalSystem()
  
 void IGlobalSystem::Init()
 {
+
 	Log("*****************************************");
 	Log("S H I N E    E N G I N E");
 	Log("***************************************** \n\n\n\n");

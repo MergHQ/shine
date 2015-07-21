@@ -100,7 +100,7 @@ void CMesh::CreateVaosAndShit()
 
 	if (!m_normals.empty())
 	{
-		//glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(1);
 		glGenBuffers(1, &normals);
 		glBindBuffer(GL_ARRAY_BUFFER, normals);
 		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
@@ -143,7 +143,6 @@ std::vector<tinyobj::shape_t> CMesh::ReadCompiledObj(std::istream* stream)
 	uint32_t nMeshes = 0;
 	uint32_t nMatProperties = 0;
 	stream->read((char*)&nMeshes, sz);
-	stream->read((char*)&nMatProperties, sz);
 	shapes.resize(nMeshes);
 	for (size_t i = 0; i < nMeshes; ++i) {
 		uint32_t nVertices = 0, nNormals = 0, nTexcoords = 0, nIndices = 0;

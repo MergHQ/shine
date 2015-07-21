@@ -63,21 +63,12 @@ void CMainWindow::Init()
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-
-
-	SMeshParams mesh;
-	mesh.name = "sample1";
-	mesh.fileName = "objects/teapot.obj";
-	mesh.pos = Vec3(0.0f, 0.0f, 5.0f);
-	mesh.m_materialFile = "m.mtl";
-	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
-
-	//SMeshParams mesh2;
-	//mesh2.name = "sample1";
-	//mesh2.fileName = "objects/cube.obj";
-	//mesh2.pos = Vec3(0.0f, 0.0f, 5.0f);
-	//mesh2.m_materialFile = "m2.mtl";
-	//IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
+	SMeshParams mesh2;
+	mesh2.name = "sample1";
+	mesh2.fileName = "objects/sponza.obj";
+	mesh2.pos = Vec3(0.0f, 0.0f, 5.0f);
+	mesh2.m_materialFile = "m.mtl";
+	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);

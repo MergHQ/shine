@@ -59,14 +59,14 @@ void main () {
 	
 	//Diffuse
 	vec3 L = normalize(vec3(lightPosW - eyeCoord));
-	vec4 diffuse = vec4(vec3((0.12, 0.12, 0.12) * max(dot(L, oNp), 0.0)), 1);
+	vec4 diffuse = vec4(vec3((0.5, 0.5, 0.5) * clamp(dot(L, oNp), 0.0, 1.0)), 1);
 	
 	// Specular
 	vec3 normalDir = normalize(oNp);
 	vec3 dVertexLight = vec3(lightPosW.xyz - v_p);
 	float dist = length(dVertexLight);
 	vec3 lightDir = normalize(dVertexLight);
-	float attenuation = 1.0 / dist;
+	float attenuation = 3.0 / dist;
 	
 	vec4 specularity;
 	if(dot(normalDir,lightDir) < 0.0)
@@ -75,9 +75,9 @@ void main () {
 	}
 	else
 	{ 
-		specularity = attenuation * vec4(vec3(1.0,1.0 ,0.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
+		specularity = attenuation * vec4(vec3(1.0,1.0,1.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
 	}
 
 	//frag_colour = (diffuse + specularity) * texture(texsamp, vec2(UV.x, 1.0 - UV.y)); /* vec4(vec3(fresnel,fresnel,fresnel), 1.0)*/
-	frag_colour = vec4(oNp,1);
+	frag_colour = texture(texsamp,UV) * (diffuse + specularity);
 };
