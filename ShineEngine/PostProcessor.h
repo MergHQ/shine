@@ -1,6 +1,5 @@
 #ifndef POSTPROCESSOR_H
 #define POSTPROCESSOR_H
-
 #pragma once
 
 #include "IShader.h"
@@ -12,17 +11,17 @@ public:
 	CPostProcessor();
 	~CPostProcessor();
 
-	void Initialize();
-	GLuint GetFBO() { return fbo; }
-	GLuint textures[4];
 	// 0 = width, 1 = height
 	int fbostats[2];
-	IShader* GetShader() { return pSSRS; }
+	GLuint textures[4];
 
+	void Initialize();
+	GLuint GetFBO() { return fbo; }
+	IShader* GetShader() { return pSSRS; }
+protected:
 private:
-	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex;
 	int fbowidth, fboheight;
+	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex;
 	IShader* pSSRS;
 };
-
 #endif

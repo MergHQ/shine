@@ -1,20 +1,20 @@
-#include <GL\glew.h>
-#include <GLFW/glfw3.h>
-#include <GL\GL.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "shine.h"
 #include "MainWindow.h"
-#include "GlobalSystem.h"
-#include <Windows.h>
+#include "shine.h"
 #include "FPCamera.h"
-#include <iostream>
 #include "Input.h"
 #include "WindowInput.h"
 #include "GameInput.h"
 #include "MeshSystem.h"
 #include "Renderer.h"
 #include "MaterialSystem.h"
+
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
+#include <GL\GL.h>
+#include <Windows.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
 
 IGlobalSystem* gSys;
 static void error_callback(int error, const char* description)

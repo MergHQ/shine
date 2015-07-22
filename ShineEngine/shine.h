@@ -1,13 +1,11 @@
 #ifndef _SHINE_H_
 #define _SHINE_H_
-
 #pragma once
 
 #define DEV_MODE
 
-#include <string>
-#include <glm\glm.hpp>
 #include "GlobalSystem.h"
+#include <glm\glm.hpp>
 
 // A whole bunch of typedefs. 
 typedef std::string string;

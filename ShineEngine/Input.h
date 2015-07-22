@@ -1,6 +1,5 @@
 #ifndef INPUT_H
 #define INPUT_H
-
 #pragma once
 
 struct IInputListener;
@@ -21,5 +20,4 @@ public:
 private:
 	std::vector<IInputListener*> listeners;
 };
-
 #endif

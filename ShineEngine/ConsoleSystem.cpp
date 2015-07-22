@@ -1,5 +1,6 @@
 #include "ConsoleSystem.h"
 #include "SetCommand.h"
+#include "Tools.h"
 #include <string>
 #include <sstream>
 
@@ -11,12 +12,11 @@ CConsoleSystem::CConsoleSystem()
 
 CConsoleSystem::~CConsoleSystem()
 {
-
 }
 
 void CConsoleSystem::handleCommand(const char* cmd)
 {
-	std::vector<std::string> words = split(cmd, ' ');
+	std::vector<std::string> words = SSplitString::Split(cmd, ' ');
 	if (words.size() > 1)
 	{
 		executeCommand(words);
@@ -48,23 +48,4 @@ void CConsoleSystem::executeCommand(std::vector<std::string> words)
 			}
 		}
 	}
-}
-
-// -------- Functions for splitting strings -------- //
-
-// Inserted vector gets modified
-std::vector<std::string> &CConsoleSystem::split(const std::string &s, char delim, std::vector<std::string> &elems) {
-	std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-		elems.push_back(item);
-	}
-	return elems;
-}
-
-// Returns new vector
-std::vector<std::string> CConsoleSystem::split(const std::string &s, char delim) {
-	std::vector<std::string> elems;
-	split(s, delim, elems);
-	return elems;
 }

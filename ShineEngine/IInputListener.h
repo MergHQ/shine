@@ -1,5 +1,6 @@
 #ifndef INPUT_LISTENER_H
 #define INPUT_LISTENER_H
+#pragma once
 
 struct GLFWwindow;
 

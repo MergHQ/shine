@@ -1,5 +1,6 @@
 #ifndef CONSOLE_COMMANDS_H
 #define CONSOLE_COMMANDS_H
+#pragma once
 
 #include <vector>
 #include "Option.h"
@@ -39,7 +40,7 @@ public:
 		camera_speed.setValues(speed_values);
 		options.push_back(camera_speed);
 	}
-
+protected:
+private:
 };
-
 #endif

@@ -1,18 +1,16 @@
 // Implements IMesh.
-
-#include "shine.h"
 #include "Mesh.h"
+#include "shine.h"
 #include "tiny_obj_loader.h"
 #include "Shader.h"
 #include "MeshSystem.h"
+#include "MaterialSystem.h"
 
 #include <GL\glew.h>
-#include "GLFW\glfw3.h"
+#include <GLFW\glfw3.h>
 #include <glm\gtc\matrix_transform.hpp>
-#include "MaterialSystem.h"
 #include <ostream>
 #include <fstream>
-
 
 CMesh::CMesh(SMeshParams* pMesh)
 {
@@ -36,7 +34,7 @@ void CMesh::SetPos(Vec3 pos)
 	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
-void CMesh::SetRotation(glm::vec3 axis, float rot)
+void CMesh::SetRotation(Vec3 axis, float rot)
 {
 	m_worldRotAxis = axis;
 	m_worldRotScalar = rot;
@@ -45,8 +43,6 @@ void CMesh::SetRotation(glm::vec3 axis, float rot)
 
 void CMesh::CreateVaosAndShit()
 {
-
-
 	//std::filebuf fileBuffer;
 	//fileBuffer.open(m_file,std::ios::in);
 
@@ -118,17 +114,14 @@ void CMesh::CreateVaosAndShit()
 
 	glBindVertexArray(NULL);
 
-
-
 	meshVbo = vbo;
 	meshVao = vao;
 	meshInidcies = indicies;
 	meshNormals = normals;
 	meshTexcoords = tex_coords;
-
 }
 
-void CMesh::BuildTM(Vec3 pos, glm::vec3 axis, float rot)
+void CMesh::BuildTM(Vec3 pos, Vec3 axis, float rot)
 {
 	m_tm = glm::translate(glm::mat4(), pos) * glm::rotate(glm::mat4(), rot, axis) * glm::scale(Mat44(),Vec3(1,1,1));
 }
@@ -167,4 +160,3 @@ std::vector<tinyobj::shape_t> CMesh::ReadCompiledObj(std::istream* stream)
 	}
 	return shapes;
 }
-

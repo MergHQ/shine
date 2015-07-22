@@ -5,12 +5,10 @@
 
 CSetCommand::CSetCommand()
 {
-
 }
 
 CSetCommand::~CSetCommand()
 {
-
 }
 
 void CSetCommand::execute()

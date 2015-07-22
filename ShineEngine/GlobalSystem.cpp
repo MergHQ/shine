@@ -76,7 +76,3 @@ void IGlobalSystem::Log(std::string log)
 {
 	printf("%s \n",log.c_str());
 }
-
-
-
-

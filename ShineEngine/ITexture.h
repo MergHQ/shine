@@ -1,6 +1,5 @@
 #ifndef ITEXTURE_H
 #define ITEXTURE_H
-
 #pragma once
 
 #include "shine.h"
@@ -20,17 +19,15 @@ struct STextureParams
 	const char* m_file;
 	const char* m_name;
 	int m_id;
-
 };
 
 struct ITexture
 {
 	virtual void Load(){}
-	virtual TextureType GetTextureType() = 0;
 	virtual int GetTextureID() = 0;
 	virtual const char* GetTextureName() = 0;
 	virtual const char* GetTextureFile() = 0;
 	virtual GLuint GetTextureId() = 0;
+	virtual TextureType GetTextureType() = 0;
 };
-
 #endif

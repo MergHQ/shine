@@ -1,14 +1,12 @@
-#include "Material.h"
 #include "MaterialSystem.h"
+#include "Material.h"
 
 CMaterialSystem::CMaterialSystem()
 {
-
 }
 
 CMaterialSystem::~CMaterialSystem()
 {
-
 }
 
 IMaterial* CMaterialSystem::GetMaterialById(int id)

@@ -6,7 +6,6 @@
 
 CPostProcessor::CPostProcessor()
 {
-
 }
 
 CPostProcessor::~CPostProcessor()

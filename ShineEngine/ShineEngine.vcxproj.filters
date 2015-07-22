@@ -131,20 +131,8 @@
     <ClInclude Include="shine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainWindow.h">
-      <Filter>Source Files\Engine\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="tiny_obj_loader.h">
       <Filter>Source Files\Engine\Utils\OBJLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="GlobalSystem.h">
-      <Filter>Source Files\Engine\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Source Files\Engine\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshSystem.h">
-      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="IMesh.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
@@ -152,41 +140,11 @@
     <ClInclude Include="IShader.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Source Files\Engine\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Source Files\Engine\System</Filter>
-    </ClInclude>
     <ClInclude Include="ICamera.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files\Engine\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="FPCamera.h">
-      <Filter>Source Files\Game\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Source Files\Engine\System\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowInput.h">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClInclude>
-    <ClInclude Include="GameInput.h">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleInput.h">
-      <Filter>Source Files\Engine\System\Input\Listeners</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleSystem.h">
-      <Filter>Source Files\Engine\System\Console</Filter>
-    </ClInclude>
     <ClInclude Include="Option.h">
       <Filter>Source Files\Engine\System\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="SetCommand.h">
-      <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
@@ -194,20 +152,8 @@
     <ClInclude Include="ConsoleCommands.h">
       <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="EnableCommand.h">
-      <Filter>Source Files\Engine\System\Console\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="DisableCommand.h">
-      <Filter>Source Files\Engine\System\Console</Filter>
-    </ClInclude>
     <ClInclude Include="IInputListener.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Source Files\Engine\System</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialSystem.h">
-      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="IMaterial.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
@@ -215,17 +161,71 @@
     <ClInclude Include="ITexture.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="JsonTool.h">
-      <Filter>Source Files\Engine\Utils\Json</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tools.h">
-      <Filter>Source Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Source Files\Engine\System</Filter>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessor.h">
-      <Filter>Source Files\Engine\Renderer</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnableCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SetCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DisableCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPCamera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

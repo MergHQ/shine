@@ -1,5 +1,6 @@
 #ifndef CONSOLE_INPUT_H
 #define CONSOLE_INPUT_H
+#pragma once
 
 #include "IInputListener.h"
 #include <string>
@@ -11,9 +12,9 @@ public:
 	~CConsoleInput();
 
 	virtual bool key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+protected:
 private:
-	std::string text;
 	bool caps = false;
+	std::string text;
 };
-
 #endif

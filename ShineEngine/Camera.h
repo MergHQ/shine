@@ -1,6 +1,5 @@
 #ifndef CAMERA_H
 #define CAMERA_H
-
 #pragma once
 
 #include "ICamera.h"
@@ -15,16 +14,16 @@ public:
 	//ICamera
 	virtual bool Init();
 	virtual void Update(float dt, GLFWwindow* pWin);
-	virtual glm::mat4 GetVPMatrix() { return glm::mat4(); }
 	virtual void SetCameraMode(CameraMode mode) {}
-	virtual glm::vec3 GetWorldPos() = 0;
-	virtual glm::mat4 GetViewMatrix() = 0;
-	virtual glm::mat4 GetProjectionMatrix() = 0;
+	virtual Mat44 GetVPMatrix() { return Mat44(); }
+	virtual Mat44 GetViewMatrix() = 0;
+	virtual Mat44 GetProjectionMatrix() = 0;
+	virtual Vec3 GetWorldPos() = 0;
 	//~ICamera
 
 	virtual void SetCameraSpeed(float speed) {}
+protected:
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left){}
+private:
 };
-
-
 #endif

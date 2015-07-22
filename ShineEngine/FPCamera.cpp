@@ -1,22 +1,20 @@
 #include "FPCamera.h"
 #include "shine.h"
 #include "Input.h"
+
 #include <glm\gtc\matrix_transform.hpp>
 #include <stdio.h>
 #include <iostream>
 
-
 CFPCamera::CFPCamera()
 {
-	m_cameraPos = glm::vec3(0, 1.8f, 0);
-
+	m_cameraPos = Vec3(0, 1.8f, 0);
 	// Projection matrix : FOV = 45°, aspect ratio, near plane, far plane
 	m_pmatrix = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 }
 
 CFPCamera::~CFPCamera()
 {
-
 }
 
 void* CFPCamera::operator new(size_t size)
@@ -52,7 +50,7 @@ void CFPCamera::Update(float dt, GLFWwindow* pWin)
 	m_oldx = xpos;
 	m_oldy = ypos;
 
-	m_direction = glm::vec3(
+	m_direction = Vec3(
 		cos(m_verticalAngle) * sin(m_horizontalAngle),
 		sin(m_verticalAngle),
 		cos(m_verticalAngle) * cos(m_horizontalAngle)
@@ -63,7 +61,7 @@ void CFPCamera::Update(float dt, GLFWwindow* pWin)
 		move(pWin, dt);
 
 	// Construct View Matrix
-	m_vmatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_direction, glm::vec3(0, 1, 0));
+	m_vmatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_direction, Vec3(0, 1, 0));
 }
 
 bool CFPCamera::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -92,23 +90,23 @@ void CFPCamera::setMovement(bool forward, bool backwards, bool right, bool left)
 
 void CFPCamera::move(GLFWwindow *window, float delta)
 {
-	glm::vec3 right = glm::vec3(
+	Vec3 right = Vec3(
 		sin(m_horizontalAngle - 3.14f / 2.0f),
 		0,
 		cos(m_horizontalAngle - 3.14f / 2.0f)
 		);
 
-	glm::vec3 up = glm::cross(right, m_direction);
+	Vec3 up = glm::cross(right, m_direction);
 
 	// Forward on ground
-	glm::vec3 forwardDir = glm::vec3(
+	Vec3 forwardDir = Vec3(
 		m_direction.x,
 		0,
 		m_direction.z
 		);
 
 	// Right on ground
-	glm::vec3 rightDir = glm::vec3(
+	Vec3 rightDir = Vec3(
 		-forwardDir.z,
 		0,
 		forwardDir.x

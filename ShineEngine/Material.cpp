@@ -7,7 +7,6 @@
 #include "Shader.h"
 #include "Texture.h"
 
-
 CMaterial::CMaterial(const char* file)
 {
 	m_fileName = file;
@@ -16,7 +15,6 @@ CMaterial::CMaterial(const char* file)
 
 CMaterial::~CMaterial()
 {
-
 	for (uint i = 0; i < m_textureContainer.size(); i++)
 	{
 		if (m_textureContainer[i] != nullptr)
@@ -24,7 +22,6 @@ CMaterial::~CMaterial()
 	}
 
 	delete m_pShader;
-
 }
 
 void CMaterial::ParseMtlFile()
@@ -127,5 +124,4 @@ IShader* CMaterial::CreateShader(SShaderParams* params)
 	CShader* pNShader = new CShader(params);
 
 	return pNShader;
-
 }

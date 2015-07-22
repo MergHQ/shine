@@ -1,5 +1,6 @@
 #ifndef SET_COMMAND_H
 #define SET_COMMAND_H
+#pragma once
 
 #include "Command.h"
 #include "Option.h"
@@ -12,8 +13,8 @@ public:
 
 	Option m_option;
 	double m_value;
+protected:
 public:
 	virtual void execute() override;
 };
-
 #endif

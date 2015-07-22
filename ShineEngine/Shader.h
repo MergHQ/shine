@@ -1,6 +1,5 @@
 #ifndef _SHADER_H_
 #define _SHADER_H_
-
 #pragma once
 
 #include "IShader.h"
@@ -12,6 +11,8 @@ public:
 	CShader::CShader(SShaderParams* pShaderParams);
 	CShader::~CShader(){};
 
+	bool m_shouldReload;
+
 	// IShader
 	virtual const char* GetName() { return m_name; };
 	virtual int GetId() { return m_id; };
@@ -21,19 +22,13 @@ public:
 	virtual const char* GetFileName() { return m_sfile; }
 	virtual void Update();
 	// ~IShader
-
-	bool m_shouldReload;
-
+protected:
 private:
 	const char* m_name;
-	int m_id;
 	const char* m_sfile;
-	GLuint sprog;
-	bool m_firstTime;
 	int time;
-
-
+	int m_id;
+	bool m_firstTime;
+	GLuint sprog;
 };
-
-
 #endif

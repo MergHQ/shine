@@ -66,4 +66,3 @@ void CMeshSystem::DeleteMesh(int id)
 		}
 	}
 }
-

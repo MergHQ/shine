@@ -1,6 +1,5 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
-
 #pragma once
 
 #include <string>
@@ -17,6 +16,7 @@ class CMaterialSystem;
 
 struct IGlobalSystem
 {
+public:
 	IGlobalSystem();
 	~IGlobalSystem();
 
@@ -36,11 +36,8 @@ struct IGlobalSystem
 	void Update(float dt);
 	void Log(std::string log);
 	CCamera* GetCamera() { return m_pCamera; }
-
+protected:
 private:
 	CCamera* m_pCamera;	
-
-	// Smaller systems we don't need a public pointer to.
 };
-
 #endif

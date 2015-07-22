@@ -1,5 +1,5 @@
-#include "WindowInput.h"
 #include <GLFW\glfw3.h>
+#include "WindowInput.h"
 #include "shine.h"
 #include "Input.h"
 
@@ -10,7 +10,6 @@ CWindowInput::CWindowInput()
 
 CWindowInput::~CWindowInput()
 {
-
 }
 
 bool CWindowInput::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
