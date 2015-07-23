@@ -30,7 +30,7 @@ void main () {
 	shp_ = shp;
 	eyeCoord = Obj2World * vec4(vp, 1.0);
 	// Put light in world space
-	lightPosW = Obj2World * vec4(CamPosW, 1);
+	lightPosW = vec4(CamPosW, 1);
 };
 
 //@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
