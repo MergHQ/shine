@@ -4,13 +4,11 @@ layout(location = 1) in vec3 np;
 layout(location = 2) in vec2 vUV;
 
 out vec2 UV;
-out vec3 oNp;
-out vec3 anotherNormal;
-out vec3 v_p;
-out vec3 CamWPos;
+out vec3 fNormal;
 out float shp_;
 out vec4 lightPosW;
-out vec4 eyeCoord;
+out vec4 fPosition;
+out vec3 CamPos;
 
 uniform mat4 MVP;
 uniform mat4 Obj2World;
@@ -21,16 +19,13 @@ uniform mat3 normal_matrix;
 void main () {
 	
 	gl_Position = MVP * vec4(vp, 1.0);
-	v_p = (Obj2World * vec4(vp, 1.0)).xyz;
 	UV = vUV;
 	// Convert surface normal pos to worldspace.
-	oNp = normalize(normal_matrix * np);
-	anotherNormal = np;
-	CamWPos = CamPosW;
+	fNormal = normalize(normal_matrix * np);
 	shp_ = shp;
-	eyeCoord = Obj2World * vec4(vp, 1.0);
-	// Put light in world space
-	lightPosW = vec4(CamPosW, 1);
+	fPosition = Obj2World * vec4(vp, 1.0);
+	lightPosW = vec4(0,0,0, 1);
+	CamPos = CamPosW;
 };
 
 //@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
@@ -38,45 +33,46 @@ void main () {
 #version 430
 
 in vec2 UV;
-in vec3 oNp;
-in vec3 v_p;
-in vec3 CamWPos;
+in vec3 fNormal;
+in vec3 CamPos;
 in float shp_;
 in vec4 lightPosW;
-in vec4 eyeCoord;
-in vec3 anotherNormal;
+in vec4 fPosition;
 
 layout(location = 0) out vec4 frag_colour;	
 layout(location = 1) out vec3 attachNormal;
 layout(location = 2) out vec3 position;
 
 uniform sampler2D texsamp;
+uniform int textures;
 
 void main () {
 	
-	attachNormal = normalize(oNp);
-	position = normalize(eyeCoord.xyz);
+	attachNormal = normalize(fNormal);
+	position = normalize(fPosition.xyz);
 	
 	//Diffuse
-	vec3 L = normalize(vec3(lightPosW - eyeCoord));
-	vec4 diffuse = vec4(vec3((0.5, 0.5, 0.5) * clamp(dot(L, oNp), 0.0, 1.0)), 1);
+	vec3 L = normalize(lightPosW.xyz - fPosition.xyz);
+	vec4 diffuse = vec4(vec3(vec3(1,1,1) * clamp(dot(L, fNormal), 0.0, 1.0)), 1);
 	
 	// Specular
-	vec3 normalDir = normalize(oNp);
-	vec3 dVertexLight = vec3(lightPosW.xyz - v_p);
-	float dist = length(dVertexLight);
-	vec3 lightDir = normalize(dVertexLight);
-	float attenuation = 3.0 / dist;
+	vec3 VertexEyeDiff = CamPos - fPosition.xyz;
+	vec3 Reflect = normalize(reflect(lightPosW.xyz, fNormal));
+	float factor = dot(VertexEyeDiff, Reflect);
 	
-	vec4 specularity;
-	if(dot(normalDir,lightDir) < 0.0)
+	vec4 SpecColor = vec4(0,0,0,0);
+	if(factor > 0)
 	{
-		specularity = vec4(0.0,0.0,0.0,0.0);
+		factor = pow(factor, 1000.0);
+		SpecColor = vec4(vec3(1,1,1)*vec3(1,1,1)*factor,1.0);
+	}
+	
+	if(textures > 0)
+	{
+		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + diffuse + SpecColor);
 	}
 	else
-	{ 
-		specularity = attenuation * vec4(vec3(1.0,1.0,1.0) * vec3(1.0,1.0,1.0) * pow(max(0.0, dot(reflect(-lightDir, normalDir), normalize(eyeCoord.xyz))), 50.0), 1.0);
+	{
+		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + diffuse + SpecColor);	
 	}
-
-	frag_colour = texture(texsamp, UV) * (specularity + diffuse);
 };

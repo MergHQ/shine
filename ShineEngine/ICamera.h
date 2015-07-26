@@ -24,5 +24,6 @@ struct ICamera
 	virtual Mat44 GetProjectionMatrix() = 0;
 	virtual Mat44 GetVPMatrix() = 0;
 
+
 };
 #endif

@@ -19,8 +19,8 @@ public:
 	virtual Mat44 GetViewMatrix() = 0;
 	virtual Mat44 GetProjectionMatrix() = 0;
 	virtual Vec3 GetWorldPos() = 0;
+	virtual int textures() = 0;
 	//~ICamera
-
 	virtual void SetCameraSpeed(float speed) {}
 protected:
 	virtual void setMovement(bool forward, bool backwards, bool right, bool left){}

@@ -24,7 +24,10 @@ public:
 	virtual glm::mat4 GetVPMatrix() { return m_pmatrix * m_vmatrix; }
 	virtual glm::mat4 GetViewMatrix() { return m_vmatrix; }
 	virtual glm::mat4 GetProjectionMatrix() { return m_pmatrix; }
+	virtual int textures() { return texturess; }
 	//~CCamera
+
+	int texturess = 1;
 
 	//IInputListener
 	virtual bool key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

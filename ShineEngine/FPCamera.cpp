@@ -66,6 +66,14 @@ void CFPCamera::Update(float dt, GLFWwindow* pWin)
 
 bool CFPCamera::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if (key == GLFW_KEY_K && action == GLFW_PRESS)
+	{
+		if (texturess == 1)
+			texturess = 0;
+		else
+			texturess = 1;
+	}
+
 	bool move =
 		glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||
 		glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||

@@ -2,6 +2,7 @@
 #include "GlobalSystem.h"
 #include "MeshSystem.h"
 #include "Camera.h"
+#include "FPCamera.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -193,12 +194,15 @@ void CRenderer::DrawMeshes()
 				glUniform1i(glGetUniformLocation(p, "positiontex"), 6);
 				glActiveTexture(GL_TEXTURE0);
 
-				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
 				glm::mat3 inv_transp = glm::mat3(glm::inverseTranspose(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
 				glUniformMatrix3fv(glGetUniformLocation(p, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(inv_transp));
 				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 				glUniformMatrix4fv(glGetUniformLocation(p, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetProjectionMatrix()));
+
+				glUniform1i(glGetUniformLocation(p, "textures"), gSys->GetCamera()->textures());
+
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 			}
