@@ -1,4 +1,5 @@
 #version 400
+
 layout(location = 0) in vec3 vp;
 layout(location = 1) in vec3 np;
 layout(location = 2) in vec2 vUV;
@@ -6,7 +7,7 @@ layout(location = 2) in vec2 vUV;
 out vec2 UV;
 out vec3 fNormal;
 out float shp_;
-out vec4 lightPosW;
+out vec4 lightPosW[20];
 out vec4 fPosition;
 out vec3 CamPos;
 
@@ -15,6 +16,9 @@ uniform mat4 Obj2World;
 uniform vec3 CamPosW;
 uniform float shp;
 uniform mat3 normal_matrix;
+uniform mat4 ViewMatrix;
+uniform vec3 lightPositions[20];
+uniform int lightAmmount;
 
 void main () {
 	
@@ -24,19 +28,32 @@ void main () {
 	fNormal = normalize(normal_matrix * np);
 	shp_ = shp;
 	fPosition = Obj2World * vec4(vp, 1.0);
-	lightPosW = vec4(0,0,0, 1);
-	CamPos = CamPosW;
+	
+	int index = 0;
+	for(int i = 0; i < 20; i++)
+	{
+		if(index <= lightAmmount)
+		{
+			lightPosW[i] = Obj2World * vec4(lightPositions[i], 1);
+		}
+		else
+		{
+			lightPosW[i] = vec4(0);
+		}
+		index++;
+	}
+	CamPos = (ViewMatrix * vec4(0,0,0,1)).xyz;
 };
 
-//@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
+//@ // Shader split
 
-#version 430
+#version 400
 
 in vec2 UV;
 in vec3 fNormal;
 in vec3 CamPos;
 in float shp_;
-in vec4 lightPosW;
+in vec4 lightPosW[20];
 in vec4 fPosition;
 
 layout(location = 0) out vec4 frag_colour;	
@@ -45,34 +62,51 @@ layout(location = 2) out vec3 position;
 
 uniform sampler2D texsamp;
 uniform int textures;
+uniform vec3 lightColors[20];
+uniform vec3 lightAtteniuations[20];
+uniform int lightAmmount;
 
 void main () {
 	
 	attachNormal = normalize(fNormal);
 	position = normalize(fPosition.xyz);
 	
-	//Diffuse
-	vec3 L = normalize(lightPosW.xyz - fPosition.xyz);
-	vec4 diffuse = vec4(vec3(vec3(1,1,1) * clamp(dot(L, fNormal), 0.0, 1.0)), 1);
-	
-	// Specular
-	vec3 VertexEyeDiff = CamPos - fPosition.xyz;
-	vec3 Reflect = normalize(reflect(lightPosW.xyz, fNormal));
-	float factor = dot(VertexEyeDiff, Reflect);
-	
-	vec4 SpecColor = vec4(0,0,0,0);
-	if(factor > 0)
+	vec4 diffuse = vec4(0);
+	vec4 SpecColor = vec4(0);
+	float attFactor = 0;
+	int index = 0;
+	for(int i = 0; i<20; i++)
 	{
-		factor = pow(factor, 1000.0);
-		SpecColor = vec4(vec3(1,1,1)*vec3(1,1,1)*factor,1.0);
+		if(index <= lightAmmount)
+		{
+			//Diffuse
+			vec3 L = normalize(lightPosW[i].xyz - fPosition.xyz);
+			diffuse += vec4(vec3(lightColors[i] * clamp(dot(L, fNormal), 0.0, 1.0)), 1);
+			
+			// Specular
+			vec3 VertexEyeDiff = normalize(CamPos - fPosition.xyz);
+			vec3 Reflect = normalize(reflect(fNormal, -L));
+			float factor = dot(Reflect, VertexEyeDiff);
+			
+			if(factor > 0)
+			{
+				factor = pow(factor, 50.0);
+				SpecColor += vec4(vec3(1,1,1)*lightColors[i]*factor,1.0);
+			}
+			
+			vec3 att = vec3(1, 0.01, 0.002);
+			float dist = length(L);
+			attFactor += att.x + (att.y * dist) + (att.z * dist * dist);
+		}
+		index++;
 	}
 	
 	if(textures > 0)
 	{
-		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + diffuse + SpecColor);
+		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (SpecColor / attFactor)*/);	
 	}
 	else
 	{
-		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + diffuse + SpecColor);	
+		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (SpecColor / attFactor)*/);	
 	}
 };

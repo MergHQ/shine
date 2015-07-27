@@ -4,6 +4,8 @@
 
 #include "IShader.h"
 #include "PostProcessor.h"
+#include "LightSystem.h"
+#include "ILight.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -23,12 +25,15 @@ public:
 	void FboQuad();
 	void DrawMeshes();
 	GLFWwindow* GetWin() { return window; }
+	CLightSystem* GetLightSystem() { return m_pLightSystem; }
+
 protected:
 private:
 	float time;
 	GLFWwindow* window;
 	GLuint quadvao, quadvbo, quadibo, quaduv;
-	CPostProcessor* postprocessor;
+	CPostProcessor* m_postprocessor;
 	std::vector<GLuint> QuadIndices;
+	CLightSystem* m_pLightSystem;
 };
 #endif

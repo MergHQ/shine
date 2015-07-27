@@ -94,6 +94,8 @@
     <ClCompile Include="GlobalSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="JsonTool.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MaterialSystem.cpp" />
@@ -119,6 +121,7 @@
     <ClInclude Include="FPCamera.h" />
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="ICamera.h" />
+    <ClInclude Include="ILight.h" />
     <ClInclude Include="IMaterial.h" />
     <ClInclude Include="IMesh.h" />
     <ClInclude Include="Input.h" />
@@ -126,6 +129,8 @@
     <ClInclude Include="IShader.h" />
     <ClInclude Include="ITexture.h" />
     <ClInclude Include="JsonTool.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="LightSystem.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialSystem.h" />

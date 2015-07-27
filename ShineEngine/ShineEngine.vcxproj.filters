@@ -126,6 +126,12 @@
     <ClCompile Include="PostProcessor.cpp">
       <Filter>Source Files\Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="LightSystem.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -225,6 +231,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FPCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ILight.h">
+      <Filter>Source Files\Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -79,10 +79,31 @@ void CMainWindow::Init()
 
 	SMeshParams mesh;
 	mesh.name = "sample1";
-	mesh.fileName = "objects/sponza.obj";
+	mesh.fileName = "objects/plane.obj";
 	mesh.pos = Vec3(0.0f, 0.0f, 0.0f);
 	mesh.m_materialFile = "m.mtl";
 	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+
+	// Creating a couple lights
+	Light l1;
+	l1.attenuation = Vec3(1, 0.01f, 0.002f);
+	l1.position = Vec3(0, 5, 0);
+	l1.color = Vec3(1, 0, 0);
+	gSys->pRenderer->GetLightSystem()->CreateLight(&l1);
+
+	Light l2;
+	l2.attenuation = Vec3(1, 0.01f, 0.002f);
+	l2.position = Vec3(0, 5, 50);
+	l2.color = Vec3(0, 1, 0);
+	gSys->pRenderer->GetLightSystem()->CreateLight(&l2);
+
+
+	Light l3;
+	l3.attenuation = Vec3(1, 0.01f, 0.002f);
+	l3.position = Vec3(30, 5, 50);
+	l3.color = Vec3(0, 0, 1);
+	gSys->pRenderer->GetLightSystem()->CreateLight(&l3);
+	//---
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
