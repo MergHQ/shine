@@ -42,7 +42,7 @@ void main () {
 		}
 		index++;
 	}
-	CamPos = (ViewMatrix * vec4(0,0,0,1)).xyz;
+	CamPos = vec4(CamPosW, 1.0).xyz;
 };
 
 //@ // Shader split
@@ -72,7 +72,7 @@ void main () {
 	position = normalize(fPosition.xyz);
 	
 	vec4 diffuse = vec4(0);
-	vec4 SpecColor = vec4(0);
+	vec4 specular = vec4(0);
 	float attFactor = 0;
 	int index = 0;
 	for(int i = 0; i<20; i++)
@@ -85,28 +85,26 @@ void main () {
 			
 			// Specular
 			vec3 VertexEyeDiff = normalize(CamPos - fPosition.xyz);
-			vec3 Reflect = normalize(reflect(fNormal, -L));
+			vec3 Reflect = normalize(reflect(-L, normalize(fNormal)));
 			float factor = dot(Reflect, VertexEyeDiff);
 			
-			if(factor > 0)
-			{
-				factor = pow(factor, 50.0);
-				SpecColor += vec4(vec3(1,1,1)*lightColors[i]*factor,1.0);
-			}
+			factor = max(pow(factor, 30.0), 0);
+			specular += vec4(vec3(1,1,1)*lightColors[i]*factor,1.0);
 			
-			vec3 att = vec3(1, 0.01, 0.002);
+			vec3 att = lightAtteniuations[i];
 			float dist = length(L);
 			attFactor += att.x + (att.y * dist) + (att.z * dist * dist);
+			
 		}
 		index++;
 	}
 	
 	if(textures > 0)
 	{
-		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (SpecColor / attFactor)*/);	
+		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (specular / attFactor)*/);	
 	}
 	else
 	{
-		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (SpecColor / attFactor)*/);	
+		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + (diffuse / attFactor) /*+ (specular / attFactor)*/);	
 	}
 };

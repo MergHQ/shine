@@ -19,6 +19,7 @@ public:
 	virtual void SetPos(Vec3 newpos) { pos = newpos; }
 	virtual void SetColor(Vec3 newcolor){ color = newcolor; }
 	virtual void SetAtt(Vec3 newatt){ attenuation = newatt; }
+	virtual int GetType() { return type; }
 	virtual void EnableShadows(bool b){ shadow = b; }
 	//~ILight
 

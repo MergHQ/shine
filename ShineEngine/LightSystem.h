@@ -13,7 +13,7 @@ public:
 	CLightSystem(){};
 	~CLightSystem();
 
-	// If you want your light to be auto garbage collected, call this function instead of just new CLight();
+	// If you want your light to be auto garbage collected and rendered, call this function instead of just new CLight();
 	ILight* CreateLight(SLight* light);
 	std::vector<CLight*> lightContainer;
 

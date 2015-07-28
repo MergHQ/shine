@@ -199,16 +199,15 @@ void CRenderer::DrawMeshes()
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
 				glm::mat3 inv_transp = glm::mat3(glm::inverseTranspose(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
 				glUniformMatrix3fv(glGetUniformLocation(p, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(inv_transp));
-				glUniformMatrix4fv(glGetUniformLocation(p, "ViewMatrix"), 1, GL_FALSE, glm::value_ptr(glm::inverse(gSys->GetCamera()->GetViewMatrix())));
+				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
 				glUniformMatrix4fv(glGetUniformLocation(p, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetProjectionMatrix()));
 
-				
+
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 			}
 		}
-		
 
 		// Lights
 		glUniform1i(glGetUniformLocation(p, "lightAmmount"), m_pLightSystem->lightContainer.size());
@@ -216,6 +215,7 @@ void CRenderer::DrawMeshes()
 		std::vector<Vec3> positions;
 		std::vector<Vec3> colors;
 		std::vector<Vec3> atts;
+		std::vector<int> lighttypes;
 		std::vector<int> useshadows;
 
 		for (uint j = 0; j < m_pLightSystem->lightContainer.size(); j++)
@@ -230,7 +230,12 @@ void CRenderer::DrawMeshes()
 				if (pLight->IsShadowsEnabled())
 					useshadows.push_back(1);
 				else
-					useshadows.push_back(0);	
+					useshadows.push_back(0);
+
+				if (pLight->GetType() == POINTLIGHT)
+					lighttypes.push_back(1);
+				else
+					lighttypes.push_back(0);
 			}
 		}
 
@@ -239,6 +244,7 @@ void CRenderer::DrawMeshes()
 		glUniform3fv(glGetUniformLocation(p, "lightAtteniuations"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(atts.data()));
 
 		glUniform1fv(glGetUniformLocation(p, "lightUsesShadows"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(useshadows.data()));
+		glUniform1iv(glGetUniformLocation(p, "lightTypes"),m_pLightSystem->lightContainer.size(), lighttypes.data());
 
 		glUniform1i(glGetUniformLocation(p, "textures"), gSys->GetCamera()->textures());
 

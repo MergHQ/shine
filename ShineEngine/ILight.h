@@ -29,6 +29,7 @@ struct ILight
 	virtual void SetPos(Vec3 pos) = 0;
 	virtual void SetColor(Vec3 color) = 0;
 	virtual void SetAtt(Vec3 att) = 0;
+	virtual int GetType() = 0;
 	virtual void EnableShadows(bool b) = 0;
 	
 };

@@ -52,6 +52,8 @@ void CMesh::CreateVaosAndShit()
 
 	//fileBuffer.close();
 
+	gSys->Log(("/n Loading model %c", m_file));
+
 	std::string inputfile = m_file;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
