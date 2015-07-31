@@ -43,8 +43,6 @@ void CEnvironmentLoader::LoadLevel(string level)
 		{
 			for (rapidjson::SizeType i = 0; i < obj.Size(); i++)
 			{
-				
-
 				const rapidjson::Value& index = obj[i];
 
 				std::vector<string> posvec;
@@ -110,5 +108,5 @@ void CEnvironmentLoader::LoadLevel(string level)
 
 void CEnvironmentLoader::UnloadLevel()
 {
-
+	//gSys->Release3DContent();
 }

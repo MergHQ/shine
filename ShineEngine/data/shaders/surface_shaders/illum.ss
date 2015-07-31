@@ -34,7 +34,7 @@ void main () {
 	{
 		if(index <= lightAmmount)
 		{
-			lightPosW[i] = Obj2World * vec4(lightPositions[i], 1);
+			lightPosW[i] = ViewMatrix * vec4(lightPositions[i], 1);
 		}
 		else
 		{
@@ -91,7 +91,7 @@ void main () {
 			
 			if(specularFactor > 0)
 			{
-				specularFactor = pow(specularFactor, 1000.0);
+				specularFactor = pow(specularFactor, 32.0);
 				specular += vec4(vec3(1,1,1)*lightColors[i]*specularFactor, 1.0);
 			}
 			
@@ -105,7 +105,7 @@ void main () {
 	
 	if(textures > 0)
 	{
-		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + (diffuse / attFactor) + (specular / attFactor));	
+		frag_colour = texture(texsamp, UV) * (vec4(0,0,0.03,1) + (diffuse / attFactor));	
 	}
 	else
 	{

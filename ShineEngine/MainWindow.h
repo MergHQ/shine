@@ -8,7 +8,6 @@ public:
 	CMainWindow();
 	~CMainWindow();
 	void Init();
-	void Release();
 protected:
 private:
 }; 

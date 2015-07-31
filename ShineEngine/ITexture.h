@@ -25,8 +25,8 @@ struct ITexture
 {
 	virtual void Load(){}
 	virtual int GetTextureID() = 0;
-	virtual const char* GetTextureName() = 0;
-	virtual const char* GetTextureFile() = 0;
+	virtual string GetTextureName() = 0;
+	virtual string GetTextureFile() = 0;
 	virtual GLuint GetTextureId() = 0;
 	virtual TextureType GetTextureType() = 0;
 };

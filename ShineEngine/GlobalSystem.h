@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include "MainWindow.h"
 
 class CRenderer;
 class CMeshSystem;
@@ -29,14 +30,17 @@ public:
 	CConsoleSystem* pConsoleSystem;
 	CMaterialSystem* pMaterialSystem;
 	CEnvironmentLoader* pLevelLoader;
+	CMainWindow* pMainWin;
 
 	CConsoleInput* m_pConIp;
 	CGameInput* m_pGameIp;
 	CWindowInput* m_pWinIp;
 
-	void Init();
+	void Init(CMainWindow* MainWin);
 	void Update(float dt);
 	void Log(std::string log);
+	// This function wipes all the game materila
+	void ReleaseRenderContent();
 	CCamera* GetCamera() { return m_pCamera; }
 protected:
 private:

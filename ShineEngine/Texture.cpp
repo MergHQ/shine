@@ -73,5 +73,4 @@ void CTexture::Load()
 
 
 	m_texBufferId = textureID;
-	delete data;
 }

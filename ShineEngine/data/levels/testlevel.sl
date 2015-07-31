@@ -1,0 +1,30 @@
+{
+	"level_name":"test_level",
+	"objects":[
+		{
+			"objectpath":"sphere/plane.obj",
+			"position":"0,0,0",
+			"material":"m.mtl"
+		}
+	],
+	"lights":[
+		{
+			"attenuation":"1,0.01,0.002",
+			"position":"0,0,1",
+			"color":"1,1,1",
+			"type":"point"
+		},
+		{
+			"attenuation":"1,0.01,0.002",
+			"position":"0,5,50",
+			"color":"0,1,0",
+			"type":"point"
+		},
+		{
+			"attenuation":"1,0.01,0.002",
+			"position":"30,5,50",
+			"color":"0,0,1",
+			"type":"point"
+		}
+	]
+}

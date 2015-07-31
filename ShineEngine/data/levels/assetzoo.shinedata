@@ -7,10 +7,21 @@
 			"material":"m.mtl"
 		},
 		{
-			"objectpath":"objects/sponza.obj",
-			"position":"0,1,0",
-			"material":"m.mtl"
+			"objectpath":"objects/tree2.obj",
+			"position":"3,0,3",
+			"material":"bark.mtl"
+		},
+		{
+			"objectpath":"objects/tree2.obj",
+			"position":"3,0,6",
+			"material":"bark.mtl"
+		},
+			{
+			"objectpath":"objects/tree2.obj",
+			"position":"5,0,8",
+			"material":"bark.mtl"
 		}
+		
 	],
 	"lights":[
 		{
@@ -22,13 +33,13 @@
 		{
 			"attenuation":"1,0.01,0.002",
 			"position":"0,5,50",
-			"color":"0,1,0",
+			"color":"1,1,1",
 			"type":"point"
 		},
 		{
 			"attenuation":"1,0.01,0.002",
 			"position":"30,5,50",
-			"color":"0,0,1",
+			"color":"1,1,1",
 			"type":"point"
 		}
 	]

@@ -24,6 +24,7 @@ public:
 	void ProcessFramebuffer(GLuint ShaderProg); 
 	void FboQuad();
 	void DrawMeshes();
+	void ReleaseSystems();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
 
