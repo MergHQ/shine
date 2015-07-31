@@ -6,6 +6,7 @@
 #include "ITexture.h"
 #include "Shader.h"
 #include "Texture.h"
+#include <map>
 
 CMaterial::CMaterial(const char* file)
 {
@@ -29,7 +30,8 @@ void CMaterial::ParseMtlFile()
 	rapidjson::Document mtl;
 
 	SJsonParser parser;
-	parser.file = m_fileName;
+	string file = ASSET_ROOT_DIR + m_fileName;
+	parser.file = file.c_str();
 	/* This lib does some weird shit
 	so you can't have a function return a
 	Document var straight.

@@ -19,6 +19,18 @@ IMesh* CMeshSystem::GetMeshById(int id)
 	return nullptr;
 }
 
+IMesh* CMeshSystem::GetMeshByName(const char* name)
+{
+	for (uint iter = 0; iter < mesh_instances.size(); iter++)
+	{
+		if (mesh_instances[iter]->GetName() == name)
+		{
+			return mesh_instances[iter];
+		}
+	}
+	return nullptr;
+}
+
 IMesh* CMeshSystem::CreateMesh(SMeshParams* pMesh)
 {
 	if (!pMesh->id)

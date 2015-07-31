@@ -3,6 +3,7 @@
 #pragma once
 
 #define DEV_MODE
+#define ASSET_ROOT_DIR std::string("data/")
 
 #include "GlobalSystem.h"
 #include <glm\glm.hpp>

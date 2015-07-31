@@ -16,7 +16,7 @@
 
 DWORD WINAPI listen(LPVOID lpParam)
 {
-	HANDLE fileChangeHandle = FindFirstChangeNotification(L"shaders/", true, 0x00000010);
+	HANDLE fileChangeHandle = FindFirstChangeNotification(L"data/shaders/", true, 0x00000010);
 
 	time_t lastChange = time(0);
 	bool reloaded = false;
@@ -69,7 +69,7 @@ bool CShader::Reload()
 	return false;
 }
 
-bool CShader::LoadShader(const char* shader)
+bool CShader::LoadShader(string shader)
 {
 	// Load shaders from files.
 
@@ -80,7 +80,9 @@ bool CShader::LoadShader(const char* shader)
 		glDeleteProgram(sprog);
 	}
 
-	std::ifstream shader_stream(m_sfile);
+	string file = ASSET_ROOT_DIR + m_sfile;
+
+	std::ifstream shader_stream(file.c_str());
 
 	std::string shadercont = "";
 

@@ -1,0 +1,17 @@
+{
+	"material_name" : "mymaterial",
+	"shading" : "shaders/surface_shaders/illum.ss",
+	"shaderparams":[],
+	"textures":[
+		{
+			"texture":"stones.bmp",
+			"texname":"test_diff",
+			"type": "DIFFUSE"
+		},
+		{
+			"texture":"t.bmp",
+			"texname":"test_spec",
+			"type": "SPECULAR"
+		}
+	]
+}

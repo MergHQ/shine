@@ -13,6 +13,7 @@ class CConsoleInput;
 class CGameInput;
 class CWindowInput;
 class CMaterialSystem;
+class CEnvironmentLoader;
 
 struct IGlobalSystem
 {
@@ -27,6 +28,7 @@ public:
 	CMeshSystem* pMeshSystem;
 	CConsoleSystem* pConsoleSystem;
 	CMaterialSystem* pMaterialSystem;
+	CEnvironmentLoader* pLevelLoader;
 
 	CConsoleInput* m_pConIp;
 	CGameInput* m_pGameIp;

@@ -4,6 +4,7 @@
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include "shine.h"
 
 /*
 	This struct is used to create a shader.
@@ -24,9 +25,9 @@ struct SShaderParams
 struct IShader
 {
 	virtual ~IShader(){}
-	virtual const char* GetName() = 0;
-	virtual const char* GetFileName() = 0;
-	virtual bool LoadShader(const char* shader) = 0;
+	virtual string GetName() = 0;
+	virtual string GetFileName() = 0;
+	virtual bool LoadShader(string shader) = 0;
 	virtual bool Reload() = 0;
 	virtual void Update() = 0;
 	virtual int GetId() = 0;

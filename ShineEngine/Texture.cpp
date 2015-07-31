@@ -16,16 +16,18 @@ CTexture::~CTexture()
 void CTexture::Load()
 {
 	// Load textures
-	unsigned char header[54]; // 54 byte header for BMP files.
+	unsigned char header[54];
 	unsigned char * data;
 	int dataPos;
 	int imageSize;
 	int width;
 	int height;
+	string file = ASSET_ROOT_DIR + m_texFile;
 
-	if (m_texFile != nullptr && m_texFile != "")
+
+	if (file.c_str() != nullptr && file.c_str() != "")
 	{
-		FILE* pFile = fopen(m_texFile, "rb");
+		FILE* pFile = fopen(file.c_str(), "rb");
 
 		if (pFile)
 		{
@@ -42,7 +44,7 @@ void CTexture::Load()
 			width = *(int*)&(header[0x12]);
 			height = *(int*)&(header[0x16]);
 
-			if (imageSize == 0)    imageSize = width*height * 3; // 3 : one byte for each Red, Green and Blue component
+			if (imageSize == 0)    imageSize = width*height * 3;
 			if (dataPos == 0)      dataPos = 54;
 
 			data = new unsigned char[imageSize];
@@ -59,11 +61,8 @@ void CTexture::Load()
 	GLuint textureID = 0;
 	glGenTextures(1, &textureID);
 
-	// "Bind" the newly created texture : all future texture functions will modify this texture
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	// Give the image to OpenGL
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -74,4 +73,5 @@ void CTexture::Load()
 
 
 	m_texBufferId = textureID;
+	delete data;
 }

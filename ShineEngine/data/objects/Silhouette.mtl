@@ -1,0 +1,58 @@
+# Blender MTL File: 'Silhouette.blend'
+# Material Count: 5
+
+newmtl None
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl silhouette__1__skin__physDefault
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.040748 0.040748 0.040748
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Bump C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Silhouette_normal.tif
+map_Kd C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Silhouette_diffuse.tif
+map_Ks C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Silhouette_diffuse.tif
+
+newmtl silhouette__1__skin__physDefault_Silhouette_diffuse.tif
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.040748 0.040748 0.040748
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Merg\Dropbox\Find A Flower\GameSDK\Objects\FAF\Silhouette\Silhouette_diffuse.tif
+map_Bump C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Silhouette_normal.tif
+map_Ks C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Silhouette_diffuse.tif
+
+newmtl silhouette__2__cloth__physNone
+Ns 17.647059
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Bump C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Cloth_normal.tif
+map_Kd C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Cloth_diffuse.tif
+map_Ks C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Cloth_diffuse.tif
+
+newmtl silhouette__2__cloth__physNone_Cloth_diffuse.tif
+Ns 17.647059
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Merg\Dropbox\Find A Flower\GameSDK\Objects\FAF\Silhouette\Cloth_diffuse.tif
+map_Bump C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Cloth_normal.tif
+map_Ks C:\\Users\\Merg\\Dropbox\\Find A Flower\\GameSDK\\Objects\\FAF\\Silhouette\\Cloth_diffuse.tif

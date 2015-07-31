@@ -10,6 +10,7 @@
 #include "GameInput.h"
 #include "WindowInput.h"
 #include "MaterialSystem.h"
+#include "EnvironmentLoader.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
@@ -29,6 +30,7 @@ IGlobalSystem::~IGlobalSystem()
 	delete pConsoleSystem;
 	delete m_pCamera;
 	delete pMaterialSystem;
+	delete pLevelLoader;
 
 	delete m_pConIp;
 	delete m_pGameIp;
@@ -56,6 +58,7 @@ void IGlobalSystem::Init()
 	m_pCamera = new CFPCamera;
 	if (m_pCamera->Init())
 		Log("- Camera system\n\n");
+	pLevelLoader = new CEnvironmentLoader;
 	Log("We gucchi!");
 
 

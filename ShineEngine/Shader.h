@@ -14,18 +14,18 @@ public:
 	bool m_shouldReload;
 
 	// IShader
-	virtual const char* GetName() { return m_name; };
+	virtual string GetName() { return m_name; };
 	virtual int GetId() { return m_id; };
-	virtual bool LoadShader(const char* shader);
+	virtual bool LoadShader(string shader);
 	virtual bool Reload();
 	virtual GLuint GetShaderProgramme() { return sprog; };
-	virtual const char* GetFileName() { return m_sfile; }
+	virtual string GetFileName() { return m_sfile; }
 	virtual void Update();
 	// ~IShader
 protected:
 private:
-	const char* m_name;
-	const char* m_sfile;
+	string m_name;
+	string m_sfile;
 	int time;
 	int m_id;
 	bool m_firstTime;

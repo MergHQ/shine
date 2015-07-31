@@ -12,7 +12,7 @@ public:
 	CMaterialSystem();
 	~CMaterialSystem();
 
-	void AddMaterial(CMaterial* pM);
+	
 	// Returns true if successful.
 	bool DeleteMaterial(IMaterial* pm);
 	IMaterial* GetMaterialById(int id);
@@ -23,5 +23,6 @@ public:
 protected:
 private:
 	std::vector<CMaterial*> m_materialContainer;
+	void AddMaterial(CMaterial* pM);
 };
 #endif

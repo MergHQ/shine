@@ -26,7 +26,7 @@ public:
 	// IMesh
 	virtual void SetPos(Vec3 pos);
 	virtual void SetRotation(Vec3 axis, float rot);
-	virtual const char* GetName() { return m_meshName; }
+	virtual string GetName() { return m_meshName; }
 	virtual int GetId() { return m_meshId; }
 	virtual IMaterial* GetMaterial() { return m_pMaterial; }
 	virtual std::vector<float> GetVerts() { return m_verticies; }
@@ -47,8 +47,8 @@ public:
 	void BuildTM(Vec3 pos, Vec3 axis, float rot);
 protected:
 private:
-	const char* m_meshName;
-	const char* m_file;
+	string m_meshName;
+	string m_file;
 	const unsigned int m_slot = 0;
 	int m_meshId;
 	float m_worldRotScalar;

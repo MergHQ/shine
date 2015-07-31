@@ -54,7 +54,7 @@ void CMesh::CreateVaosAndShit()
 
 	gSys->Log(("/n Loading model %c", m_file));
 
-	std::string inputfile = m_file;
+	std::string inputfile = ASSET_ROOT_DIR+m_file;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
@@ -62,7 +62,7 @@ void CMesh::CreateVaosAndShit()
 	if (!err.empty())
 	{
 		gSys->Log("[MESHSYS] Cannot find the .obj file specified.");
-		exit(1);
+		return;
 	}
 
 	m_verticies = shapes[m_slot].mesh.positions;

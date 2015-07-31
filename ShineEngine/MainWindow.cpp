@@ -7,6 +7,7 @@
 #include "MeshSystem.h"
 #include "Renderer.h"
 #include "MaterialSystem.h"
+#include "EnvironmentLoader.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -63,31 +64,13 @@ void CMainWindow::Init()
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	SMeshParams mesh2;
-	mesh2.name = "sample1";
-	mesh2.fileName = "objects/sponza.obj";
-	mesh2.pos = Vec3(0.0f, 0.0f, 5.0f);
-	mesh2.m_materialFile = "m.mtl";
-	IMesh* pMesh2 = gSys->pMeshSystem->CreateMesh(&mesh2);
-
-	//SMeshParams mesh;
-	//mesh.name = "sample1";
-	//mesh.fileName = "objects/sphere.obj";
-	//mesh.pos = Vec3(0.0f, 1.0f, 5.0f);
-	//mesh.m_materialFile = "m.mtl";
-	//IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
-
-	SMeshParams mesh;
-	mesh.name = "sample1";
-	mesh.fileName = "objects/plane.obj";	
-	mesh.pos = Vec3(0.0f, 0.0f, 0.0f);
-	mesh.m_materialFile = "m.mtl";
-	IMesh* pMesh = gSys->pMeshSystem->CreateMesh(&mesh);
+	// Load a scene
+	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
 
 	// Creating a couple lights
 	Light l1;
 	l1.attenuation = Vec3(1, 0.01f, 0.002f);
-	l1.position = Vec3(0, 5, 0);
+	l1.position = Vec3(0, 0, 3);
 	l1.color = Vec3(1, 1, 1);
 	l1.type = POINTLIGHT;
 	ILight* pLight = gSys->pRenderer->GetLightSystem()->CreateLight(&l1);
@@ -114,6 +97,7 @@ void CMainWindow::Init()
 	// Timer variables
 	double lastTime = glfwGetTime();
 	float dt = 0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// Update timer
@@ -125,6 +109,7 @@ void CMainWindow::Init()
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}
+
 
 	Release();
 
