@@ -91,7 +91,7 @@ void main () {
 			
 			if(specularFactor > 0)
 			{
-				specularFactor = pow(specularFactor, 32.0);
+				specularFactor = pow(specularFactor, 10.0);
 				specular += vec4(vec3(1,1,1)*lightColors[i]*specularFactor, 1.0);
 			}
 			
@@ -109,6 +109,6 @@ void main () {
 	}
 	else
 	{
-		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + (diffuse / attFactor) + (specular / attFactor));	
+		frag_colour = vec4(1,1,1,1) * (vec4(0,0,0.03,1) + (diffuse / attFactor) + (specular));	
 	}
 };

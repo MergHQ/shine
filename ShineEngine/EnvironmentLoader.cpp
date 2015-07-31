@@ -93,10 +93,10 @@ void CEnvironmentLoader::LoadLevel(string level)
 				light.position = Vec3((float)atof(pos[0].c_str()), (float)atof(pos[1].c_str()), (float)atof(pos[2].c_str()));
 				light.color = Vec3((float)atof(color[0].c_str()), (float)atof(color[1].c_str()), (float)atof(color[2].c_str()));
 
-				if (index["type"].GetString() == "point")
+				//if (index["type"].GetString() == "point")
 					light.type = POINTLIGHT;
-				else
-					light.type = DIRLIGHT;
+				//else
+				//	light.type = DIRLIGHT;
 
 				gSys->pRenderer->GetLightSystem()->CreateLight(&light);
 			}

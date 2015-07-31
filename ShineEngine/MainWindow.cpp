@@ -68,27 +68,27 @@ void CMainWindow::Init()
 	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
 
 	// Creating a couple lights
-	Light l1;
-	l1.attenuation = Vec3(1, 0.01f, 0.002f);
-	l1.position = Vec3(0, 0, 3);
-	l1.color = Vec3(1, 1, 1);
-	l1.type = POINTLIGHT;
-	ILight* pLight = gSys->pRenderer->GetLightSystem()->CreateLight(&l1);
+	//Light l1;
+	//l1.attenuation = Vec3(1, 0.01f, 0.002f);
+	//l1.position = Vec3(0, 0, 3);
+	//l1.color = Vec3(1, 1, 1);
+	//l1.type = POINTLIGHT;
+	//ILight* pLight = gSys->pRenderer->GetLightSystem()->CreateLight(&l1);
 
-	Light l2;
-	l2.attenuation = Vec3(1, 0.01f, 0.002f);
-	l2.position = Vec3(0, 5, 50);
-	l2.color = Vec3(0, 1, 0);
-	l2.type = POINTLIGHT;
-	gSys->pRenderer->GetLightSystem()->CreateLight(&l2);
+	//Light l2;
+	//l2.attenuation = Vec3(1, 0.01f, 0.002f);
+	//l2.position = Vec3(0, 5, 50);
+	//l2.color = Vec3(0, 1, 0);
+	//l2.type = POINTLIGHT;
+	//gSys->pRenderer->GetLightSystem()->CreateLight(&l2);
 
 
-	Light l3;
-	l3.attenuation = Vec3(1, 1, 1);
-	l3.position = Vec3(30, 5, 50);
-	l3.color = Vec3(0, 0, 1);
-	l3.type = POINTLIGHT;
-	gSys->pRenderer->GetLightSystem()->CreateLight(&l3);
+	//Light l3;
+	//l3.attenuation = Vec3(1, 1, 1);
+	//l3.position = Vec3(30, 5, 50);
+	//l3.color = Vec3(0, 0, 1);
+	//l3.type = POINTLIGHT;
+	//gSys->pRenderer->GetLightSystem()->CreateLight(&l3);
 	//---
 
 	// Set the camera mode
