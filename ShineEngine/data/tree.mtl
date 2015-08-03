@@ -1,0 +1,12 @@
+{
+	"material_name" : "tree",
+	"shading" : "shaders/surface_shaders/illum.ss",
+	"shaderparams":[],
+	"textures":[
+		{
+			"texture":"tree.bmp",
+			"texname":"tree_diffuse",
+			"type": "DIFFUSE"
+		}
+	]
+}

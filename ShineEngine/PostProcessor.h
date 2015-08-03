@@ -3,6 +3,7 @@
 #pragma once
 
 #include "IShader.h"
+#include "shine.h"
 #include <GLFW\glfw3.h>
 
 class CPostProcessor
@@ -15,7 +16,7 @@ public:
 	int fbostats[2];
 	GLuint textures[4];
 
-	void Initialize();
+	void Initialize(string shaderfile);
 	GLuint GetFBO() { return fbo; }
 	IShader* GetShader() { return pSSRS; }
 protected:

@@ -54,7 +54,7 @@ void CTexture::Load()
 			fclose(pFile);
 		}
 		else 
-			gSys->Log("Cannot open file");
+			gSys->Log("[TEXTURESYS] Cannot open file");
 	}
 
 
