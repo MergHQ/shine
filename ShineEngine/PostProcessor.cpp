@@ -22,7 +22,7 @@ void CPostProcessor::Initialize(string shaderfile)
 {
 	SShaderParams params;
 	params.s_file = shaderfile.c_str();
-	params.name = "DefferedRenderShader";
+	params.name = "Shadowmap";
 
 	pSSRS = new CShader(&params);
 
@@ -76,7 +76,6 @@ void CPostProcessor::Initialize(string shaderfile)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, positiontex, 0);
-
 
 	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, DrawBuffers);

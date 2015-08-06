@@ -52,23 +52,37 @@ void CMesh::CreateVaosAndShit()
 
 	//fileBuffer.close();
 
-	gSys->Log(("/n Loading model %c", m_file));
-
-	std::string inputfile = ASSET_ROOT_DIR+m_file;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
-
-	if (!err.empty())
+	for (uint i = 0; i < gSys->pMeshSystem->GetMeshContainer().size(); i++)
 	{
-		gSys->Log("[MESHSYS] Cannot find the .obj file specified.");
-		return;
+		if (gSys->pMeshSystem->GetMeshContainer()[i]->GetFileName() == m_file)
+		{
+			m_verticies = gSys->pMeshSystem->GetMeshContainer()[i]->GetVerts();
+			m_indiciesVector = gSys->pMeshSystem->GetMeshContainer()[i]->GetIndicies();
+			m_normals = gSys->pMeshSystem->GetMeshContainer()[i]->GetNormals();
+			m_texcoords = gSys->pMeshSystem->GetMeshContainer()[i]->GetTexCoords();
+		}
 	}
 
-	m_verticies = shapes[m_slot].mesh.positions;
-	m_indiciesVector = shapes[m_slot].mesh.indices;
-	m_normals = shapes[m_slot].mesh.normals;
-	m_texcoords = shapes[m_slot].mesh.texcoords;
+	if (m_verticies.empty())
+	{
+		gSys->Log(("/n Loading model %c", m_file));
+
+		std::string inputfile = ASSET_ROOT_DIR + m_file;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
+
+		if (!err.empty())
+		{
+			gSys->Log("[MESHSYS] Cannot find the .obj file specified.");
+			return;
+		}
+
+		m_verticies = shapes[m_slot].mesh.positions;
+		m_indiciesVector = shapes[m_slot].mesh.indices;
+		m_normals = shapes[m_slot].mesh.normals;
+		m_texcoords = shapes[m_slot].mesh.texcoords;
+	}
 
 
 	GLuint vbo = 0;

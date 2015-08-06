@@ -48,23 +48,17 @@ void CRenderer::Init(GLFWwindow* pWin)
 
 	FboQuad();
 }
-
 void CRenderer::Render()
 {
-
 	glBindFramebuffer(GL_FRAMEBUFFER, m_postprocessor->GetFBO());
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 
 	glEnable(GL_LIGHTING);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	time += 0.008f;
-
-	GLuint p = 0;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	DrawMeshes();
 	ProcessFramebuffer(m_postprocessor->GetShader()->GetShaderProgramme());
-
 }
 
 void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
@@ -74,8 +68,6 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(ShaderProg);
-
-
 
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[0]);
@@ -97,52 +89,27 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glUniform1i(glGetUniformLocation(ShaderProg, "positiontex"), 6);
 	glActiveTexture(GL_TEXTURE0);
 
+	//glActiveTexture(GL_TEXTURE7);
+	//glBindTexture(GL_TEXTURE_2D, m_shadowMapProcessor->textures[1]);
+	//glUniform1i(glGetUniformLocation(ShaderProg, "shadowmpapos"), 7);
+	//glActiveTexture(GL_TEXTURE0);
+
 	// Lights
-	glUniform1i(glGetUniformLocation(ShaderProg, "lightAmount"), m_pLightSystem->lightContainer.size());
+	glUniform1i(glGetUniformLocation(ShaderProg, "lightAmount"), m_pLightSystem->lightContainer.size());	
 
-	std::vector<Vec3> positions;
-	std::vector<Vec3> colors;
-	std::vector<Vec3> atts;
-	std::vector<int> lighttypes;
-	std::vector<int> useshadows;
+	glUniform3fv(glGetUniformLocation(ShaderProg, "lightPositions"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->positions.data()));
+	glUniform3fv(glGetUniformLocation(ShaderProg, "lightColors"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->colors.data()));
+	glUniform3fv(glGetUniformLocation(ShaderProg, "lightAtteniuations"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->atts.data()));
 
-	for (uint j = 0; j < m_pLightSystem->lightContainer.size(); j++)
-	{
-		if (ILight* pLight = m_pLightSystem->lightContainer[j])
-		{
+	glUniform1fv(glGetUniformLocation(ShaderProg, "lightUsesShadows"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->shadows.data()));
+	glUniform1iv(glGetUniformLocation(ShaderProg, "lightTypes"), m_pLightSystem->lightContainer.size(), m_pLightSystem->types.data());
 
-			positions.push_back(pLight->GetPos());
-			colors.push_back(pLight->GetColor());
-			atts.push_back(pLight->GetAttenuation());
-
-			if (pLight->IsShadowsEnabled())
-				useshadows.push_back(1);
-			else
-				useshadows.push_back(0);
-
-			if (pLight->GetType() == POINTLIGHT)
-				lighttypes.push_back(1);
-			else
-				lighttypes.push_back(0);
-		}
-	}
-
-	glUniform3fv(glGetUniformLocation(ShaderProg, "lightPositions"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(positions.data()));
-	glUniform3fv(glGetUniformLocation(ShaderProg, "lightColors"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(colors.data()));
-	glUniform3fv(glGetUniformLocation(ShaderProg, "lightAtteniuations"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(atts.data()));
-
-	glUniform1fv(glGetUniformLocation(ShaderProg, "lightUsesShadows"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(useshadows.data()));
-	glUniform1iv(glGetUniformLocation(ShaderProg, "lightTypes"), m_pLightSystem->lightContainer.size(), lighttypes.data());
-
+	// Camera
 	glUniform3f(glGetUniformLocation(ShaderProg, "CamPos"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 
+	// Bind quad geom buffers
 	glBindVertexArray(quadvao);
 	glDrawElements(GL_TRIANGLES, QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
-
-	positions.clear();
-	colors.clear();
-	atts.clear();
-	useshadows.clear();
 }
 
 void CRenderer::FboQuad()
@@ -207,7 +174,6 @@ void CRenderer::DrawMeshes()
 				glUniformMatrix4fv(glGetUniformLocation(m_postprocessor->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
 
 				// Textures
-				// Create one OpenGL texture
 				glActiveTexture(GL_TEXTURE11);
 				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 11);
@@ -234,12 +200,6 @@ void CRenderer::DrawMeshes()
 				glActiveTexture(GL_TEXTURE0);
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
-				glm::mat3 inv_transp = glm::mat3(glm::inverseTranspose(gSys->GetCamera()->GetViewMatrix() * pMesh->GetWorldTM()));
-				glUniformMatrix3fv(glGetUniformLocation(p, "normal_matrix"), 1, GL_FALSE, glm::value_ptr(inv_transp));
-				glUniform3f(glGetUniformLocation(p, "CamPosW"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
-				glUniform1f(glGetUniformLocation(p, "shp"), sin(time));
-				glUniformMatrix4fv(glGetUniformLocation(p, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetProjectionMatrix()));
-				glUniformMatrix4fv(glGetUniformLocation(p, "ViewMatrix"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetViewMatrix()));
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 

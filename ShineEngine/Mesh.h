@@ -27,6 +27,7 @@ public:
 	virtual void SetPos(Vec3 pos);
 	virtual void SetRotation(Vec3 axis, float rot);
 	virtual string GetName() { return m_meshName; }
+	virtual string GetFileName() { return m_file; }
 	virtual int GetId() { return m_meshId; }
 	virtual IMaterial* GetMaterial() { return m_pMaterial; }
 	virtual std::vector<float> GetVerts() { return m_verticies; }

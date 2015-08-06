@@ -62,22 +62,40 @@ void main () {
 						vec3 att = lightAtteniuations[0];
 						float dist = length(L);
 						float attFactor = att.x + (att.y * dist) + (att.z * dist * dist);
+						
+						if(attFactor > 0)
+						{
  
-                        float diffuseFactor = clamp(dot(LN, normal), 0.0, 1.0);
-                        diffuse += vec4(vec3(lightColors[i] * diffuseFactor), 1) / attFactor;
+							float diffuseFactor = clamp(dot(LN, normal), 0.0, 1.0);
+							diffuse += vec4(vec3(lightColors[i] * diffuseFactor), 1) / attFactor;
+	 
+							// Specular
+							vec3 VertToEye = normalize(CamPos - position);
+							vec3 ReflectedVector = normalize(reflect(-LN, normal));
+							float specularfactor = dot(ReflectedVector, VertToEye);
+						   
+							if(specularfactor > 0)
+							{
+									specularfactor = pow(specularfactor, 10.0);
+									diffuse += vec4(vec3(1) * lightColors[i] * specularfactor, 1.0) / attFactor;
+							}
  
-                        // Specular
-                        vec3 VertToEye = normalize(CamPos - position);
-                        vec3 ReflectedVector = normalize(reflect(-LN, normal));
-                        float specularfactor = dot(ReflectedVector, VertToEye);
-                       
-                        if(specularfactor > 0)
-                        {
-                                specularfactor = pow(specularfactor, 50.0);
-                                diffuse += vec4(vec3(1) * lightColors[i] * specularfactor, 1.0) / attFactor;
-                        }
- 
-                       
+                       } else {
+							
+							float diffuseFactor = clamp(dot(LN, normal), 0.0, 1.0);
+							diffuse += vec4(vec3(lightColors[i] * diffuseFactor), 1);
+	 
+							// Specular
+							vec3 VertToEye = normalize(CamPos - position);
+							vec3 ReflectedVector = normalize(reflect(-LN, normal));
+							float specularfactor = dot(ReflectedVector, VertToEye);
+						   
+							if(specularfactor > 0)
+							{
+									specularfactor = pow(specularfactor, 10.0);
+									diffuse += vec4(vec3(1) * lightColors[i] * specularfactor, 1.0);
+							}
+					   }
                          
                 }
         }

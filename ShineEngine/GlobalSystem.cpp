@@ -49,6 +49,7 @@ void IGlobalSystem::Init(CMainWindow* win)
 	pInput = new CInput;
 	Log("- Input");
 	pRenderer = new CRenderer;
+	pRenderer->Init(win->GetWindow());
 	Log("- Renderer");
 	pMeshSystem = new CMeshSystem;
 	Log("- Mesh system");
@@ -68,7 +69,6 @@ void IGlobalSystem::Init(CMainWindow* win)
 	m_pConIp = new CConsoleInput;
 	m_pGameIp = new CGameInput;
 	m_pWinIp = new CWindowInput;
-	
 }
 
 void IGlobalSystem::ReleaseRenderContent()

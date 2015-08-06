@@ -48,6 +48,7 @@ struct IMesh
 	virtual void SetPos(Vec3 pos) = 0;
 	virtual void SetRotation(Vec3 axis, float rot) = 0; //TODO: Make them QUATS!!!
 	virtual string GetName() = 0;
+	virtual string GetFileName() = 0;
 	virtual int GetId() = 0;
 	virtual IMaterial* GetMaterial() = 0;
 	virtual std::vector<float> GetVerts() = 0;

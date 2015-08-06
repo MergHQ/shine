@@ -9,6 +9,7 @@
 CFPCamera::CFPCamera()
 {
 	m_cameraPos = Vec3(0, 1.8f, 0);
+	glfwGetFramebufferSize(gSys->pMainWin->GetWindow(), &width, &height);
 	// Projection matrix : FOV = 45°, aspect ratio, near plane, far plane
 	m_pmatrix = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 }

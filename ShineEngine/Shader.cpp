@@ -115,16 +115,16 @@ bool CShader::LoadShader(string shader)
 		glGetShaderiv(vs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			printf("Error compiling vert shader %s", m_sfile);
+			printf("Error compiling vert shader %s", m_sfile.c_str());
 		}
-
+	
 		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fs, 1, &fragment_content, NULL);
 		glCompileShader(fs);
 		glGetShaderiv( fs, GL_COMPILE_STATUS, &s);
 		if (!s)
 		{
-			printf("Error compiling frag shader %s", m_sfile);
+			printf("Error compiling frag shader %s", m_sfile.c_str());
 		}
 
 		GLuint shader_programme = glCreateProgram();
@@ -134,7 +134,7 @@ bool CShader::LoadShader(string shader)
 		glGetProgramiv(shader_programme, GL_LINK_STATUS, &s);
 		if (!s)
 		{
-			printf("Error creating shader prog %s", m_sfile);
+			printf("Error creating shader prog %s", m_sfile.c_str());
 		}
 
 		sprog = shader_programme;
