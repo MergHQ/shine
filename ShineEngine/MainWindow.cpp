@@ -79,7 +79,7 @@ void CMainWindow::Init()
 	Light light;
 	light.type = DIRLIGHT;
 	light.color = Vec3(2, 2, 1);
-	light.position = Vec3(300, 20, 300);
+	light.position = Vec3(100, 50, 100);
 	//gSys->pRenderer->GetLightSystem()->CreateLight(&light);
 
 	// Disable cursor.

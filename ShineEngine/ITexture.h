@@ -13,21 +13,29 @@ enum TextureType
 	NORMAL
 };
 
+enum FBOTextureType
+{
+	DEPTH,
+	COLOR,
+	NORMALANDPOS,
+};
+
 struct STextureParams
 {
 	TextureType m_Type;
 	const char* m_file;
 	const char* m_name;
 	int m_id;
+	string cubemapTextures[6];
 };
 
 struct ITexture
 {
 	virtual void Load(){}
-	virtual int GetTextureID() = 0;
+	virtual GLuint GetTextureBufferId() = 0;
 	virtual string GetTextureName() = 0;
 	virtual string GetTextureFile() = 0;
-	virtual GLuint GetTextureId() = 0;
-	virtual TextureType GetTextureType() = 0;
+	virtual int GetTextureId() = 0;
+
 };
 #endif

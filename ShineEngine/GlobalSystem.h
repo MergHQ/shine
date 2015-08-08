@@ -15,6 +15,7 @@ class CGameInput;
 class CWindowInput;
 class CMaterialSystem;
 class CEnvironmentLoader;
+class CSkyBox;
 
 struct IGlobalSystem
 {
@@ -35,6 +36,8 @@ public:
 	CConsoleInput* m_pConIp;
 	CGameInput* m_pGameIp;
 	CWindowInput* m_pWinIp;
+
+	CSkyBox* m_pSkyBox;
 
 	void Init(CMainWindow* MainWin);
 	void Update(float dt);

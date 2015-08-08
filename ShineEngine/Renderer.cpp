@@ -3,6 +3,7 @@
 #include "MeshSystem.h"
 #include "Camera.h"
 #include "FPCamera.h"
+#include "Skybox.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -27,10 +28,8 @@ void CRenderer::ReleaseSystems()
 {
 	delete m_postprocessor;
 	delete m_pLightSystem;
-	glDeleteBuffers(1, &quadvao);
-	glDeleteBuffers(1, &quadibo);
-	glDeleteBuffers(1, &quadvbo);
-	glDeleteBuffers(1, &quaduv);
+	delete sm;
+
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
@@ -41,20 +40,23 @@ void CRenderer::Init(GLFWwindow* pWin)
 
 	window = pWin;
 
-	m_postprocessor = new CPostProcessor;	
-	m_postprocessor->Initialize("shaders/pp_shaders/DeferredLightPass.ss");
+	m_postprocessor = new CPostProcessor;
+	m_postprocessor->Initialize("shaders/pp_shaders/DeferredLightPass.ss", false);
+
+	sm = new CPostProcessor;
+	sm->Initialize("shaders/shadowmap.ss", true);
 
 	m_pLightSystem = new CLightSystem;
 
-	FboQuad();
 }
 void CRenderer::Render()
 {
+	DrawShadoMap();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_postprocessor->GetFBO());
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 
 	glEnable(GL_LIGHTING);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	DrawMeshes();
@@ -66,6 +68,7 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glUseProgram(ShaderProg);
 
@@ -89,10 +92,14 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glUniform1i(glGetUniformLocation(ShaderProg, "positiontex"), 6);
 	glActiveTexture(GL_TEXTURE0);
 
-	//glActiveTexture(GL_TEXTURE7);
-	//glBindTexture(GL_TEXTURE_2D, m_shadowMapProcessor->textures[1]);
-	//glUniform1i(glGetUniformLocation(ShaderProg, "shadowmpapos"), 7);
-	//glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, sm->textures[1]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "shadowmpapos"), 7);
+	glActiveTexture(GL_TEXTURE0);
+
+#ifdef DEV_MODE
+	m_pLightSystem->ProcessLights();
+#endif
 
 	// Lights
 	glUniform1i(glGetUniformLocation(ShaderProg, "lightAmount"), m_pLightSystem->lightContainer.size());	
@@ -108,51 +115,19 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glUniform3f(glGetUniformLocation(ShaderProg, "CamPos"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 
 	// Bind quad geom buffers
-	glBindVertexArray(quadvao);
-	glDrawElements(GL_TRIANGLES, QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
-}
+	glBindVertexArray(m_postprocessor->GetQuadVao());
+	glDrawElements(GL_TRIANGLES, m_postprocessor->QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
-void CRenderer::FboQuad()
-{
-	// INDEX
-	//   2________3
-	//	 |\		 |
-	//	 |	 \	 |
-	//	 |______\|
-	//   0		 1
-
-	const GLfloat QuadVerts[] =
-	{
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f
-	};
-
-	QuadIndices =
-	{
-		2,0,1,2,1,3
-	};
-
-	glGenVertexArrays(1, &quadvao);
-	glBindVertexArray(quadvao);
-
-	glEnableVertexAttribArray(0);
-	glGenBuffers(1, &quadvao);
-	glBindBuffer(GL_ARRAY_BUFFER, quadvao);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizeof(QuadVerts), &QuadVerts, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
-
-
-	glGenBuffers(1, &quadibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, QuadIndices.size() * sizeof(uint), &QuadIndices[0] , GL_STATIC_DRAW);
-
-	glBindVertexArray(NULL);
 }
 
 void CRenderer::DrawMeshes()
 {
+	if (gSys->m_pSkyBox != nullptr)
+	{
+		gSys->m_pSkyBox->cam = static_cast<CFPCamera*>(gSys->GetCamera());
+		gSys->m_pSkyBox->Draw();
+	}
+
 	GLuint p = 0;
 
 	if (gSys->pMeshSystem != nullptr)
@@ -173,39 +148,54 @@ void CRenderer::DrawMeshes()
 				glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
 				glUniformMatrix4fv(glGetUniformLocation(m_postprocessor->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
 
-				// Textures
+				// Texture
 				glActiveTexture(GL_TEXTURE11);
-				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureId());
+				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureBufferId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 11);
 				glActiveTexture(GL_TEXTURE0);
 
-				glActiveTexture(GL_TEXTURE12);
-				glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[0]);
-				glUniform1i(glGetUniformLocation(p, "diffusetex"), 12);
-				glActiveTexture(GL_TEXTURE0);
-
-				glActiveTexture(GL_TEXTURE13);
-				glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[1]);
-				glUniform1i(glGetUniformLocation(p, "depthtex"), 13);
-				glActiveTexture(GL_TEXTURE0);
-
-				glActiveTexture(GL_TEXTURE14);
-				glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[2]);
-				glUniform1i(glGetUniformLocation(p, "normaltex"), 14);
-				glActiveTexture(GL_TEXTURE0);
-
-				glActiveTexture(GL_TEXTURE15);
-				glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[3]);
-				glUniform1i(glGetUniformLocation(p, "positiontex"), 15);
-				glActiveTexture(GL_TEXTURE0);
-
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+
+				glUniformMatrix4fv(glGetUniformLocation(p, "DepthBias"), 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
+
+				glActiveTexture(GL_TEXTURE7);
+				glBindTexture(GL_TEXTURE_2D, sm->textures[1]);
+				glUniform1i(glGetUniformLocation(p, "shadowmap"), 7);
+				glActiveTexture(GL_TEXTURE0);
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
 				glUniform1i(glGetUniformLocation(p, "textures"), gSys->GetCamera()->textures());
 
 			}
+		}
+	}
+}
+
+void CRenderer::DrawShadoMap()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, sm->GetFBO());
+	glViewport(0, 0, sm->fbostats[0], sm->fbostats[1]);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (uint iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
+	{
+		if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
+		{
+			glUseProgram(sm->GetShader()->GetShaderProgramme());
+			Mat44 depthProjectionMatrix = glm::ortho<float>(-200, 200, -200, 200, -200, 200);
+			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(100, 50, 100), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+			glUniformMatrix4fv(glGetUniformLocation(sm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+			glm::mat4 biasMatrix(
+				0.5, 0.0, 0.0, 0.0,
+				0.0, 0.5, 0.0, 0.0,
+				0.0, 0.0, 0.5, 0.0,
+				0.5, 0.5, 0.5, 1.0
+				);
+			DepthBiasMVP = biasMatrix*mvp;
+			glBindVertexArray(pMesh->GetVao());
+			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 		}
 	}
 }

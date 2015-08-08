@@ -1,4 +1,3 @@
-#include <GLFW\glfw3.h>
 #include "WindowInput.h"
 #include "shine.h"
 #include "Input.h"

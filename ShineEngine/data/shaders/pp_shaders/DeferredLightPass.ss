@@ -24,6 +24,8 @@ uniform sampler2D normaltex;
 uniform sampler2D diffusetex;
 uniform sampler2D depthtex;
 uniform sampler2D positiontex;
+
+uniform sampler2D shadowmpapos;
  
 uniform vec3 lightPositions[20];
 uniform vec3 lightColors[20];
@@ -101,5 +103,5 @@ void main () {
         }
        
        
-        frag_colour = texture(diffusetex, sspos) * diffuse;
+        frag_colour = texture(diffusetex, sspos) * diffuse ;
 };

@@ -11,6 +11,7 @@
 #include "WindowInput.h"
 #include "MaterialSystem.h"
 #include "EnvironmentLoader.h"
+#include "Skybox.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
@@ -18,7 +19,8 @@ pRenderer(nullptr),
 pMeshSystem(nullptr),
 pConsoleSystem(nullptr),
 pMaterialSystem(nullptr),
-m_pCamera(nullptr)
+m_pCamera(nullptr),
+m_pSkyBox(nullptr)
 {
 }
 
@@ -35,6 +37,7 @@ IGlobalSystem::~IGlobalSystem()
 	delete m_pConIp;
 	delete m_pGameIp;
 	delete m_pWinIp;
+	delete m_pSkyBox;
 }
  
 void IGlobalSystem::Init(CMainWindow* win)
@@ -69,6 +72,9 @@ void IGlobalSystem::Init(CMainWindow* win)
 	m_pConIp = new CConsoleInput;
 	m_pGameIp = new CGameInput;
 	m_pWinIp = new CWindowInput;
+
+	// Environment stuff
+	m_pSkyBox = new CSkyBox;
 }
 
 void IGlobalSystem::ReleaseRenderContent()

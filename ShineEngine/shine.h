@@ -4,6 +4,7 @@
 
 #define DEV_MODE
 #define ASSET_ROOT_DIR std::string("data/")
+#define PI float(3.14159265358979323846264338327950288)
 
 #include "GlobalSystem.h"
 #include <glm\glm.hpp>

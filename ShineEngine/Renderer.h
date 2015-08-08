@@ -6,6 +6,9 @@
 #include "PostProcessor.h"
 #include "LightSystem.h"
 #include "ILight.h"
+#include "FPCamera.h"
+#include "ITexture.h"
+#include "Texture.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -22,8 +25,8 @@ public:
 	void Init(GLFWwindow* pWin);
 	void Render();
 	void ProcessFramebuffer(GLuint ShaderProg); 
-	void FboQuad();
 	void DrawMeshes();
+	void DrawShadoMap();
 	void ReleaseSystems();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
@@ -32,9 +35,10 @@ protected:
 private:
 	float time;
 	GLFWwindow* window;
-	GLuint quadvao, quadvbo, quadibo, quaduv;
+	CPostProcessor* sm;
+	Mat44 DepthBiasMVP;
 	CPostProcessor* m_postprocessor;
-	std::vector<GLuint> QuadIndices;
 	CLightSystem* m_pLightSystem;
 };
+
 #endif
