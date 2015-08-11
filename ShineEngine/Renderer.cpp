@@ -28,8 +28,7 @@ void CRenderer::ReleaseSystems()
 {
 	delete m_postprocessor;
 	delete m_pLightSystem;
-	delete sm;
-
+	delete pSm;
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
@@ -41,17 +40,18 @@ void CRenderer::Init(GLFWwindow* pWin)
 	window = pWin;
 
 	m_postprocessor = new CPostProcessor;
-	m_postprocessor->Initialize("shaders/pp_shaders/DeferredLightPass.ss", false);
+	m_postprocessor->Initialize("shaders/pp_shaders/DeferredLightPass.ss");
 
-	sm = new CPostProcessor;
-	sm->Initialize("shaders/shadowmap.ss", true);
+	pSm = new CShadowMapFBO(16000, 16000, "shaders/shadowmap.ss");
 
 	m_pLightSystem = new CLightSystem;
 
 }
 void CRenderer::Render()
 {
-	DrawShadoMap();
+	time += 0.01f;
+
+	DrawShadowMap();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_postprocessor->GetFBO());
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
@@ -75,27 +75,22 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[0]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "diffusetex"), 3);
-	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[1]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "depthtex"), 4);
-	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[2]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "normaltex"), 5);
-	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[3]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "positiontex"), 6);
-	glActiveTexture(GL_TEXTURE0);
 
 	glActiveTexture(GL_TEXTURE7);
-	glBindTexture(GL_TEXTURE_2D, sm->textures[1]);
+	glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
 	glUniform1i(glGetUniformLocation(ShaderProg, "shadowmpapos"), 7);
-	glActiveTexture(GL_TEXTURE0);
 
 #ifdef DEV_MODE
 	m_pLightSystem->ProcessLights();
@@ -152,16 +147,24 @@ void CRenderer::DrawMeshes()
 				glActiveTexture(GL_TEXTURE11);
 				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureBufferId());
 				glUniform1i(glGetUniformLocation(p, "texsamp"), 11);
-				glActiveTexture(GL_TEXTURE0);
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+
+				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
+				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+				glm::mat4 biasMatrix(
+					0.5, 0.0, 0.0, 0.0,
+					0.0, 0.5, 0.0, 0.0,
+					0.0, 0.0, 0.5, 0.0,
+					0.5, 0.5, 0.5, 1.0
+					);
+				DepthBiasMVP = biasMatrix*mvp;
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "DepthBias"), 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
 
 				glActiveTexture(GL_TEXTURE7);
-				glBindTexture(GL_TEXTURE_2D, sm->textures[1]);
+				glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
 				glUniform1i(glGetUniformLocation(p, "shadowmap"), 7);
-				glActiveTexture(GL_TEXTURE0);
 
 				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
@@ -172,10 +175,10 @@ void CRenderer::DrawMeshes()
 	}
 }
 
-void CRenderer::DrawShadoMap()
+void CRenderer::DrawShadowMap()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, sm->GetFBO());
-	glViewport(0, 0, sm->fbostats[0], sm->fbostats[1]);
+	glBindFramebuffer(GL_FRAMEBUFFER, pSm->GetFBO());
+	glViewport(0, 0, 16000, 16000);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -183,17 +186,10 @@ void CRenderer::DrawShadoMap()
 	{
 		if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
 		{
-			glUseProgram(sm->GetShader()->GetShaderProgramme());
-			Mat44 depthProjectionMatrix = glm::ortho<float>(-200, 200, -200, 200, -200, 200);
-			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(100, 50, 100), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
-			glUniformMatrix4fv(glGetUniformLocation(sm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-			glm::mat4 biasMatrix(
-				0.5, 0.0, 0.0, 0.0,
-				0.0, 0.5, 0.0, 0.0,
-				0.0, 0.0, 0.5, 0.0,
-				0.5, 0.5, 0.5, 1.0
-				);
-			DepthBiasMVP = biasMatrix*mvp;
+			glUseProgram(pSm->GetShader()->GetShaderProgramme());
+			Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
+			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+			glUniformMatrix4fv(glGetUniformLocation(pSm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 			glBindVertexArray(pMesh->GetVao());
 			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 		}

@@ -46,16 +46,17 @@ void main () {
 	attachNormal = fNormal;
 	position = fPosition.xyz;
 	
+	float bias = 0.0001;
 	float visib = 1.0;
-	if ( texture(shadowmap, ShadowCoord.xy ).z  <  ShadowCoord.z)
+	if ( texture(shadowmap, ShadowCoord.xy ).z  <  ShadowCoord.z-bias)
 	{
 		visib = 0.5;
 	}
 	
 	if(textures == 1)
 	{
-		frag_colour = texture(texsamp, UV);	
+		frag_colour = texture(texsamp, UV) * visib;	
 	}else{
-		frag_colour = vec4(1);
+		frag_colour = vec4(1) * visib;
 	}
 };

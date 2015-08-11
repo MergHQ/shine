@@ -55,7 +55,7 @@
     <Filter Include="Source Files\Engine\Utils\Json">
       <UniqueIdentifier>{38075fe3-4d39-4a98-80d3-6bc2066919ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Renderer\Environment">
+    <Filter Include="Source Files\Engine\System\Environment">
       <UniqueIdentifier>{1ff8cf50-98e9-4dc3-a72b-a23f1871cb73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -139,7 +139,10 @@
       <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="SkyBox.cpp">
-      <Filter>Source Files\Engine\Renderer\Environment</Filter>
+      <Filter>Source Files\Engine\System\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowGen.cpp">
+      <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowGen.h">
+      <Filter>Source Files\Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

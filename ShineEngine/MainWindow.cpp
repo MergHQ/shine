@@ -58,7 +58,7 @@ void CMainWindow::Init()
 	gSys = new IGlobalSystem();
 	gSys->Init(this);
 
-	for (uint i = 0; i < 100; i++)
+	for (uint i = 0; i < 20; i++)
 	{
 		SMeshParams tree;
 		tree.fileName = "objects/trees.obj";
@@ -78,9 +78,10 @@ void CMainWindow::Init()
 
 	Light light;
 	light.type = DIRLIGHT;
-	light.color = Vec3(2, 2, 1);
-	light.position = Vec3(100, 50, 100);
-	//gSys->pRenderer->GetLightSystem()->CreateLight(&light);
+	light.attenuation = Vec3(1, 0.01, 0.002);
+	light.color = Vec3(4, 2, 0);
+	light.position = Vec3(50, 50, 50);
+	ILight* pl = gSys->pRenderer->GetLightSystem()->CreateLight(&light);
 
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -91,13 +92,22 @@ void CMainWindow::Init()
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
 
+	SMeshParams p;
+	p.fileName = "objects/sphere.obj";
+	p.m_materialFile = "m.mtl";
+	p.pos = Vec3(0, 0, 0);
+	p.name = "dsads";
+	IMesh* pm = gSys->pMeshSystem->CreateMesh(&p);
+
 	// Timer variables
 	double lastTime = glfwGetTime();
 	float dt = 0;
+	float t = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		// Update timer
+		t += 0.01f;
 		dt = float(glfwGetTime() - lastTime);
 		lastTime = glfwGetTime();
 
@@ -105,6 +115,7 @@ void CMainWindow::Init()
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
+		pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
 
 	}
 

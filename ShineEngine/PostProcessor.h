@@ -4,6 +4,7 @@
 
 #include "IShader.h"
 #include "shine.h"
+
 #include <GLFW\glfw3.h>
 #include <vector>
 
@@ -17,7 +18,7 @@ public:
 	int fbostats[2];
 	GLuint textures[4];
 
-	void Initialize(string shaderfile, bool shadowmap);
+	void Initialize(string shaderfile);
 	GLuint GetFBO() { return fbo; }
 	IShader* GetShader() { return pSSRS; }
 	std::vector<GLuint> QuadIndices;

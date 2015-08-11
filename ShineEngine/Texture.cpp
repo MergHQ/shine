@@ -12,6 +12,7 @@ CTexture::CTexture(STextureParams* params)
 
 CTexture::~CTexture()
 {
+	glDeleteTextures(1, &m_texBufferId);
 }
 
 void CTexture::Load()
@@ -74,6 +75,7 @@ void CTexture::Load()
 
 
 	m_texBufferId = textureID;
+
 }
 
 CCubeMapTexture::CCubeMapTexture(STextureParams* params)

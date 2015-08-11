@@ -110,7 +110,6 @@ void CSkyBox::Draw()
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, tex->GetTextureBufferId());
 	glUniform1i(glGetUniformLocation(pShader->GetShaderProgramme(), "cubemap"), 20);
-	glActiveTexture(0);
 
 	glDrawElements(GL_TRIANGLES, m_indiciesVector.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 

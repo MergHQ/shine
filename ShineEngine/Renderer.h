@@ -9,6 +9,7 @@
 #include "FPCamera.h"
 #include "ITexture.h"
 #include "Texture.h"
+#include "ShadowGen.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -26,7 +27,7 @@ public:
 	void Render();
 	void ProcessFramebuffer(GLuint ShaderProg); 
 	void DrawMeshes();
-	void DrawShadoMap();
+	void DrawShadowMap();
 	void ReleaseSystems();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
@@ -35,7 +36,7 @@ protected:
 private:
 	float time;
 	GLFWwindow* window;
-	CPostProcessor* sm;
+	CShadowMapFBO* pSm;
 	Mat44 DepthBiasMVP;
 	CPostProcessor* m_postprocessor;
 	CLightSystem* m_pLightSystem;

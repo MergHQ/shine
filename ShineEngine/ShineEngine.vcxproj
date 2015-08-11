@@ -106,6 +106,7 @@
     <ClCompile Include="MeshSystem.cpp" />
     <ClCompile Include="SetCommand.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowGen.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SetCommand.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShadowGen.h" />
     <ClInclude Include="shine.h" />
     <ClInclude Include="GlobalSystem.h" />
     <ClInclude Include="MeshSystem.h" />

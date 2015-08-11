@@ -4,7 +4,7 @@
 	"shaderparams":[],
 	"textures":[
 		{
-			"texture":"stones.bmp",
+			"texture":"ground.bmp",
 			"texname":"test_diff",
 			"type": "DIFFUSE"
 		},
