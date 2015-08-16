@@ -29,7 +29,7 @@ uniform sampler2D shadowmpapos;
  
 uniform vec3 lightPositions[20];
 uniform vec3 lightColors[20];
-uniform vec3 lightAtteniuations[20];
+uniform vec3 lightAttenuations[20];
 uniform int lightAmount;
  
 uniform vec3 CamPos;
@@ -42,66 +42,50 @@ uniform mat4 ProjectionMatrix;
  
 vec2 GetScreenSpacePosition()
 {
-        return gl_FragCoord.xy/vec2(1280,720);
+	return gl_FragCoord.xy/vec2(1280,720);
 }
 
 void main () {
- 
-        vec2 sspos = GetScreenSpacePosition();
-        vec3 position = texture(positiontex, sspos).xyz;
-        vec3 normal = texture(normaltex, sspos).xyz;
- 
-        vec4 diffuse = vec4(0);
-		 	
-        for(int i = 0; i < 20; i++)
-        {
-                if(i < lightAmount)
-				{
-                    //Diffuse
-                    vec3 L = lightPositions[i] - position;
-                    vec3 LN = normalize(L);
-					vec3 att = lightAtteniuations[i];
-					float dist = length(L);
-					float attFactor = att.x + (att.y * dist) + (att.z * dist * dist);
-						
-					if(attFactor > 0)
-					{
-	 
-						float diffuseFactor = clamp(dot(LN, normal), 0.0, 1.0);
-						diffuse += vec4(vec3(lightColors[i] * diffuseFactor), 1);
-		 
-						// Specular
-						vec3 VertToEye = normalize(CamPos - position);
-						vec3 ReflectedVector = normalize(reflect(-LN, normal));
-						float specularfactor = dot(ReflectedVector, VertToEye);
-							   
-						if(specularfactor > 0)
-						{
-							specularfactor = pow(specularfactor, 10.0);
-							diffuse += vec4(vec3(1) * lightColors[i] * specularfactor, 1.0) / attFactor;
-						}
-	 
-					} 
-					else
-					{
-								
-						float diffuseFactor = clamp(dot(LN, normal), 0.0, 1.0);
-						diffuse += vec4(vec3(lightColors[i] * diffuseFactor), 1);
-		 
-						// Specular
-						vec3 VertToEye = normalize(CamPos - position);
-						vec3 ReflectedVector = normalize(reflect(-LN, normal));
-						float specularfactor = dot(ReflectedVector, VertToEye);
-							   
-						if(specularfactor > 0)
-						{
-							specularfactor = pow(specularfactor, 10.0);
-							diffuse += vec4(vec3(1) * lightColors[i] * specularfactor, 1.0);
-						}
-					}                       
-				}
+		vec4 lighting = vec4(0);
+		
+		vec2 sspos = GetScreenSpacePosition();
+		vec3 normal = texture(normaltex, sspos).xyz;
+		vec3 position = texture(positiontex, sspos).xyz;
+		vec3 surfaceToCamera = normalize(CamPos - position);
+		vec4 surfaceColor = texture(diffusetex, sspos);
+		
+		for(int i = 0; i < 20; i++)
+		{
+			if(i < lightAmount)
+			{
+				vec3 surfaceToLight = normalize(lightPositions[i] - position);
+				
+				// Diffuse
+				float diffuseCoefficient = max(0.0, dot(normal, surfaceToLight));
+				vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * lightColors[i];
+				
+				// Specular
+				float materialShininess = 10.0;
+				float specularCoefficient = 0.0;
+				if(diffuseCoefficient > 0)
+					specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), materialShininess);
+				vec3 specular = specularCoefficient * surfaceColor.rgb * lightColors[i];
+				
+				// Attenuation
+				float distanceToLight = length(lightPositions[i] - position);
+				vec3 att = lightAttenuations[i];
+				float attenuation = att.x + (att.y * distanceToLight) + (att.z * distanceToLight * distanceToLight);
+				
+				if(attenuation > 0)
+					lighting +=vec4((diffuse + specular) / attenuation, 1.0);
+				else
+					lighting += vec4(diffuse + specular, 1.0);
+			}
 		}
-       
-       
-        frag_colour = texture(diffusetex, sspos) * diffuse ;
+		
+		// Ambient
+		float ambientCoefficient = 0.25;
+		vec4 ambient = vec4(ambientCoefficient * surfaceColor.rgb, 1.0);
+		
+		frag_colour = lighting + ambient;
 };

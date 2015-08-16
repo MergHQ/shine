@@ -75,7 +75,6 @@ void CTexture::Load()
 
 
 	m_texBufferId = textureID;
-
 }
 
 CCubeMapTexture::CCubeMapTexture(STextureParams* params)

@@ -101,7 +101,7 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 
 	glUniform3fv(glGetUniformLocation(ShaderProg, "lightPositions"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->positions.data()));
 	glUniform3fv(glGetUniformLocation(ShaderProg, "lightColors"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->colors.data()));
-	glUniform3fv(glGetUniformLocation(ShaderProg, "lightAtteniuations"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->atts.data()));
+	glUniform3fv(glGetUniformLocation(ShaderProg, "lightAttenuations"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->atts.data()));
 
 	glUniform1fv(glGetUniformLocation(ShaderProg, "lightUsesShadows"), m_pLightSystem->lightContainer.size(), reinterpret_cast<GLfloat*>(m_pLightSystem->shadows.data()));
 	glUniform1iv(glGetUniformLocation(ShaderProg, "lightTypes"), m_pLightSystem->lightContainer.size(), m_pLightSystem->types.data());

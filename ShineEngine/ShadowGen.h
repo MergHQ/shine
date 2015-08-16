@@ -9,23 +9,6 @@
 #include <GLFW\glfw3.h>
 #include <vector>
 
-
-
-//class CShadowGen
-//{
-//public:
-//	CShadowGen();
-//	~CShadowGen();
-//
-//	void CreateFBO();
-//	GLuint DrawDirLightShadowMap(Vec3 pos, Mat44 pm, Vec3 lookat);
-//
-//protected:
-//private:
-//
-//
-//};
-
 class CShadowMapFBO
 {
 public:
@@ -46,6 +29,4 @@ private:
 	IShader* pShader;
 
 };
-
-
 #endif
