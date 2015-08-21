@@ -25,7 +25,7 @@ uniform sampler2D diffusetex;
 uniform sampler2D depthtex;
 uniform sampler2D positiontex;
 
-uniform sampler2D shadowmpapos;
+uniform sampler2D godraycolor;
  
 uniform vec3 lightPositions[20];
 uniform vec3 lightColors[20];
@@ -38,11 +38,32 @@ uniform mat4 ViewMatrix;
  
 in float shp_;
  
-uniform mat4 ProjectionMatrix;
+uniform vec2 lightsspos;
  
 vec2 GetScreenSpacePosition()
 {
 	return gl_FragCoord.xy/vec2(1280,720);
+}
+
+vec4 ComputeVolumetricLighting(vec2 sspos)
+{
+	const int SAMPLES = 128;
+		
+	float intensity = 0.25;
+	float decay = 0.96875;
+	vec2 texcoord = sspos;
+	vec2 dir = (lightsspos / 1000) - texcoord;
+	dir /= SAMPLES;
+	vec3 godrays = texture(godraycolor, texcoord).xyz;
+		
+	for(int j = 0; j < SAMPLES; j++)
+	{
+		godrays += texture(godraycolor, texcoord).xyz * intensity;
+		intensity *= decay;
+		texcoord += dir;	
+	}
+	
+	return vec4(godrays, 1.0);
 }
 
 void main () {
@@ -83,9 +104,12 @@ void main () {
 			}
 		}
 		
+		vec3 camdir = normalize(CamPos - position);
+		float fresnel = pow(1-dot(camdir, normal), 5);
+		
 		// Ambient
 		float ambientCoefficient = 0.25;
 		vec4 ambient = vec4(ambientCoefficient * surfaceColor.rgb, 1.0);
 		
-		frag_colour = lighting + ambient;
+		frag_colour = lighting + ambient + ComputeVolumetricLighting(sspos);
 };

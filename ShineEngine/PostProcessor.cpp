@@ -43,6 +43,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenTextures(1, &normaltex);
 	glGenTextures(1, &colortex);
 	glGenTextures(1, &positiontex);
+	glGenTextures(1, &godray);
 
 	glGenRenderbuffers(1, &depthtex);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthtex);
@@ -81,8 +82,13 @@ void CPostProcessor::Initialize(string shaderfile)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, positiontex, 0);
 
-	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, DrawBuffers);
+	glBindTexture(GL_TEXTURE_2D, godray);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, godray, 0);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -95,6 +101,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	textures[1] = depthtex;
 	textures[2] = normaltex;
 	textures[3] = positiontex;
+	textures[4] = godray;
 
 	FboQuad();
 
@@ -137,4 +144,15 @@ void CPostProcessor::FboQuad()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, QuadIndices.size() * sizeof(uint), &QuadIndices[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(NULL);
+}
+
+void CPostProcessor::MeshPass()
+{
+	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, DrawBuffers);
+}
+
+void CPostProcessor::GodRayPass()
+{
+	glDrawBuffer(GL_COLOR_ATTACHMENT3);
 }

@@ -29,6 +29,8 @@ void CRenderer::ReleaseSystems()
 	delete m_postprocessor;
 	delete m_pLightSystem;
 	delete pSm;
+	delete lightsphere;
+	delete godray;
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
@@ -45,6 +47,16 @@ void CRenderer::Init(GLFWwindow* pWin)
 	pSm = new CShadowMapFBO(16000, 16000, "shaders/shadowmap.ss");
 
 	m_pLightSystem = new CLightSystem;
+	SMeshParams sd;
+	sd.fileName = "objects/sphere.obj";
+	sd.name = "dsff";
+	sd.m_materialFile = "m.mtl";
+	lightsphere = new CMesh(&sd);
+
+	SShaderParams sp;
+	sp.name = "kdsad";
+	sp.s_file = "shaders/gr.ss";
+	godray = new CShader(&sp);
 
 }
 void CRenderer::Render()
@@ -59,6 +71,7 @@ void CRenderer::Render()
 	glEnable(GL_LIGHTING);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
+	DrawGodRayShit();
 	DrawMeshes();
 	ProcessFramebuffer(m_postprocessor->GetShader()->GetShaderProgramme());
 }
@@ -68,7 +81,6 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glUseProgram(ShaderProg);
 
@@ -77,7 +89,7 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glUniform1i(glGetUniformLocation(ShaderProg, "diffusetex"), 3);
 
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[1]);
+	glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
 	glUniform1i(glGetUniformLocation(ShaderProg, "depthtex"), 4);
 
 	glActiveTexture(GL_TEXTURE5);
@@ -88,9 +100,14 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[3]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "positiontex"), 6);
 
-	glActiveTexture(GL_TEXTURE7);
-	glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
-	glUniform1i(glGetUniformLocation(ShaderProg, "shadowmpapos"), 7);
+	glActiveTexture(GL_TEXTURE20);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[4]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "godraycolor"), 20);
+
+	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(700, 200, 700, 1));
+	Vec3 ndc = Vec3(cs.x, cs.y, cs.z) / cs.w;
+	Vec2 ss = Vec2(((ndc.x + 1) / 2 * 1280), (ndc.y + 1) / 2 * 720) * Vec2(0.8,1.40);
+	glUniform2f(glGetUniformLocation(ShaderProg, "lightsspos"), ss.x, ss.y);
 
 #ifdef DEV_MODE
 	m_pLightSystem->ProcessLights();
@@ -117,6 +134,9 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 
 void CRenderer::DrawMeshes()
 {
+	m_postprocessor->MeshPass();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	if (gSys->m_pSkyBox != nullptr)
 	{
 		gSys->m_pSkyBox->cam = static_cast<CFPCamera*>(gSys->GetCamera());
@@ -161,6 +181,8 @@ void CRenderer::DrawMeshes()
 				DepthBiasMVP = biasMatrix*mvp;
 
 				glUniformMatrix4fv(glGetUniformLocation(p, "DepthBias"), 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
+				glUniform1i(glGetUniformLocation(p, "asd"), 0);
+
 
 				glActiveTexture(GL_TEXTURE7);
 				glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
@@ -188,11 +210,40 @@ void CRenderer::DrawShadowMap()
 		{
 			glUseProgram(pSm->GetShader()->GetShaderProgramme());
 			Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
-			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(700, 200, 700), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
 			glUniformMatrix4fv(glGetUniformLocation(pSm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 			glBindVertexArray(pMesh->GetVao());
 			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 		}
+	}
+}
+
+void CRenderer::DrawGodRayShit()
+{
+	m_postprocessor->GodRayPass();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GLuint p = godray->GetShaderProgramme();
+	glUseProgram(godray->GetShaderProgramme());
+
+	for (uint iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
+	{
+		if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
+		{
+			Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM();
+			glUniformMatrix4fv(glGetUniformLocation(godray->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+			glUniform1i(glGetUniformLocation(p, "asd"), 0);
+			glBindVertexArray(pMesh->GetVao());
+			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+		}
+	}
+
+	for (uint j = 0; j < m_pLightSystem->lightContainer.size(); j++)
+	{
+		Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * glm::translate(Mat44(), m_pLightSystem->lightContainer[j]->GetPos()) * glm::scale(Mat44(), Vec3(40,40,40));
+		glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+		glUniform1i(glGetUniformLocation(p, "asd"), 1);
+		glBindVertexArray(lightsphere->GetVao());
+		glDrawElements(GL_TRIANGLES, lightsphere->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 	}
 }
 

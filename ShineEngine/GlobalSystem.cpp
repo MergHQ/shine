@@ -51,13 +51,13 @@ void IGlobalSystem::Init(CMainWindow* win)
 
 	pInput = new CInput;
 	Log("- Input");
-	pRenderer = new CRenderer;
-	pRenderer->Init(win->GetWindow());
-	Log("- Renderer");
 	pMeshSystem = new CMeshSystem;
 	Log("- Mesh system");
 	pMaterialSystem = new CMaterialSystem;
 	Log("- Material System");
+	pRenderer = new CRenderer;
+	pRenderer->Init(win->GetWindow());
+	Log("- Renderer");
 	pConsoleSystem = new CConsoleSystem;
 	Log("- Console system");
 	m_pCamera = new CFPCamera;

@@ -16,18 +16,20 @@ public:
 
 	// 0 = width, 1 = height
 	int fbostats[2];
-	GLuint textures[4];
+	GLuint textures[5];
 
 	void Initialize(string shaderfile);
 	GLuint GetFBO() { return fbo; }
 	IShader* GetShader() { return pSSRS; }
 	std::vector<GLuint> QuadIndices;
 	GLuint GetQuadVao() { return quadvao; }
+	void MeshPass();
+	void GodRayPass();
 protected:
 private:
 	void FboQuad();
 	int fbowidth, fboheight;
-	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex;
+	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex, godray;
 	IShader* pSSRS;
 };
 #endif

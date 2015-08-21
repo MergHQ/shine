@@ -36,15 +36,18 @@ in vec4 ShadowCoord;
 layout(location = 0) out vec4 frag_colour;	
 layout(location = 1) out vec3 attachNormal;
 layout(location = 2) out vec3 position;
+layout(location = 3) out vec4 vollightcol;
 
 uniform sampler2D texsamp;
 uniform int textures;
 uniform sampler2D shadowmap;
+uniform int asd;
 
 void main () {
 	
 	attachNormal = fNormal;
 	position = fPosition.xyz;
+	vollightcol = vec4(asd);
 	
 	float bias = 0.0001;
 	float visib = 1.0;
@@ -55,7 +58,7 @@ void main () {
 	
 	if(textures == 1)
 	{
-		frag_colour = texture(texsamp, UV) * visib;	
+		frag_colour = texture(texsamp, UV);	
 	}else{
 		frag_colour = vec4(1) * visib;
 	}

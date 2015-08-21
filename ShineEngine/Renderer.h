@@ -10,6 +10,8 @@
 #include "ITexture.h"
 #include "Texture.h"
 #include "ShadowGen.h"
+#include "IShader.h"
+#include "IMesh.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -29,6 +31,7 @@ public:
 	void DrawMeshes();
 	void DrawShadowMap();
 	void ReleaseSystems();
+	void DrawGodRayShit();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
 
@@ -40,6 +43,9 @@ private:
 	Mat44 DepthBiasMVP;
 	CPostProcessor* m_postprocessor;
 	CLightSystem* m_pLightSystem;
+	IMesh* lightsphere;
+	IShader* godray;
+
 };
 
 #endif
