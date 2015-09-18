@@ -57,12 +57,13 @@ void CMainWindow::Init()
 	// Creating the core systems
 	gSys = new IGlobalSystem();
 	gSys->Init(this);
+	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
 
-	for (uint i = 0; i < 100; i++)
+	for (uint i = 0; i < 50; i++)
 	{
 		SMeshParams tree;
-		tree.fileName = "objects/sphere.obj";
-		tree.m_materialFile = "m.mtl";
+		tree.fileName = "objects/lptree.obj";
+		tree.m_materialFile = "tree.mtl";
 		tree.name = "dsad";
 		if (rand() % 4 < 1)
 			tree.pos = Vec3(rand() % 10, rand() % 10, rand() % 10);
@@ -86,7 +87,6 @@ void CMainWindow::Init()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Load a scene
-	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
@@ -96,7 +96,7 @@ void CMainWindow::Init()
 	p.m_materialFile = "m.mtl";
 	p.pos = Vec3(0, 0, 0);
 	p.name = "dsads";
-	IMesh* pm = gSys->pMeshSystem->CreateMesh(&p);
+	//IMesh* pm = gSys->pMeshSystem->CreateMesh(&p);
 
 	// Timer variables
 	double lastTime = glfwGetTime();
@@ -114,7 +114,7 @@ void CMainWindow::Init()
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-		pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
+		//pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
 
 	}
 

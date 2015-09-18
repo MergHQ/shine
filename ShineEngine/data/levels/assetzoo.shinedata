@@ -3,21 +3,10 @@
 	"objects":[
 
 		{
-			"objectpath":"objects/plane.obj",
+			"objectpath":"objects/lptree.obj",
 			"position":"0,0,0",
-			"material":"m.mtl"
-		},
-		{
-			"objectpath":"objects/trees.obj",
-			"position":"30,0,10",
-			"material":"tree.mtl"
-		},
-		{
-			"objectpath":"objects/trees.obj",
-			"position":"-40,0,-20",
 			"material":"tree.mtl"
 		}
-		
 	],
 	"lights":[
 	]

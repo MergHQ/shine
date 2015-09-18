@@ -79,19 +79,6 @@ void IGlobalSystem::Init(CMainWindow* win)
 
 void IGlobalSystem::ReleaseRenderContent()
 {
-	if (CMeshSystem* pMeshSys = gSys->pMeshSystem)
-	{
-		for (unsigned int iter = 0; iter < pMeshSys->GetMeshContainer().size(); iter++)
-		{
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshVbo);
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshInidcies);
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshNormals);
-			glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTexcoords);
-			//glDeleteBuffers(1, &pMeshSys->GetMeshContainer()[iter]->meshTextureId);
-
-			glDeleteProgram(pMeshSys->GetMeshContainer()[iter]->GetMaterial()->GetShader()->GetShaderProgramme());
-		}
-	}
 
 	if (CMeshSystem* pMeshSys = pMeshSystem)
 	{
@@ -118,6 +105,7 @@ void IGlobalSystem::ReleaseRenderContent()
 void IGlobalSystem::Update(float dt)
 {
 	m_pCamera->Update(dt, pRenderer->GetWin());
+
 }
 
 void IGlobalSystem::Log(std::string log)

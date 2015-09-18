@@ -1,17 +1,17 @@
 {
-	"material_name" : "mymaterial",
-	"shading" : "shaders/surface_shaders/illum.ss",
-	"shaderparams":[],
-	"textures":[
+	"shapes":[
 		{
-			"texture":"ground.bmp",
-			"texname":"test_diff",
-			"type": "DIFFUSE"
-		},
-		{
-			"texture":"t.bmp",
-			"texname":"test_spec",
-			"type": "SPECULAR"
+			"shape":"sphere",
+			"material_name" : "tree",
+			"shading" : "shaders/surface_shaders/illum.ss",
+			"shaderparams":[],
+			"textures":[
+				{
+					"texture":"brown.bmp",
+					"texname":"tree_diffuse",
+					"type": "DIFFUSE"
+				}
+			]
 		}
 	]
 }

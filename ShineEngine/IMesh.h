@@ -38,6 +38,19 @@ struct SMeshParams
 	const char* m_materialFile;
 };
 
+struct Shape
+{	
+	string name;
+	IMaterial* pMaterial;
+	std::vector<unsigned int> indices;
+
+	GLuint meshVao;
+	GLuint meshVbo;
+	GLuint meshInidcies;
+	GLuint meshNormals;
+	GLuint meshTexcoords;
+};
+
 /*
 The mesh interface.
 */
@@ -50,18 +63,10 @@ struct IMesh
 	virtual string GetName() = 0;
 	virtual string GetFileName() = 0;
 	virtual int GetId() = 0;
-	virtual IMaterial* GetMaterial() = 0;
-	virtual std::vector<float> GetVerts() = 0;
-	virtual std::vector<unsigned int> GetIndicies() = 0;
-	virtual std::vector<float> GetNormals() = 0;
-	virtual std::vector<float> GetTexCoords() = 0;
 	virtual Vec3 GetWorldPos() = 0;
 	virtual Vec4 GetRotation() = 0;
 	virtual glm::mat4 GetWorldTM() = 0;
-	virtual GLuint GetVao() = 0;
-	virtual GLuint GetVbo() = 0;
-	virtual GLuint GetIbo() = 0;
-	virtual GLuint GetNbo() = 0;
-	virtual GLuint GetTbo() = 0;
+	virtual std::vector<Shape*> GetShapeContainer() = 0;
 };
+
 #endif

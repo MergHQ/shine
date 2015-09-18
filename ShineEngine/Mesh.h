@@ -17,34 +17,20 @@ public:
 	CMesh(SMeshParams* pMesh);
 	CMesh::~CMesh();
 
-	GLuint meshVao;
-	GLuint meshVbo;
-	GLuint meshInidcies;
-	GLuint meshNormals;
-	GLuint meshTexcoords;
-
 	// IMesh
 	virtual void SetPos(Vec3 pos);
 	virtual void SetRotation(Vec3 axis, float rot);
 	virtual string GetName() { return m_meshName; }
 	virtual string GetFileName() { return m_file; }
 	virtual int GetId() { return m_meshId; }
-	virtual IMaterial* GetMaterial() { return m_pMaterial; }
-	virtual std::vector<float> GetVerts() { return m_verticies; }
-	virtual std::vector<unsigned int> GetIndicies() { return m_indiciesVector; }
-	virtual std::vector<float> GetNormals() { return m_normals; }
-	virtual std::vector<float> GetTexCoords() { return m_texcoords; }
 	virtual Vec3 GetWorldPos() { return m_worldPos; }
 	virtual Vec4 GetRotation() { return Vec4(m_worldRotAxis, m_worldRotScalar); }
 	virtual Mat44 GetWorldTM(){ return m_tm; }
-	virtual GLuint GetVao() { return meshVao; }
-	virtual GLuint GetVbo() { return meshVbo; }
-	virtual GLuint GetIbo() { return meshInidcies; }
-	virtual GLuint GetNbo() { return meshNormals; }
-	virtual GLuint GetTbo() { return meshTexcoords; }
-	// ~IMesh
+	virtual std::vector<Shape*> GetShapeContainer() { return m_shapeContainer; }
 
-	void CreateVaosAndShit();
+	// ~IMesh
+	std::vector<tinyobj::shape_t> shapes;
+	void CreateBufferObjects();
 	void BuildTM(Vec3 pos, Vec3 axis, float rot);
 protected:
 private:
@@ -53,14 +39,11 @@ private:
 	const unsigned int m_slot = 0;
 	int m_meshId;
 	float m_worldRotScalar;
-	IMaterial* m_pMaterial;
 	std::vector<tinyobj::shape_t> ReadCompiledObj(std::istream* stream);
-	std::vector<float> m_verticies;
-	std::vector<float> m_normals;
-	std::vector<float> m_texcoords;
-	std::vector<unsigned int> m_indiciesVector;
+	std::vector<Shape*> m_shapeContainer;
 	Vec3 m_worldPos;
 	Vec3 m_worldRotAxis;
 	Mat44 m_tm;
+	string m_materialFile;
 };
 #endif

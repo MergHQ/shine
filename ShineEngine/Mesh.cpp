@@ -17,16 +17,25 @@ CMesh::CMesh(SMeshParams* pMesh)
 	m_meshId = pMesh->id;
 	m_meshName = pMesh->name;
 	m_file = pMesh->fileName;
-	CreateVaosAndShit();
+	m_materialFile = pMesh->m_materialFile;
+	CreateBufferObjects();
 	m_worldPos = pMesh->pos;
 	m_worldRotAxis = pMesh->rotaxis;
 	m_worldRotScalar = pMesh->rotAmmount;
-	if(IMaterial* pMaterial = gSys->pMaterialSystem->LoadMaterial(pMesh->m_materialFile))
-		m_pMaterial = pMaterial;
 	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
-CMesh::~CMesh() {}
+CMesh::~CMesh() 
+{
+	for (uint i = 0; i < m_shapeContainer.size(); i++)
+	{
+		glDeleteBuffers(1, &m_shapeContainer[i]->meshInidcies); 
+		glDeleteBuffers(1, &m_shapeContainer[i]->meshNormals);
+		glDeleteBuffers(1, &m_shapeContainer[i]->meshTexcoords);
+		glDeleteBuffers(1, &m_shapeContainer[i]->meshVao);
+		glDeleteBuffers(1, &m_shapeContainer[i]->meshVbo);
+	}
+}
 
 void CMesh::SetPos(Vec3 pos)
 {
@@ -41,7 +50,7 @@ void CMesh::SetRotation(Vec3 axis, float rot)
 	BuildTM(m_worldPos, m_worldRotAxis, m_worldRotScalar);
 }
 
-void CMesh::CreateVaosAndShit()
+void CMesh::CreateBufferObjects()
 {
 	//std::filebuf fileBuffer;
 	//fileBuffer.open(m_file,std::ios::in);
@@ -52,23 +61,22 @@ void CMesh::CreateVaosAndShit()
 
 	//fileBuffer.close();
 
+	bool shouldLoad = true;
+
 	for (uint i = 0; i < gSys->pMeshSystem->GetMeshContainer().size(); i++)
 	{
-		if (gSys->pMeshSystem->GetMeshContainer()[i]->GetFileName() == m_file)
+		if (gSys->pMeshSystem->GetMeshContainer()[i]->GetFileName() == m_file && !gSys->pMeshSystem->GetMeshContainer()[i]->shapes.empty())
 		{
-			m_verticies = gSys->pMeshSystem->GetMeshContainer()[i]->GetVerts();
-			m_indiciesVector = gSys->pMeshSystem->GetMeshContainer()[i]->GetIndicies();
-			m_normals = gSys->pMeshSystem->GetMeshContainer()[i]->GetNormals();
-			m_texcoords = gSys->pMeshSystem->GetMeshContainer()[i]->GetTexCoords();
+			shapes = gSys->pMeshSystem->GetMeshContainer()[i]->shapes;
+			shouldLoad = false;
 		}
 	}
 
-	if (m_verticies.empty())
+	if (shouldLoad)
 	{
-		gSys->Log(("/n Loading model %c", m_file));
+		gSys->Log("/n Loading model " + m_file);
 
 		std::string inputfile = ASSET_ROOT_DIR + m_file;
-		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
 
@@ -77,64 +85,74 @@ void CMesh::CreateVaosAndShit()
 			gSys->Log("[MESHSYS] Cannot find the .obj file specified.");
 			return;
 		}
-
-		m_verticies = shapes[m_slot].mesh.positions;
-		m_indiciesVector = shapes[m_slot].mesh.indices;
-		m_normals = shapes[m_slot].mesh.normals;
-		m_texcoords = shapes[m_slot].mesh.texcoords;
 	}
+	
 
-
-	GLuint vbo = 0;
-	GLuint indicies = 0;
-	GLuint normals = 0;
-	GLuint tex_coords = 0; // TODO: Fix shit variable naming
-
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	if (!m_verticies.empty())
+	for (uint i = 0; i < shapes.size(); i++)
 	{
-		glEnableVertexAttribArray(0);
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m_verticies.size(), &m_verticies[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
+
+		auto currentShape = shapes[i];
+
+		GLuint vbo = 0;
+		GLuint indicies = 0;
+		GLuint normals = 0;
+		GLuint tex_coords = 0; // TODO: Fix shit variable naming
+
+		GLuint vao = 0;
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		if (!currentShape.mesh.positions.empty())
+		{
+			glEnableVertexAttribArray(0);
+			glGenBuffers(1, &vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * currentShape.mesh.positions.size(), &currentShape.mesh.positions[0], GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
+			
+		}
+
+		if (!currentShape.mesh.indices.empty())
+		{
+			glGenBuffers(1, &indicies);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, currentShape.mesh.indices.size() * sizeof(uint), &currentShape.mesh.indices[0], GL_STATIC_DRAW);
+		}
+
+		if (!currentShape.mesh.normals.empty())
+		{
+			glEnableVertexAttribArray(1);
+			glGenBuffers(1, &normals);
+			glBindBuffer(GL_ARRAY_BUFFER, normals);
+			glBufferData(GL_ARRAY_BUFFER, currentShape.mesh.normals.size() * sizeof(float), &currentShape.mesh.normals[0], GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
+		}
+
+		if (!currentShape.mesh.texcoords.empty())
+		{
+			glEnableVertexAttribArray(2);
+			glGenBuffers(1, &tex_coords);
+			glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
+			glBufferData(GL_ARRAY_BUFFER, currentShape.mesh.texcoords.size() * sizeof(float), &currentShape.mesh.texcoords[0], GL_STATIC_DRAW);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+		}
+
+		glBindVertexArray(NULL);
+
+		// Fill the shape struct
+		auto shapeInstance = new Shape;
+		shapeInstance->indices = currentShape.mesh.indices;
+		shapeInstance->meshInidcies = indicies;
+		shapeInstance->meshNormals = normals;
+		shapeInstance->meshTexcoords = tex_coords;
+		shapeInstance->meshVao = vao;
+		shapeInstance->meshVbo = vbo;
+		shapeInstance->name = currentShape.name;
+		shapeInstance->pMaterial = gSys->pMaterialSystem->LoadMaterial(m_materialFile.c_str(), currentShape.name);
+
+		m_shapeContainer.push_back(shapeInstance);
+
 	}
-
-	if (!m_indiciesVector.empty())
-	{
-		glGenBuffers(1, &indicies);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicies);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indiciesVector.size() * sizeof(uint), &m_indiciesVector[0], GL_STATIC_DRAW);
-	}
-
-	if (!m_normals.empty())
-	{
-		glEnableVertexAttribArray(1);
-		glGenBuffers(1, &normals);
-		glBindBuffer(GL_ARRAY_BUFFER, normals);
-		glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(float), &m_normals[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
-	}
-
-	if (!m_texcoords.empty())
-	{
-		glEnableVertexAttribArray(2);
-		glGenBuffers(1, &tex_coords);
- 		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
-		glBufferData(GL_ARRAY_BUFFER, m_texcoords.size() * sizeof(float), &m_texcoords[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	}
-
-	glBindVertexArray(NULL);
-
-	meshVbo = vbo;
-	meshVao = vao;
-	meshInidcies = indicies;
-	meshNormals = normals;
-	meshTexcoords = tex_coords;
 }
 
 void CMesh::BuildTM(Vec3 pos, Vec3 axis, float rot)

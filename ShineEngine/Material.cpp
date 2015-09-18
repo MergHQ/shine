@@ -8,9 +8,10 @@
 #include "Texture.h"
 #include <map>
 
-CMaterial::CMaterial(const char* file)
+CMaterial::CMaterial(const char* file, string name)
 {
 	m_fileName = file;
+	m_shapeName = name;
 	ParseMtlFile();
 }
 
@@ -42,40 +43,46 @@ void CMaterial::ParseMtlFile()
 	if (mtl.IsObject())
 	{
 		// Handle json
-		
-		m_matName = mtl["material_name"].GetString();
-
-		SShaderParams sparams;
-
-		sparams.name = mtl["shading"].GetString();
-		sparams.s_file = mtl["shading"].GetString();
-
-		if (IShader* pShader = CreateShader(&sparams))
-			m_pShader = static_cast<CShader*>(pShader);
-
-		const rapidjson::Value& a = mtl["textures"];
-
-		if (a.IsArray())
+		const rapidjson::Value& shapes = mtl["shapes"];
+		for (rapidjson::SizeType i = 0; i < shapes.Size(); i++)
 		{
-			for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+			if (shapes[i]["shape"].GetString() == m_shapeName)
 			{
-				STextureParams texparams;
-				const rapidjson::Value& obj = a[i];
+				m_matName = shapes[i]["material_name"].GetString();
 
-				texparams.m_file = obj["texture"].GetString();
-				texparams.m_name = obj["texname"].GetString();
+				SShaderParams sparams;
 
-				if (obj["type"].GetString() == "DIFFUSE")
-					texparams.m_Type = DIFFUSE;
-				else if (obj["type"].GetString() == "SPECULAR")
-					texparams.m_Type = SPECULAR;
-				else if (obj["type"].GetString() == "NORMAL")
-					texparams.m_Type = NORMAL;
+				sparams.name = shapes[i]["shading"].GetString();
+				sparams.s_file = shapes[i]["shading"].GetString();
 
-				CreateTexture(&texparams);
+				if (IShader* pShader = CreateShader(&sparams))
+					m_pShader = static_cast<CShader*>(pShader);
 
+				const rapidjson::Value& a = shapes[i]["textures"];
+
+				if (a.IsArray())
+				{
+					for (rapidjson::SizeType j = 0; j < a.Size(); j++)
+					{
+						STextureParams texparams;
+						const rapidjson::Value& obj = a[j];
+
+						texparams.m_file = obj["texture"].GetString();
+						texparams.m_name = obj["texname"].GetString();
+
+						if (obj["type"].GetString() == "DIFFUSE")
+							texparams.m_Type = DIFFUSE;
+						else if (obj["type"].GetString() == "SPECULAR")
+							texparams.m_Type = SPECULAR;
+						else if (obj["type"].GetString() == "NORMAL")
+							texparams.m_Type = NORMAL;
+
+						CreateTexture(&texparams);
+
+					}
+				}
 			}
-		}		
+		}
 	}
 }
 

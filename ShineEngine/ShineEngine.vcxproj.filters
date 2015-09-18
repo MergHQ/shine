@@ -16,12 +16,6 @@
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{4a8dd5fe-daea-4559-b617-4e6f4cb995e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Camera">
-      <UniqueIdentifier>{8ac21d2f-1597-44dc-8402-3600b6d4484d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Interfaces">
-      <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine\Renderer">
       <UniqueIdentifier>{80150e33-32a7-487b-9978-4446296eb72b}</UniqueIdentifier>
     </Filter>
@@ -58,6 +52,12 @@
     <Filter Include="Source Files\Engine\System\Environment">
       <UniqueIdentifier>{1ff8cf50-98e9-4dc3-a72b-a23f1871cb73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{8ac21d2f-1597-44dc-8402-3600b6d4484d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Interfaces">
+      <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny_obj_loader.cc">
@@ -79,7 +79,7 @@
       <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Engine\Camera</Filter>
+      <Filter>Source Files\Camera</Filter>
     </ClCompile>
     <ClCompile Include="FPCamera.cpp">
       <Filter>Source Files\Game\Camera</Filter>
@@ -261,7 +261,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShadowGen.h">
-      <Filter>Source Files\Engine\System</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

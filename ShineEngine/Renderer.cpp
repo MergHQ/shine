@@ -30,7 +30,7 @@ void CRenderer::ReleaseSystems()
 	delete m_pLightSystem;
 	delete pSm;
 	delete lightsphere;
-	delete godray;
+	delete godray; 
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
@@ -38,6 +38,7 @@ void CRenderer::Init(GLFWwindow* pWin)
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
 
 	window = pWin;
 
@@ -69,7 +70,8 @@ void CRenderer::Render()
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 
 	glEnable(GL_LIGHTING);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0, 0, 0, 0);
 
 	DrawGodRayShit();
 	DrawMeshes();
@@ -81,8 +83,11 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1, 1, 1, 1);
+
 
 	glUseProgram(ShaderProg);
+	m_postprocessor->GetShader()->Update();
 
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[0]);
@@ -104,9 +109,9 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[4]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "godraycolor"), 20);
 
-	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(700, 200, 700, 1));
+	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(500, 300, 500, 1));
 	Vec3 ndc = Vec3(cs.x, cs.y, cs.z) / cs.w;
-	Vec2 ss = Vec2(((ndc.x + 1) / 2 * 1280), (ndc.y + 1) / 2 * 720) * Vec2(0.8,1.40);
+	Vec2 ss = Vec2(((ndc.x + 1) / 2 * 1280), (ndc.y + 1) / 2 * 720) * Vec2(0.8,1.10);
 	glUniform2f(glGetUniformLocation(ShaderProg, "lightsspos"), ss.x, ss.y);
 
 #ifdef DEV_MODE
@@ -136,11 +141,12 @@ void CRenderer::DrawMeshes()
 {
 	m_postprocessor->MeshPass();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1, 1, 1, 1);
 
 	if (gSys->m_pSkyBox != nullptr)
 	{
 		gSys->m_pSkyBox->cam = static_cast<CFPCamera*>(gSys->GetCamera());
-		gSys->m_pSkyBox->Draw();
+		//gSys->m_pSkyBox->Draw();
 	}
 
 	GLuint p = 0;
@@ -151,24 +157,35 @@ void CRenderer::DrawMeshes()
 		{
 			if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
 			{
-				// Shader drawing
-				if (pMesh->GetMaterial()->GetShader())
-					p = pMesh->GetMaterial()->GetShader()->GetShaderProgramme();
-				glUseProgram(p);
-				if (pMesh->GetMaterial()->GetShader())
-					pMesh->GetMaterial()->GetShader()->Update();
+				for (Shape* s : pMesh->GetShapeContainer())
+				{
+					// Shader drawing
+					if (s->pMaterial->GetShader())
+						p = s->pMaterial->GetShader()->GetShaderProgramme();
+					glUseProgram(p);
+					if (s->pMaterial->GetShader())
+						s->pMaterial->GetShader()->Update();
 
-				glBindVertexArray(pMesh->GetVao());
+					glBindVertexArray(s->meshVao);
 
-				glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
-				glUniformMatrix4fv(glGetUniformLocation(m_postprocessor->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
+					glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
+					glUniformMatrix4fv(glGetUniformLocation(m_postprocessor->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM()));
 
-				// Texture
-				glActiveTexture(GL_TEXTURE11);
-				glBindTexture(GL_TEXTURE_2D, pMesh->GetMaterial()->GetTextures()[0]->GetTextureBufferId());
-				glUniform1i(glGetUniformLocation(p, "texsamp"), 11);
+					// Texture
+					glActiveTexture(GL_TEXTURE11);
+					glBindTexture(GL_TEXTURE_2D, s->pMaterial->GetTextures()[0]->GetTextureBufferId());
+					glUniform1i(glGetUniformLocation(p, "texsamp"), 11);
 
-				glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+					glUniformMatrix4fv(glGetUniformLocation(p, "Obj2World"), 1, GL_FALSE, glm::value_ptr(pMesh->GetWorldTM()));
+					glUniformMatrix4fv(glGetUniformLocation(p, "DepthBias"), 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
+					glActiveTexture(GL_TEXTURE7);
+					glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
+					glUniform1i(glGetUniformLocation(p, "shadowmap"), 7);
+
+					glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+
+					glUniform1i(glGetUniformLocation(p, "textures"), gSys->GetCamera()->textures());
+				}
 
 				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
 				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
@@ -179,19 +196,6 @@ void CRenderer::DrawMeshes()
 					0.5, 0.5, 0.5, 1.0
 					);
 				DepthBiasMVP = biasMatrix*mvp;
-
-				glUniformMatrix4fv(glGetUniformLocation(p, "DepthBias"), 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
-				glUniform1i(glGetUniformLocation(p, "asd"), 0);
-
-
-				glActiveTexture(GL_TEXTURE7);
-				glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
-				glUniform1i(glGetUniformLocation(p, "shadowmap"), 7);
-
-				glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
-
-				glUniform1i(glGetUniformLocation(p, "textures"), gSys->GetCamera()->textures());
-
 			}
 		}
 	}
@@ -208,12 +212,15 @@ void CRenderer::DrawShadowMap()
 	{
 		if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
 		{
-			glUseProgram(pSm->GetShader()->GetShaderProgramme());
-			Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
-			Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(700, 200, 700), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
-			glUniformMatrix4fv(glGetUniformLocation(pSm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-			glBindVertexArray(pMesh->GetVao());
-			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+			for (Shape* s : pMesh->GetShapeContainer())
+			{
+				glUseProgram(pSm->GetShader()->GetShaderProgramme());
+				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
+				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(700, 200, 700), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+				glUniformMatrix4fv(glGetUniformLocation(pSm->GetShader()->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+				glBindVertexArray(s->meshVao);
+				glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+			}
 		}
 	}
 }
@@ -222,6 +229,8 @@ void CRenderer::DrawGodRayShit()
 {
 	m_postprocessor->GodRayPass();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0, 0, 0, 0);
+
 	GLuint p = godray->GetShaderProgramme();
 	glUseProgram(godray->GetShaderProgramme());
 
@@ -229,21 +238,24 @@ void CRenderer::DrawGodRayShit()
 	{
 		if (IMesh* pMesh = gSys->pMeshSystem->GetMeshContainer()[iter])
 		{
-			Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM();
-			glUniformMatrix4fv(glGetUniformLocation(godray->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-			glUniform1i(glGetUniformLocation(p, "asd"), 0);
-			glBindVertexArray(pMesh->GetVao());
-			glDrawElements(GL_TRIANGLES, pMesh->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+			for (Shape* s : pMesh->GetShapeContainer())
+			{
+				Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * pMesh->GetWorldTM();
+				glUniformMatrix4fv(glGetUniformLocation(godray->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+				glUniform1i(glGetUniformLocation(p, "asd"), 0);
+				glBindVertexArray(s->meshVao);
+				glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+			}
 		}
 	}
 
 	for (uint j = 0; j < m_pLightSystem->lightContainer.size(); j++)
 	{
-		Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * glm::translate(Mat44(), m_pLightSystem->lightContainer[j]->GetPos()) * glm::scale(Mat44(), Vec3(40,40,40));
+		Mat44 mvp = gSys->GetCamera()->GetVPMatrix() * glm::translate(Mat44(), m_pLightSystem->lightContainer[j]->GetPos()) * glm::scale(Mat44(), Vec3(100,100,100));
 		glUniformMatrix4fv(glGetUniformLocation(p, "MVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 		glUniform1i(glGetUniformLocation(p, "asd"), 1);
-		glBindVertexArray(lightsphere->GetVao());
-		glDrawElements(GL_TRIANGLES, lightsphere->GetIndicies().size() * sizeof(uint), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(lightsphere->GetShapeContainer()[0]->meshVao);
+		glDrawElements(GL_TRIANGLES, lightsphere->GetShapeContainer()[0]->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 	}
 }
 

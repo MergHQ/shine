@@ -19,7 +19,7 @@ uniform int asd;
 void main()
 {
 	if(asd == 1)
-		color = vec4(1,0.5,0,1);
+		color = vec4(1);
 	else
 		color = vec4(asd);
 }

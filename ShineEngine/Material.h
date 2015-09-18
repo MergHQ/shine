@@ -10,7 +10,7 @@
 class CMaterial : public IMaterial
 {
 public:
-	CMaterial(const char* file);
+	CMaterial(const char* file, string m_shapeName);
 	~CMaterial();
 
 	virtual void Load(const char* file){}
@@ -19,11 +19,13 @@ public:
 	virtual string GetMaterialName() { return m_matName; }
 	virtual std::vector<ITexture*> GetTextures() { return m_textureContainer; }
 	virtual IShader* GetShader() { return m_pShader; }
+	virtual string GetShapeName() { return m_shapeName; }
 	
 	void ParseMtlFile();
 private:
 	string m_fileName;
 	string m_matName;
+	string m_shapeName;
 	int m_id;
 	ITexture* m_pTexture;
 	CShader* m_pShader;

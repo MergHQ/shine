@@ -18,7 +18,7 @@ public:
 	IMaterial* GetMaterialById(int id);
 	IMaterial* GetMaterialByName(const char* name);
 	// Returns a pointer to the material if successful.
-	IMaterial* LoadMaterial(const char* file);
+	IMaterial* LoadMaterial(const char* file, string name);
 	std::vector<CMaterial*> GetMaterialContainer() { return m_materialContainer; }
 protected:
 private:

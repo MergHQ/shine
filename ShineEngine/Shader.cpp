@@ -132,6 +132,19 @@ bool CShader::LoadShader(string shader)
 		glAttachShader(shader_programme, vs);
 		glLinkProgram(shader_programme);
 		glGetProgramiv(shader_programme, GL_LINK_STATUS, &s);
+
+		if (s == GL_FALSE)
+		{
+			GLint maxSize;
+			glGetProgramiv(shader_programme, GL_INFO_LOG_LENGTH, &maxSize);
+
+			std::vector<GLchar> log(maxSize);
+			glGetProgramInfoLog(shader_programme, maxSize, &maxSize, &log[0]);
+			gSys->Log(" ==============SHADER LOG==============");
+			printf(log.data());
+			gSys->Log("\n ======================================");
+		}
+
 		if (!s)
 		{
 			printf("Error creating shader prog %s", m_sfile.c_str());

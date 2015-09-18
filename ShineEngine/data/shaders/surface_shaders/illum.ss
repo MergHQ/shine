@@ -58,7 +58,7 @@ void main () {
 	
 	if(textures == 1)
 	{
-		frag_colour = texture(texsamp, UV);	
+		frag_colour = texture(texsamp, UV) * visib;	
 	}else{
 		frag_colour = vec4(1) * visib;
 	}

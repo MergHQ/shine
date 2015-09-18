@@ -27,19 +27,19 @@ IMaterial* CMaterialSystem::GetMaterialByName(const char* name)
 	return nullptr;
 }
 
-IMaterial* CMaterialSystem::LoadMaterial(const char* file)
+IMaterial* CMaterialSystem::LoadMaterial(const char* file, string name)
 {
 	// We can reuse materials that are already loaded instead of creating new ones. Should save memory.
 	for (uint i = 0; i < m_materialContainer.size(); i++)
 	{
 		// Checking if the filenames are equal.
-		if (m_materialContainer[i]->GetMtlFIle() == file)
+		if (m_materialContainer[i]->GetMtlFIle() == file && m_materialContainer[i]->GetShapeName() == name)
 		{
 			return m_materialContainer[i];
 		}	
 	}
 
-	CMaterial* nm = new CMaterial(file);
+	CMaterial* nm = new CMaterial(file, name);
 
 	if (nm != nullptr)
 	{
