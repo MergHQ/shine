@@ -31,7 +31,7 @@ struct IShader
 	virtual bool Reload() = 0;
 	virtual void Update() = 0;
 	virtual int GetId() = 0;
-	virtual GLuint GetShaderProgramme() = 0;
+	virtual GLuint& GetShaderProgramme() = 0;
 };
 
 #endif

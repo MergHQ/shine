@@ -25,8 +25,8 @@ public:
 	virtual int GetId() { return m_meshId; }
 	virtual Vec3 GetWorldPos() { return m_worldPos; }
 	virtual Vec4 GetRotation() { return Vec4(m_worldRotAxis, m_worldRotScalar); }
-	virtual Mat44 GetWorldTM(){ return m_tm; }
-	virtual std::vector<Shape*> GetShapeContainer() { return m_shapeContainer; }
+	virtual Mat44& GetWorldTM(){ return m_tm; }
+	virtual std::vector<Shape*>& GetShapeContainer() { return m_shapeContainer; }
 
 	// ~IMesh
 	std::vector<tinyobj::shape_t> shapes;

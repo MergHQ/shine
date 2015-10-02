@@ -23,10 +23,9 @@ vec2 GetScreenSpacePosition()
 }
 
 uniform sampler2D u_color;
-uniform sampler2D light;
-uniform sampler2D depth;
-
+uniform sampler2D u_godraycolor;
+ 
 void main () {
 	
-	frag_colour = texture(u_color, GetScreenSpacePosition());		
+	frag_colour = texture(u_color, GetScreenSpacePosition());
 };

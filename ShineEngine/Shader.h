@@ -18,7 +18,7 @@ public:
 	virtual int GetId() { return m_id; };
 	virtual bool LoadShader(string shader);
 	virtual bool Reload();
-	virtual GLuint GetShaderProgramme() { return sprog; };
+	virtual GLuint& GetShaderProgramme() { return sprog; };
 	virtual string GetFileName() { return m_sfile; }
 	virtual void Update();
 	// ~IShader

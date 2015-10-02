@@ -17,29 +17,20 @@ void main () {
  
 #version 400
  
-out vec4 frag_colour;
+layout(location = 0)out vec4 frag_colour;
  
 in vec2 oUV;
  
-uniform sampler2D normaltex;
-uniform sampler2D diffusetex;
-uniform sampler2D depthtex;
-uniform sampler2D positiontex;
-uniform sampler2D godraycolor;
+uniform sampler2D u_normaltex;
+uniform sampler2D u_albedo;
+uniform sampler2D u_positiontex;
  
 uniform sampler2D shadowmpapos;
  
-uniform vec3 lightPosition;
-uniform vec3 lightColor;
-uniform vec3 lightAttenuation;
-
-uniform vec2 lightsspos;
- 
-uniform vec3 CamPos;
- 
-uniform mat4 ViewMatrix;
-uniform samplerCube envMap;
- 
+uniform vec3 u_lightPosition;
+uniform vec3 u_lightColor;
+uniform vec3 u_lightAttenuation; 
+uniform vec3 u_CamPos; 
 in float shp_;
  
 uniform mat4 ProjectionMatrix;
@@ -51,7 +42,7 @@ vec2 GetScreenSpacePosition()
 
 vec4 ComputeVolumetricLighting(vec2 sspos)
 {
-        const int SAMPLES = 128;
+/*       const int SAMPLES = 128;
                
         float intensity = 0.25;
         float decay = 0.96875;
@@ -67,7 +58,8 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
                 texcoord += dir;       
         }
        
-        return vec4(godrays, 1.0);
+        return vec4(godrays, 1.0);*/
+		return vec4(0);
 }
 
 vec4 bloom(vec2 sspos)
@@ -88,7 +80,7 @@ vec4 bloom(vec2 sspos)
 	vec2 samplePos = vec2(sspos.x - 4.0 * 0.004, sspos.y);
 	for(int k = 0; k < 9; k++)
 	{
-		final += texture(diffusetex, samplePos).xyz * values[k];
+		final += texture(u_albedo, samplePos).xyz * values[k];
 		samplePos += 0.004;
 	}
 
@@ -102,20 +94,20 @@ void main () {
                 vec4 lighting = vec4(0);
                
                 vec2 sspos = GetScreenSpacePosition();
-                vec3 normal = texture(normaltex, sspos).xyz;
-                vec3 position = texture(positiontex, sspos).xyz;
-                vec3 surfaceToCamera = normalize(CamPos - position);
-                vec4 surfaceColor = texture(diffusetex, sspos);
+                vec3 normal = texture(u_normaltex, sspos).xyz;
+                vec3 position = texture(u_positiontex, sspos).xyz;
+                vec3 surfaceToCamera = normalize(u_CamPos - position);
+                vec4 surfaceColor = texture(u_albedo, sspos);
                
                 float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
-                float shininess = 0.3;
+                float shininess = 0.4;
                 float Ks = 1;
                
                 float cook = 0;
                 vec3 finalValue = vec3(0);
                
 
-                                vec3 Ln = normalize(lightPosition - position);
+                                vec3 Ln = normalize(u_lightPosition - position);
                                 vec3 H = normalize(normalize(surfaceToCamera+Ln));
                                
                                 float NdotH = max(dot(normalize(normal), H), 0.0);
@@ -123,7 +115,7 @@ void main () {
                                 float VdotH = max(dot(surfaceToCamera, H), 0.0);
                                
                                 // Diffuse
-                                vec4 diffuse = vec4(lightColor * (NdotL * shininess), 1);
+                                vec4 diffuse = vec4(u_lightColor * (NdotL * shininess), 1);
                                
                                 // Geometric attenuation
                                 float NH2 = 2.0 * NdotH;
@@ -142,21 +134,20 @@ void main () {
                                 fresnel *= (1.0 - Ks);
                                 fresnel += Ks;
 								
-								float attenuation = 0;
-								vec3 att = lightAttenuation;
+								float attenuation = 1;
+								vec3 att = u_lightAttenuation;
 
 								if(att.x != 0)
 								{
-									float distanceToLight = length(lightPosition - position);
-									attenuation = (att.x * 0.01) + ((att.y* 0.01) * distanceToLight) + ((att.y * 0.01)* distanceToLight * distanceToLight);
+									float distanceToLight = length(u_lightPosition - position);
+									attenuation /=(att.x * 0.1) + ((att.y* 0.1) * distanceToLight) + ((att.y * 0.1)* distanceToLight * distanceToLight);
 								}
                                
                                 cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
-                                finalValue += (lightColor * NdotL * (0.3 + cook * (1.0-0.2))) + diffuse.xyz;
+                                finalValue += (u_lightColor * NdotL * (0.3 + cook * (1.0-0.2))) + diffuse.xyz;
 								if(attenuation != 0)
-									finalValue /= attenuation;
+									finalValue *= attenuation;
 
 				
                 frag_colour = surfaceColor *  vec4(finalValue, 1.0);
-				//frag_colour = texture(depthtex, sspos); //Broken after upgrading shader model.
 };

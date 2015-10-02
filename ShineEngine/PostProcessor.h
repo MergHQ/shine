@@ -26,6 +26,7 @@ public:
 	void MeshPass();
 	void GodRayPass();
 	void StencilPass();
+	void LightPass();
 protected:
 private:
 	void FboQuad();

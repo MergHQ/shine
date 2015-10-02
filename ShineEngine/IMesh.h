@@ -65,8 +65,8 @@ struct IMesh
 	virtual int GetId() = 0;
 	virtual Vec3 GetWorldPos() = 0;
 	virtual Vec4 GetRotation() = 0;
-	virtual glm::mat4 GetWorldTM() = 0;
-	virtual std::vector<Shape*> GetShapeContainer() = 0;
+	virtual glm::mat4& GetWorldTM() = 0;
+	virtual std::vector<Shape*>& GetShapeContainer() = 0;
 };
 
 #endif

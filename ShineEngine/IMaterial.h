@@ -12,7 +12,7 @@ struct IMaterial
 	virtual string GetMtlFIle() = 0;
 	virtual string GetMaterialName() = 0;
 	virtual int GetMaterialId() = 0;
-	virtual std::vector<ITexture*> GetTextures() = 0;
+	virtual std::vector<ITexture*>& GetTextures() = 0;
 	virtual IShader* GetShader() = 0;
 	virtual string GetShapeName() = 0;
 };

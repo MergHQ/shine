@@ -22,9 +22,9 @@ struct SLight
  
 struct ILight
 {
-	virtual Vec3 GetPos() = 0;
-	virtual Vec3 GetColor() = 0;
-	virtual Vec3 GetAttenuation() = 0;
+	virtual Vec3& GetPos() = 0;
+	virtual Vec3& GetColor() = 0;
+	virtual Vec3& GetAttenuation() = 0;
 	virtual bool IsShadowsEnabled() = 0;
 	virtual void SetPos(Vec3 pos) = 0;
 	virtual void SetColor(Vec3 color) = 0;

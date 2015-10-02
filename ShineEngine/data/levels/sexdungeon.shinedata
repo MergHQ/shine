@@ -1,0 +1,13 @@
+{
+	"level_name":"sex",
+	"objects":[
+
+		{
+			"objectpath":"objects/sexdungeon.obj",
+			"position":"0,0,0",
+			"material":"m2.mtl"
+		}
+	],
+	"lights":[
+	]
+}

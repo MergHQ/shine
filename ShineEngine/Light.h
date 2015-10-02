@@ -12,9 +12,9 @@ public:
 	~CLight(){};
 
 	//ILight
-	virtual Vec3 GetPos() { return pos; }
-	virtual Vec3 GetColor() { return color; }
-	virtual Vec3 GetAttenuation() { return attenuation; }
+	virtual Vec3& GetPos() { return pos; }
+	virtual Vec3& GetColor() { return color; }
+	virtual Vec3& GetAttenuation() { return attenuation; }
 	virtual bool IsShadowsEnabled() { return shadow; }
 	virtual void SetPos(Vec3 newpos) { pos = newpos; }
 	virtual void SetColor(Vec3 newcolor){ color = newcolor; }

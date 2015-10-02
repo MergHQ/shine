@@ -58,14 +58,14 @@ void CMainWindow::Init()
 	gSys = new IGlobalSystem();
 	gSys->Init(this);
 
-	for (uint i = 0; i < 5; i++)
+	for (uint i = 0; i < 10; i++)
 	{
 		SMeshParams tree;
 		tree.fileName = "objects/lptree.obj";
 		tree.m_materialFile = "tree.mtl";
 		tree.name = "dsad";
 		tree.pos.x = i;
-		for (uint j = 0; j < 5; j++)
+		for (uint j = 0; j < 10; j++)
 		{
 			SMeshParams tree;
 			tree.fileName = "objects/lptree.obj";
@@ -93,22 +93,23 @@ void CMainWindow::Init()
 		gSys->pMeshSystem->CreateMesh(&tree);
 
 	}
-	int a[1];
+	int a[100];
+	ILight* l;
 	for (int i : a)
 	{
 		Light sun;
 		sun.type = POINTLIGHT;
-		sun.color = Vec3(5,3,0);
+		sun.color = Vec3(rand() % 2, rand() % 2 , rand() % 2);
 		if (rand() % 4 < 1)
-			sun.position = Vec3(rand() % 100, 0, rand() % 100);
+			sun.position = Vec3(rand() % 100, 2, rand() % 100);
 		else if (rand() % 4 < 2)
-			sun.position = Vec3(rand() % 100, rand() % 100, rand() % 100) * Vec3(-0.5, 0, 0.5);
+			sun.position = Vec3(rand() % 100, 2, rand() % 100) * Vec3(-0.5, 1, 0.5);
 		else if (rand() % 4 < 3)
-			sun.position = Vec3(rand() % 100, rand() % 10, rand() % 100) * Vec3(0.5, 0, -0.5);
+			sun.position = Vec3(rand() % 100, 2, rand() % 100) * Vec3(0.5, 1, -0.5);
 		else
-			sun.position = Vec3(rand() % -100, rand() % 10, rand() % -100) * Vec3(-0.5, 0, -0.5);
-		sun.attenuation = Vec3(4, 4, 4);
-		sun.position = Vec3(4, 3, 4);
+			sun.position = Vec3(rand() % -100, 2, rand() % -100) * Vec3(-0.5, 1, -0.5);
+		sun.attenuation = Vec3(1,1,1);
+		//sun.position = Vec3(4, 3, 4);
 		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
 
@@ -116,6 +117,7 @@ void CMainWindow::Init()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Load a scene
+	gSys->pLevelLoader->LoadLevel("sexdungeon.shinedata");
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);

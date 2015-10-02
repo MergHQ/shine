@@ -3,9 +3,9 @@
 	"objects":[
 
 		{
-			"objectpath":"objects/lptree.obj",
-			"position":"0,0,0",
-			"material":"tree.mtl"
+			"objectpath":"objects/sponza.obj",
+			"position":"20,0,0",
+			"material":"sponza.mtl"
 		}
 	],
 	"lights":[

@@ -17,7 +17,7 @@ public:
 	virtual int GetMaterialId() { return m_id; }
 	virtual string GetMtlFIle() { return m_fileName; }
 	virtual string GetMaterialName() { return m_matName; }
-	virtual std::vector<ITexture*> GetTextures() { return m_textureContainer; }
+	virtual std::vector<ITexture*>& GetTextures() { return m_textureContainer; }
 	virtual IShader* GetShader() { return m_pShader; }
 	virtual string GetShapeName() { return m_shapeName; }
 	

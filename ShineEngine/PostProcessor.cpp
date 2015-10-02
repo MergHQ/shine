@@ -39,6 +39,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
+
 	glGenTextures(1, &depthtex);
 	glGenTextures(1, &normaltex);
 	glGenTextures(1, &colortex);
@@ -82,12 +83,16 @@ void CPostProcessor::Initialize(string shaderfile)
 	glBindTexture(GL_TEXTURE_2D, depthtex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, fbowidth, fboheight, 0, GL_DEPTH_STENCIL,
 		GL_FLOAT_32_UNSIGNED_INT_24_8_REV, NULL);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0); // Drawing the depthtex fucks everything up.
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthtex, 0); // Drawing the depthtex fucks everything up.
 
 	// final
 	glBindTexture(GL_TEXTURE_2D, m_finalTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_finalTexture, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, m_finalTexture, 0);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -149,8 +154,8 @@ void CPostProcessor::FboQuad()
 
 void CPostProcessor::MeshPass()
 {
-	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, DrawBuffers);
+	GLenum DrawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(4, DrawBuffers);
 }
 
 void CPostProcessor::GodRayPass()
@@ -161,4 +166,22 @@ void CPostProcessor::GodRayPass()
 void CPostProcessor::StencilPass()
 {
 	glDrawBuffer(GL_NONE);
+	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glStencilFunc(GL_ALWAYS, 0, 0);
+	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR, GL_KEEP);
+	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR, GL_KEEP);
+}
+
+void CPostProcessor::LightPass()
+{
+	glDrawBuffer(GL_COLOR_ATTACHMENT4);
+	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 }

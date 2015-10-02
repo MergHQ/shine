@@ -16,7 +16,7 @@ public:
 	IMesh* GetMeshById(int id);
 	IMesh* GetMeshByName(const char* name);
 	IMesh* CreateMesh(SMeshParams* pMesh);
-	std::vector<CMesh*> GetMeshContainer(){ return mesh_instances; }
+	std::vector<CMesh*>& GetMeshContainer(){ return mesh_instances; }
 	std::vector<CShader*> GetShaderConteainer(){ return shader_instances; }
 	void AddToShaderContainer(CShader* pShader) { shader_instances.push_back(pShader); }
 	void DeleteMesh(int id);
