@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <rapidjson\filestream.h>
+#include <rapidjson\writer.h>
 
 void SJsonParser::Run()
 {

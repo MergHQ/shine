@@ -9,7 +9,7 @@ uniform mat4 MVP;
  
 void main () {
        
-        gl_Position = vec4(vp, 1.0);
+        gl_Position = MVP * vec4(vp, 1.0);
                 shp_ = shp;
 };
  
@@ -29,10 +29,9 @@ uniform sampler2D godraycolor;
  
 uniform sampler2D shadowmpapos;
  
-uniform vec3 lightPositions[20];
-uniform vec3 lightColors[20];
-uniform vec3 lightAttenuations[20];
-uniform int lightAmount;
+uniform vec3 lightPosition;
+uniform vec3 lightColor;
+uniform vec3 lightAttenuation;
 
 uniform vec2 lightsspos;
  
@@ -70,6 +69,31 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
        
         return vec4(godrays, 1.0);
 }
+
+vec4 bloom(vec2 sspos)
+{
+	float values[9];
+	values[0]=0.05;
+	values[1]=0.09;
+	values[2]=0.11;
+	values[3]=0.15;
+	values[4]=0.2;
+	values[5]=0.15;
+	values[6]=0.11;
+	values[7]=0.09;
+	values[8]=0.05;
+	
+	vec3 final = vec3(0);
+	
+	vec2 samplePos = vec2(sspos.x - 4.0 * 0.004, sspos.y);
+	for(int k = 0; k < 9; k++)
+	{
+		final += texture(diffusetex, samplePos).xyz * values[k];
+		samplePos += 0.004;
+	}
+
+	return vec4(final, 1);	
+}
  
 void main () {
        
@@ -84,17 +108,14 @@ void main () {
                 vec4 surfaceColor = texture(diffusetex, sspos);
                
                 float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
-                float shininess = 0.4;
-                float Ks = 0.8;
+                float shininess = 0.3;
+                float Ks = 1;
                
                 float cook = 0;
                 vec3 finalValue = vec3(0);
                
-                for(int i = 0; i < 20; i++)
-                {
-                        if(i < lightAmount)
-                        {
-                                vec3 Ln = normalize(lightPositions[i] - position);
+
+                                vec3 Ln = normalize(lightPosition - position);
                                 vec3 H = normalize(normalize(surfaceToCamera+Ln));
                                
                                 float NdotH = max(dot(normalize(normal), H), 0.0);
@@ -102,7 +123,7 @@ void main () {
                                 float VdotH = max(dot(surfaceToCamera, H), 0.0);
                                
                                 // Diffuse
-                                vec4 diffuse = vec4(lightColors[i] * (NdotL * shininess), 1);
+                                vec4 diffuse = vec4(lightColor * (NdotL * shininess), 1);
                                
                                 // Geometric attenuation
                                 float NH2 = 2.0 * NdotH;
@@ -120,12 +141,22 @@ void main () {
                                 float fresnel = pow(1.0 - VdotH, 5.0);
                                 fresnel *= (1.0 - Ks);
                                 fresnel += Ks;
+								
+								float attenuation = 0;
+								vec3 att = lightAttenuation;
+
+								if(att.x != 0)
+								{
+									float distanceToLight = length(lightPosition - position);
+									attenuation = (att.x * 0.01) + ((att.y* 0.01) * distanceToLight) + ((att.y * 0.01)* distanceToLight * distanceToLight);
+								}
                                
                                 cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
-                                finalValue += (lightColors[i] * NdotL * (0.3 + cook * (1.0-0.2))) + diffuse.xyz;
-                        }
-                }
+                                finalValue += (lightColor * NdotL * (0.3 + cook * (1.0-0.2))) + diffuse.xyz;
+								if(attenuation != 0)
+									finalValue /= attenuation;
+
 				
-                frag_colour = surfaceColor * (vec4(0.3,0.3,0.5,1) + vec4(finalValue, 1.0));
-				//frag_colour += ComputeVolumetricLighting(sspos); //Broken after upgrading shader model.
+                frag_colour = surfaceColor *  vec4(finalValue, 1.0);
+				//frag_colour = texture(depthtex, sspos); //Broken after upgrading shader model.
 };

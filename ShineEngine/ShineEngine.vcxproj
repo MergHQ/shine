@@ -90,7 +90,7 @@
     <ClCompile Include="ConsoleSystem.cpp" />
     <ClCompile Include="DisableCommand.cpp" />
     <ClCompile Include="EnableCommand.cpp" />
-    <ClCompile Include="EnvironmentLoader.cpp" />
+    <ClCompile Include="EnvironmentIO.cpp" />
     <ClCompile Include="FPCamera.cpp" />
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
@@ -122,7 +122,7 @@
     <ClInclude Include="ConsoleSystem.h" />
     <ClInclude Include="DisableCommand.h" />
     <ClInclude Include="EnableCommand.h" />
-    <ClInclude Include="EnvironmentLoader.h" />
+    <ClInclude Include="EnvironmentIO.h" />
     <ClInclude Include="FPCamera.h" />
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="ICamera.h" />

@@ -5,6 +5,7 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <stdio.h>
 #include <iostream>
+#include "EnvironmentIO.h"
 
 CFPCamera::CFPCamera()
 {
@@ -74,6 +75,17 @@ bool CFPCamera::key_callback(GLFWwindow* window, int key, int scancode, int acti
 		else
 			texturess = 1;
 	}
+
+	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
+	{
+		m_speed = 0.5f;
+	}
+
+	if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
+	{
+		m_speed = 0.1f;
+	}
+
 
 	bool move =
 		glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS ||

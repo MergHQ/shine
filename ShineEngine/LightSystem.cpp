@@ -1,5 +1,6 @@
 #include "shine.h"
 #include "LightSystem.h"
+#include <GLFW\glfw3.h>
 
 CLightSystem::~CLightSystem()
 {
@@ -61,5 +62,17 @@ void CLightSystem::ProcessLights()
 		}
 	}
 }
+
+float CLightSystem::GetLightRadius(ILight * light)
+{
+	float MaxChannel = fmax(fmax(light->GetColor().x, light->GetColor().y), light->GetColor().z);
+
+	float ret = (-light->GetAttenuation().x + sqrtf(light->GetAttenuation().x * light->GetAttenuation().x -
+		4 * light->GetAttenuation().y * (light->GetAttenuation().y - 256 * MaxChannel * light->GetAttenuation().z)))
+		/
+		2 * light->GetAttenuation().y;
+	return ret;
+}
+
 
 

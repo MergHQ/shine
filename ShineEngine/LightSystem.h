@@ -23,9 +23,10 @@ public:
 	std::vector<int> shadows;
 
 	void ProcessLights();
-
+	float GetLightRadius(ILight* light);
 
 private:
+	
 };
 
 

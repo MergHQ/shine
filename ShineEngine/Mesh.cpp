@@ -78,6 +78,7 @@ void CMesh::CreateBufferObjects()
 
 		std::string inputfile = ASSET_ROOT_DIR + m_file;
 		std::vector<tinyobj::material_t> materials;
+
 		std::string err = tinyobj::LoadObj(shapes, materials, inputfile.c_str());
 
 		if (!err.empty())
@@ -87,7 +88,7 @@ void CMesh::CreateBufferObjects()
 		}
 	}
 	
-
+	
 	for (uint i = 0; i < shapes.size(); i++)
 	{
 

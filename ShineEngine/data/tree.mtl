@@ -1,56 +1,92 @@
 {
-	"shapes":[
-		{
-			"shape":"Tree.001_Cylinder.005",
-			"material_name" : "tree",
-			"shading" : "shaders/surface_shaders/illum.ss",
-			"shaderparams":[],
-			"textures":[
-				{
-					"texture":"brown.bmp",
-					"texname":"tree_diffuse",
-					"type": "DIFFUSE"
-				}
-			]
-		},
-		{
-			"shape":"leaf3_Icosphere.010",
-			"material_name" : "tree",
-			"shading" : "shaders/surface_shaders/illum.ss",
-			"shaderparams":[],
-			"textures":[
-				{
-					"texture":"green.bmp",
-					"texname":"tree_diffuse",
-					"type": "DIFFUSE"
-				}
-			]
-		},
-		{
-			"shape":"leaf2_Icosphere.009",
-			"material_name" : "tree",
-			"shading" : "shaders/surface_shaders/illum.ss",
-			"shaderparams":[],
-			"textures":[
-				{
-					"texture":"green.bmp",
-					"texname":"tree_diffuse",
-					"type": "DIFFUSE"
-				}
-			]
-		},
-		{
-			"shape":"leaf1_Icosphere.011",
-			"material_name" : "tree",
-			"shading" : "shaders/surface_shaders/illum.ss",
-			"shaderparams":[],
-			"textures":[
-				{
-					"texture":"green.bmp",
-					"texname":"tree_diffuse",
-					"type": "DIFFUSE"
-				}
-			]
-		}
-	]
+  "shapes": [
+    {
+      "shape": "Tree.001_Cylinder.005",
+      "material_name": "null",
+      "shading": "shaders/surface_shaders/illum.ss",
+      "textures": [
+        {
+          "texture": "brown.bmp",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    },
+    {
+      "shape": "leaf3_Icosphere.010",
+      "material_name": "null",
+      "shading": "shaders/surface_shaders/illum.ss",
+      "textures": [
+        {
+          "texture": "green.bmp",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    },
+    {
+      "shape": "leaf2_Icosphere.009",
+      "material_name": "null",
+      "shading": "shaders/surface_shaders/illum.ss",
+      "textures": [
+        {
+          "texture": "green.bmp",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    },
+    {
+      "shape": "leaf1_Icosphere.011",
+      "material_name": "null",
+      "shading": "shaders/surface_shaders/illum.ss",
+      "textures": [
+        {
+          "texture": "green.bmp",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    }
+  ]
 }

@@ -44,19 +44,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenTextures(1, &colortex);
 	glGenTextures(1, &positiontex);
 	glGenTextures(1, &godray);
-
-	glGenRenderbuffers(1, &depthtex);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthtex);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, fbowidth, fboheight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthtex);
-
-	glBindTexture(GL_TEXTURE_2D, depthtex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, fbowidth, fboheight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthtex, 0);
+	glGenTextures(1, &m_finalTexture);
 
 	glBindTexture(GL_TEXTURE_2D, colortex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -90,6 +78,17 @@ void CPostProcessor::Initialize(string shaderfile)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, godray, 0);
 
+	// depth
+	glBindTexture(GL_TEXTURE_2D, depthtex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, fbowidth, fboheight, 0, GL_DEPTH_STENCIL,
+		GL_FLOAT_32_UNSIGNED_INT_24_8_REV, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0); // Drawing the depthtex fucks everything up.
+
+	// final
+	glBindTexture(GL_TEXTURE_2D, m_finalTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_finalTexture, 0);
+
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -102,6 +101,8 @@ void CPostProcessor::Initialize(string shaderfile)
 	textures[2] = normaltex;
 	textures[3] = positiontex;
 	textures[4] = godray;
+	textures[5] = m_finalTexture;
+	textures[6] = 0;
 
 	FboQuad();
 
@@ -155,4 +156,9 @@ void CPostProcessor::MeshPass()
 void CPostProcessor::GodRayPass()
 {
 	glDrawBuffer(GL_COLOR_ATTACHMENT3);
+}
+
+void CPostProcessor::StencilPass()
+{
+	glDrawBuffer(GL_NONE);
 }

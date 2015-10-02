@@ -1,7 +1,7 @@
 {
 	"shapes":[
 		{
-			"shape":"sphere",
+			"shape":"leaf2_Icosphere.009",
 			"material_name" : "tree",
 			"shading" : "shaders/surface_shaders/illum.ss",
 			"shaderparams":[],

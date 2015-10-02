@@ -135,13 +135,13 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
-    <ClCompile Include="EnvironmentLoader.cpp">
-      <Filter>Source Files\Engine\System</Filter>
-    </ClCompile>
     <ClCompile Include="SkyBox.cpp">
       <Filter>Source Files\Engine\System\Environment</Filter>
     </ClCompile>
     <ClCompile Include="ShadowGen.cpp">
+      <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentIO.cpp">
       <Filter>Source Files\Engine\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,12 +163,6 @@
     </ClInclude>
     <ClInclude Include="Option.h">
       <Filter>Source Files\Engine\System\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Source Files\Engine\System\Console\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleCommands.h">
-      <Filter>Source Files\Engine\System\Console\Commands</Filter>
     </ClInclude>
     <ClInclude Include="IInputListener.h">
       <Filter>Source Files\Engine\Interfaces</Filter>
@@ -254,13 +248,19 @@
     <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnvironmentLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShadowGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleCommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

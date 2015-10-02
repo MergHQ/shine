@@ -1,17 +1,26 @@
 {
-	"material_name" : "mymaterial2",
-	"shading" : "shaders/surface_shaders/ssrsurface.ss",
-	"shaderparams":[],
-	"textures":[
-		{
-			"texture":"t.bmp",
-			"texname":"test_diff",
-			"type": "DIFFUSE"
-		},
-		{
-			"texture":"t.bmp",
-			"texname":"test_spec",
-			"type": "SPECULAR"
-		}
-	]
+  "shapes": [
+    {
+      "shape": "Plane",
+      "material_name": "null",
+      "shading": "shaders/surface_shaders/illum.ss",
+      "textures": [
+        {
+          "texture": "t.bmp",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    }
+  ]
 }

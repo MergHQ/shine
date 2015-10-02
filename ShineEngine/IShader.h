@@ -33,4 +33,5 @@ struct IShader
 	virtual int GetId() = 0;
 	virtual GLuint GetShaderProgramme() = 0;
 };
+
 #endif

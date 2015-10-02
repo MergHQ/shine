@@ -10,7 +10,7 @@
 #include "GameInput.h"
 #include "WindowInput.h"
 #include "MaterialSystem.h"
-#include "EnvironmentLoader.h"
+#include "EnvironmentIO.h"
 #include "Skybox.h"
 
 IGlobalSystem::IGlobalSystem() :

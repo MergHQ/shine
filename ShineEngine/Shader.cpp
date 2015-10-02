@@ -140,9 +140,9 @@ bool CShader::LoadShader(string shader)
 
 			std::vector<GLchar> log(maxSize);
 			glGetProgramInfoLog(shader_programme, maxSize, &maxSize, &log[0]);
-			gSys->Log(" ==============SHADER LOG==============");
+			gSys->Log("\n\n ==============SHADER LOG==============");
 			printf(log.data());
-			gSys->Log("\n ======================================");
+			gSys->Log("\n\n ======================================");
 		}
 
 		if (!s)
@@ -156,5 +156,17 @@ bool CShader::LoadShader(string shader)
 		glDeleteShader(fs);
 		m_firstTime = false;
 
+		GenerateUniformLocations();
+
 	return true;
+}
+
+void CShader::GenerateUniformLocations()
+{
+	uniformLocations[0] = glGetUniformLocation(sprog, "MVP");
+	uniformLocations[1] = glGetUniformLocation(sprog, "texsamp");
+	uniformLocations[2] = glGetUniformLocation(sprog, "Obj2World");
+	uniformLocations[3] = glGetUniformLocation(sprog, "DepthBias");
+	uniformLocations[4] = glGetUniformLocation(sprog, "shadowmap");
+	uniformLocations[5] = glGetUniformLocation(sprog, "textures");
 }

@@ -31,7 +31,8 @@ public:
 	void DrawMeshes();
 	void DrawShadowMap();
 	void ReleaseSystems();
-	void DrawGodRayShit();
+	//void DrawGodRayShit();
+	void DrawLights();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
 
@@ -44,7 +45,8 @@ private:
 	CPostProcessor* m_postprocessor;
 	CLightSystem* m_pLightSystem;
 	IMesh* lightsphere;
-	IShader* godray;
+	IShader* lp_shader;
+	IShader* null_shader;
 
 };
 

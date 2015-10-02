@@ -22,8 +22,13 @@ public:
 	virtual string GetFileName() { return m_sfile; }
 	virtual void Update();
 	// ~IShader
+
+	// MVP, texture, obj2world, DepthBias, shadowmap, texture toggle.
+	GLuint uniformLocations[6];
+
 protected:
 private:
+	void GenerateUniformLocations();
 	string m_name;
 	string m_sfile;
 	int time;
