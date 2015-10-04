@@ -26,6 +26,16 @@ static void error_callback(int error, const char* description)
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	gSys->pInput->key_callback(window, key, scancode, action, mods);
+
+	if (key == GLFW_KEY_I && action == GLFW_RELEASE)
+	{
+		Light cl;
+		cl.attenuation = Vec3(1, 1, 1);
+		cl.color = Vec3(4, 2,0);
+		cl.position = gSys->GetCamera()->GetWorldPos();
+		cl.type = POINTLIGHT;
+		gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
+	}
 }
 
 int main(void)
@@ -60,11 +70,7 @@ void CMainWindow::Init()
 
 	for (uint i = 0; i < 10; i++)
 	{
-		SMeshParams tree;
-		tree.fileName = "objects/lptree.obj";
-		tree.m_materialFile = "tree.mtl";
-		tree.name = "dsad";
-		tree.pos.x = i;
+
 		for (uint j = 0; j < 10; j++)
 		{
 			SMeshParams tree;
@@ -76,7 +82,7 @@ void CMainWindow::Init()
 		}
 	}
 
-	for (uint i = 0; i < 1; i++)
+	for (uint i = 0; i < 100; i++)
 	{
 		SMeshParams tree;
 		tree.fileName = "objects/boulder1.obj";
@@ -85,12 +91,12 @@ void CMainWindow::Init()
 		if (rand() % 4 < 1)
 			tree.pos = Vec3(rand() % 100, 0, rand() % 100);
 		else if (rand() % 4 < 2)
-			tree.pos = Vec3(rand() % 100, rand() % 100, rand() % 100) * Vec3(-0.1, 0, 0.1);
+			tree.pos = Vec3(rand() % 100, rand() % 100, rand() % 100) * Vec3(-1, 0, 1);
 		else if (rand() % 4 < 3)
-			tree.pos = Vec3(rand() % 100, rand() % 10, rand() % 100) * Vec3(0.1, 0, -0.1);
+			tree.pos = Vec3(rand() % 100, rand() % 10, rand() % 100) * Vec3(1, 0, -1);
 		else
-			tree.pos = Vec3(rand() % -100, rand() % 10, rand() % -100) * Vec3(-0.1, 0, -0.1);
-		gSys->pMeshSystem->CreateMesh(&tree);
+			tree.pos = Vec3(rand() % -100, rand() % 10, rand() % -100) * Vec3(-1, 0, -1);
+		//gSys->pMeshSystem->CreateMesh(&tree);
 
 	}
 	int a[100];
@@ -110,8 +116,16 @@ void CMainWindow::Init()
 			sun.position = Vec3(rand() % -100, 2, rand() % -100) * Vec3(-0.5, 1, -0.5);
 		sun.attenuation = Vec3(1,1,1);
 		//sun.position = Vec3(4, 3, 4);
-		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
+		//gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
+
+
+
+	Light cl;
+	cl.attenuation = Vec3(1, 1, 1);
+	cl.color = Vec3(4,4,4);
+	cl.type = POINTLIGHT;
+	l = gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
 
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -143,6 +157,7 @@ void CMainWindow::Init()
 		glfwSwapBuffers(window);
 		//pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
 		//pl->SetPos(gSys->GetCamera()->GetWorldPos());
+		l->SetPos(gSys->GetCamera()->GetWorldPos());
 
 	}
 

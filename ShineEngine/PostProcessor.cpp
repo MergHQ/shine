@@ -46,6 +46,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenTextures(1, &positiontex);
 	glGenTextures(1, &godray);
 	glGenTextures(1, &m_finalTexture);
+	glGenTextures(1, &m_depthTexture);
 
 	glBindTexture(GL_TEXTURE_2D, colortex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -83,7 +84,11 @@ void CPostProcessor::Initialize(string shaderfile)
 	glBindTexture(GL_TEXTURE_2D, depthtex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, fbowidth, fboheight, 0, GL_DEPTH_STENCIL,
 		GL_FLOAT_32_UNSIGNED_INT_24_8_REV, NULL);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthtex, 0); // Drawing the depthtex fucks everything up.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthtex, 0); 
 
 	// final
 	glBindTexture(GL_TEXTURE_2D, m_finalTexture);
@@ -107,7 +112,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	textures[3] = positiontex;
 	textures[4] = godray;
 	textures[5] = m_finalTexture;
-	textures[6] = 0;
+	textures[6] = m_depthTexture;
 
 	FboQuad();
 

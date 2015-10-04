@@ -6,7 +6,7 @@
       "shading": "shaders/surface_shaders/illum.ss",
       "textures": [
         {
-          "texture": "t.bmp",
+          "texture": "green.bmp",
           "texname": "shit",
           "type": "DIFFUSE"
         },

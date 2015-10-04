@@ -169,4 +169,5 @@ void CShader::GenerateUniformLocations()
 	uniformLocations[3] = glGetUniformLocation(sprog, "DepthBias");
 	uniformLocations[4] = glGetUniformLocation(sprog, "shadowmap");
 	uniformLocations[5] = glGetUniformLocation(sprog, "textures");
+	uniformLocations[6] = glGetUniformLocation(sprog, "u_screenRes");
 }

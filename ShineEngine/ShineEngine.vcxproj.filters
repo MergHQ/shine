@@ -58,6 +58,9 @@
     <Filter Include="Source Files\Engine\Interfaces">
       <UniqueIdentifier>{f82f4ea6-bade-4126-824e-8f4774dff8b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Shader files">
+      <UniqueIdentifier>{46811651-82ee-4e67-835b-9fc13d41b51b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny_obj_loader.cc">
@@ -263,5 +266,28 @@
     <ClInclude Include="EnvironmentIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\pp_shaders\DeferredLightPass.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\gr.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\null.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\quad.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\shadowmap.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\skybox.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="data\shaders\surface_shaders\illum.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
   </ItemGroup>
 </Project>

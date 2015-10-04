@@ -31,13 +31,14 @@ uniform vec3 u_lightPosition;
 uniform vec3 u_lightColor;
 uniform vec3 u_lightAttenuation; 
 uniform vec3 u_CamPos; 
+uniform vec2 u_screenRes;
 in float shp_;
  
 uniform mat4 ProjectionMatrix;
  
 vec2 GetScreenSpacePosition()
 {
-        return gl_FragCoord.xy/vec2(1280,720);
+        return gl_FragCoord.xy/u_screenRes;
 }
 
 vec4 ComputeVolumetricLighting(vec2 sspos)
@@ -100,7 +101,7 @@ void main () {
                 vec4 surfaceColor = texture(u_albedo, sspos);
                
                 float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
-                float shininess = 0.4;
+                float shininess = 0.8;
                 float Ks = 1;
                
                 float cook = 0;

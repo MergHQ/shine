@@ -155,6 +155,15 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="WindowInput.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\gr.ss" />
+    <None Include="data\shaders\null.ss" />
+    <None Include="data\shaders\pp_shaders\DeferredLightPass.ss" />
+    <None Include="data\shaders\quad.ss" />
+    <None Include="data\shaders\shadowmap.ss" />
+    <None Include="data\shaders\skybox.ss" />
+    <None Include="data\shaders\surface_shaders\illum.ss" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

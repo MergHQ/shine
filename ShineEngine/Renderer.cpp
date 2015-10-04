@@ -93,9 +93,15 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	glUseProgram(ShaderProg);
 
+	glUniform2f(static_cast<CShader*>(m_postprocessor->GetShader())->uniformLocations[6], m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
+	m_postprocessor->GetShader()->Update();
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[5]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "u_color"), 3);
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[1]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "u_depth"), 4);
 
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[4]);
@@ -152,7 +158,6 @@ void CRenderer::DrawMeshes()
 					}
 
 					CShader* pProgram = static_cast<CShader*>(s->pMaterial->GetShader()); // The power of interfaces.
-
 					glBindVertexArray(s->meshVao);
 					glUniformMatrix4fv(pProgram->uniformLocations[0], 1, GL_FALSE, glm::value_ptr(vpm * wtm));
 
@@ -170,6 +175,7 @@ void CRenderer::DrawMeshes()
 					glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
 					glUniform1i(pProgram->uniformLocations[5], gSys->GetCamera()->textures());
+
 				}
 
 				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
@@ -271,6 +277,8 @@ void CRenderer::DrawLights()
 	m_postprocessor->LightPass();
 	auto p = static_cast<CShader*>(lp_shader)->GetShaderProgramme();
 	glUseProgram(p);
+
+	glUniform2f(static_cast<CShader*>(lp_shader)->uniformLocations[6], m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 
 	for (uint j = 0; j < m_pLightSystem->lightContainer.size(); j++)
 	{
