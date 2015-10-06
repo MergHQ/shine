@@ -61,6 +61,9 @@
     <Filter Include="Source Files\Engine\Shader files">
       <UniqueIdentifier>{46811651-82ee-4e67-835b-9fc13d41b51b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Editor stuff">
+      <UniqueIdentifier>{f6eb65f1-aee2-48c0-bd1b-ed4145c23e67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiny_obj_loader.cc">
@@ -146,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="EnvironmentIO.cpp">
       <Filter>Source Files\Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorController.cpp">
+      <Filter>Source Files\Engine\Editor stuff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +272,9 @@
     <ClInclude Include="EnvironmentIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EditorController.h">
+      <Filter>Source Files\Engine\Editor stuff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\pp_shaders\DeferredLightPass.ss">
@@ -287,6 +296,9 @@
       <Filter>Source Files\Engine\Shader files</Filter>
     </None>
     <None Include="data\shaders\surface_shaders\illum.ss">
+      <Filter>Source Files\Engine\Shader files</Filter>
+    </None>
+    <None Include="editor.ss">
       <Filter>Source Files\Engine\Shader files</Filter>
     </None>
   </ItemGroup>

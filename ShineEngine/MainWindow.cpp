@@ -119,8 +119,6 @@ void CMainWindow::Init()
 		//gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
 
-
-
 	Light cl;
 	cl.attenuation = Vec3(1, 1, 1);
 	cl.color = Vec3(4,4,4);
@@ -131,12 +129,10 @@ void CMainWindow::Init()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Load a scene
-	gSys->pLevelLoader->LoadLevel("sexdungeon.shinedata");
+	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);
-
-
 
 	// Timer variables
 	double lastTime = glfwGetTime();
@@ -157,7 +153,7 @@ void CMainWindow::Init()
 		glfwSwapBuffers(window);
 		//pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
 		//pl->SetPos(gSys->GetCamera()->GetWorldPos());
-		l->SetPos(gSys->GetCamera()->GetWorldPos());
+		//l->SetPos(gSys->GetCamera()->GetWorldPos());
 
 	}
 

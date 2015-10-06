@@ -16,7 +16,7 @@ public:
 
 	// 0 = width, 1 = height
 	int fbostats[2];
-	GLuint textures[7];
+	GLuint textures[8];
 
 	void Initialize(string shaderfile);
 	GLuint GetFBO() { return fbo; }
@@ -31,7 +31,7 @@ protected:
 private:
 	void FboQuad();
 	int fbowidth, fboheight;
-	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex, godray, m_depthTexture, m_finalTexture;
+	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex, godray, m_depthTexture, m_finalTexture, materialParams;
 	IShader* pSSRS;
 };
 #endif

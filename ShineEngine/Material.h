@@ -20,13 +20,15 @@ public:
 	virtual std::vector<ITexture*>& GetTextures() { return m_textureContainer; }
 	virtual IShader* GetShader() { return m_pShader; }
 	virtual string GetShapeName() { return m_shapeName; }
-	
+	virtual float* GetMaterialParams() { return m_params; }
+
 	void ParseMtlFile();
 private:
 	string m_fileName;
 	string m_matName;
 	string m_shapeName;
 	int m_id;
+	float m_params[1];
 	ITexture* m_pTexture;
 	CShader* m_pShader;
 	std::vector<ITexture*> m_textureContainer;

@@ -89,6 +89,7 @@
     <ClCompile Include="ConsoleInput.cpp" />
     <ClCompile Include="ConsoleSystem.cpp" />
     <ClCompile Include="DisableCommand.cpp" />
+    <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="EnableCommand.cpp" />
     <ClCompile Include="EnvironmentIO.cpp" />
     <ClCompile Include="FPCamera.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="ConsoleInput.h" />
     <ClInclude Include="ConsoleSystem.h" />
     <ClInclude Include="DisableCommand.h" />
+    <ClInclude Include="EditorController.h" />
     <ClInclude Include="EnableCommand.h" />
     <ClInclude Include="EnvironmentIO.h" />
     <ClInclude Include="FPCamera.h" />
@@ -163,6 +165,7 @@
     <None Include="data\shaders\shadowmap.ss" />
     <None Include="data\shaders\skybox.ss" />
     <None Include="data\shaders\surface_shaders\illum.ss" />
+    <None Include="editor.ss" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

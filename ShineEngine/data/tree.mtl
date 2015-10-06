@@ -4,6 +4,7 @@
       "shape": "cyka",
       "material_name": "null",
       "shading": "shaders/surface_shaders/illum.ss",
+	  "roughness":"0.4",
       "textures": [
         {
           "texture": "green.bmp",
@@ -26,6 +27,7 @@
       "shape": "blyad",
       "material_name": "null",
       "shading": "shaders/surface_shaders/illum.ss",
+	  "roughness":"0.8",
       "textures": [
         {
           "texture": "brown.bmp",

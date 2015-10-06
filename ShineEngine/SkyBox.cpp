@@ -105,7 +105,7 @@ void CSkyBox::Draw()
 
 	glBindVertexArray(m_vao);
 
-	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), cam->GetWorldPos())) * glm::rotate(Mat44(), PI, Vec3(1, 0, 0)) * glm::scale(Mat44(), Vec3(5, 5, 5))));
+	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), cam->GetWorldPos())) * glm::rotate(Mat44(), PI, Vec3(1, 0, 0)) * glm::scale(Mat44(), Vec3(900,900,900))));
 
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, tex->GetTextureBufferId());

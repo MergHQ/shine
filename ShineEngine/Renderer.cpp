@@ -96,8 +96,12 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glUniform2f(static_cast<CShader*>(m_postprocessor->GetShader())->uniformLocations[6], m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	m_postprocessor->GetShader()->Update();
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[5]);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[0]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "u_color"), 3);
+
+	glActiveTexture(GL_TEXTURE16);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[5]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "u_albedo"), 16);
 
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[1]);
@@ -106,6 +110,22 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[4]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "u_godraycolor"), 20);
+
+	glActiveTexture(GL_TEXTURE13);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[2]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "u_normaltex"), 13);
+
+	glActiveTexture(GL_TEXTURE14);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[3]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "u_positiontex"), 14);
+
+	// Material params
+	glActiveTexture(GL_TEXTURE15);
+	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[7]);
+	glUniform1i(glGetUniformLocation(ShaderProg, "u_materialParams"), 15);
+
+	// Camera
+	glUniform3f(glGetUniformLocation(ShaderProg, "u_CamPos"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 
 	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(500, 300, 500, 1));
 	Vec3 ndc = Vec3(cs.x, cs.y, cs.z) / cs.w; 
@@ -175,6 +195,11 @@ void CRenderer::DrawMeshes()
 					glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
 					glUniform1i(pProgram->uniformLocations[5], gSys->GetCamera()->textures());
+
+					// Material params
+
+					// Roughness
+					glUniform1f(pProgram->uniformLocations[7], s->pMaterial->GetMaterialParams()[1]);
 
 				}
 
@@ -308,6 +333,11 @@ void CRenderer::DrawLights()
 		glUniform3f(glGetUniformLocation(p, "u_lightPosition"), currentLight->GetPos().x, currentLight->GetPos().y, currentLight->GetPos().z);
 		glUniform3f(glGetUniformLocation(p, "u_lightColor"), currentLight->GetColor().x, currentLight->GetColor().y, currentLight->GetColor().z);
 		glUniform3f(glGetUniformLocation(p, "u_lightAttenuation"), currentLight->GetAttenuation().x, currentLight->GetAttenuation().y, currentLight->GetAttenuation().z);
+
+		// Material params
+		glActiveTexture(GL_TEXTURE7);
+		glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[7]);
+		glUniform1i(glGetUniformLocation(p, "u_materialParams"), 7);
 
 		// Camera
 		glUniform3f(glGetUniformLocation(p, "u_CamPos"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);

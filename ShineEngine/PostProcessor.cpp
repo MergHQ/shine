@@ -47,6 +47,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenTextures(1, &godray);
 	glGenTextures(1, &m_finalTexture);
 	glGenTextures(1, &m_depthTexture);
+	glGenTextures(1, &materialParams);
 
 	glBindTexture(GL_TEXTURE_2D, colortex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -79,6 +80,14 @@ void CPostProcessor::Initialize(string shaderfile)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, godray, 0);
+
+	glBindTexture(GL_TEXTURE_2D, materialParams);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, materialParams, 0);
 
 	// depth
 	glBindTexture(GL_TEXTURE_2D, depthtex);
@@ -113,6 +122,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	textures[4] = godray;
 	textures[5] = m_finalTexture;
 	textures[6] = m_depthTexture;
+	textures[7] = materialParams;
 
 	FboQuad();
 
@@ -159,7 +169,7 @@ void CPostProcessor::FboQuad()
 
 void CPostProcessor::MeshPass()
 {
-	GLenum DrawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	GLenum DrawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT5 };
 	glDrawBuffers(4, DrawBuffers);
 }
 

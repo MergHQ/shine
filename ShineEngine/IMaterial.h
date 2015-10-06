@@ -15,5 +15,6 @@ struct IMaterial
 	virtual std::vector<ITexture*>& GetTextures() = 0;
 	virtual IShader* GetShader() = 0;
 	virtual string GetShapeName() = 0;
+	virtual float* GetMaterialParams() = 0;
 };
 #endif

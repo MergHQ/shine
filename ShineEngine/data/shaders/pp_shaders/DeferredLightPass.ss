@@ -13,7 +13,7 @@ void main () {
                 shp_ = shp;
 };
  
-//@ // THIS CHAR IS IMPORTANT. IT SPLITS THE SHADER.
+//@ //.
  
 #version 400
  
@@ -24,6 +24,8 @@ in vec2 oUV;
 uniform sampler2D u_normaltex;
 uniform sampler2D u_albedo;
 uniform sampler2D u_positiontex;
+
+uniform sampler2D u_materialParams;
  
 uniform sampler2D shadowmpapos;
  
@@ -99,56 +101,58 @@ void main () {
                 vec3 position = texture(u_positiontex, sspos).xyz;
                 vec3 surfaceToCamera = normalize(u_CamPos - position);
                 vec4 surfaceColor = texture(u_albedo, sspos);
+				vec4 materialParams = texture(u_materialParams, sspos);
                
                 float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
-                float shininess = 0.8;
+                float shininess = materialParams.x;
                 float Ks = 1;
                
                 float cook = 0;
                 vec3 finalValue = vec3(0);
                
 
-                                vec3 Ln = normalize(u_lightPosition - position);
-                                vec3 H = normalize(normalize(surfaceToCamera+Ln));
+                vec3 Ln = normalize(u_lightPosition - position);
+                vec3 H = normalize(normalize(surfaceToCamera+Ln));
                                
-                                float NdotH = max(dot(normalize(normal), H), 0.0);
-                                float NdotL = max(dot(normalize(normal), Ln), 0.0);
-                                float VdotH = max(dot(surfaceToCamera, H), 0.0);
+                float NdotH = max(dot(normalize(normal), H), 0.0);
+                float NdotL = max(dot(normalize(normal), Ln), 0.0);
+                float VdotH = max(dot(surfaceToCamera, H), 0.0);
                                
-                                // Diffuse
-                                vec4 diffuse = vec4(u_lightColor * (NdotL * shininess), 1);
+                // Diffuse
+                vec4 diffuse = vec4(u_lightColor * (NdotL * shininess), 1);
                                
-                                // Geometric attenuation
-                                float NH2 = 2.0 * NdotH;
-                                float g1 = (NH2 * NdotV) / VdotH;
-                                float g2 = (NH2 * NdotL) / VdotH;
-                                float geoAtt = min(1.0, min(g1, g2));
+                // Geometric attenuation
+                float NH2 = 2.0 * NdotH;
+                float g1 = (NH2 * NdotV) / VdotH;
+                float g2 = (NH2 * NdotL) / VdotH;
+                float geoAtt = min(1.0, min(g1, g2));
                                
-                                // Roughness
-                                float mSquared = shininess*shininess;
-                                float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
-                                float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
-                                float roughness = r1 * exp(r2);
+                // Roughness
+                float mSquared = shininess*shininess;
+                float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
+                float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
+				float roughness;
+				if (NdotL > 0 && NdotV > 0) 
+					float roughness = r1 * exp(r2);
                                
-                                // Fresnel
-                                float fresnel = pow(1.0 - VdotH, 5.0);
-                                fresnel *= (1.0 - Ks);
-                                fresnel += Ks;
+                // Fresnel
+                float fresnel = pow(1.0 - VdotH, 5.0);
+                fresnel *= (1.0 - Ks);
+                fresnel += Ks;
 								
-								float attenuation = 1;
-								vec3 att = u_lightAttenuation;
+				float attenuation = 1;
+				vec3 att = u_lightAttenuation;
 
-								if(att.x != 0)
-								{
-									float distanceToLight = length(u_lightPosition - position);
-									attenuation /=(att.x * 0.1) + ((att.y* 0.1) * distanceToLight) + ((att.y * 0.1)* distanceToLight * distanceToLight);
-								}
+				if(att.x != 0)
+				{
+					float distanceToLight = length(u_lightPosition - position);
+					attenuation /=(att.x * 0.1) + ((att.y* 0.1) * distanceToLight) + ((att.y * 0.1)* distanceToLight * distanceToLight);
+				}
                                
-                                cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
-                                finalValue += (u_lightColor * NdotL * (0.3 + cook * (1.0-0.2))) + diffuse.xyz;
-								if(attenuation != 0)
-									finalValue *= attenuation;
+               cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
+               finalValue += (u_lightColor * NdotL * (0.3 + cook * (1.0-0.2)))+vec3(0.1);
+				if(attenuation != 0)
+					finalValue *= attenuation;
 
-				
                 frag_colour = surfaceColor *  vec4(finalValue, 1.0);
 };
