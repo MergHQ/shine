@@ -30,10 +30,12 @@ public:
 
 	// ~IMesh
 	std::vector<tinyobj::shape_t> shapes;
+	std::vector<Vec3> tangents;
 	void CreateBufferObjects();
 	void BuildTM(Vec3 pos, Vec3 axis, float rot);
 protected:
 private:
+	std::vector<std::vector<Vec3>> ComputeTangent(std::vector<Vec3>& pos, std::vector<Vec2>& uv);
 	string m_meshName;
 	string m_file;
 	const unsigned int m_slot = 0;

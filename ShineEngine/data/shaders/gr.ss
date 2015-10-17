@@ -11,15 +11,12 @@ void main()
 //@ //dsd
 
 #version 400
-
+		
 out vec4 color;
 
 uniform int asd;
 
 void main()
 {
-	if(asd == 1)
-		color = vec4(1);
-	else
-		color = vec4(asd);
+	color = vec4(1,0.5,0,1);
 }

@@ -36,9 +36,29 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		cl.type = POINTLIGHT;
 		gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
 	}
+
+	if (key == GLFW_KEY_M && action == GLFW_RELEASE)
+	{
+		SMeshParams tree;
+		tree.fileName = "objects/witcher3.obj";
+		tree.m_materialFile = "witcher3.mtl";
+		tree.name = "dsad";
+		tree.pos = gSys->GetCamera()->GetWorldPos();
+		gSys->pMeshSystem->CreateMesh(&tree);
+	}
+
+	if (key == GLFW_KEY_N && action == GLFW_RELEASE)
+	{
+		SMeshParams tree;
+		tree.fileName = "objects/lptree.obj";
+		tree.m_materialFile = "tree.mtl";
+		tree.name = "dsad";
+		tree.pos = gSys->GetCamera()->GetWorldPos();
+		gSys->pMeshSystem->CreateMesh(&tree);
+	}
 }
 
-int main(void)
+int main(void) 
 {
 	CMainWindow mw;
 	mw.Init();
@@ -74,19 +94,19 @@ void CMainWindow::Init()
 		for (uint j = 0; j < 10; j++)
 		{
 			SMeshParams tree;
-			tree.fileName = "objects/lptree.obj";
-			tree.m_materialFile = "tree.mtl";
+			tree.fileName = "objects/cube.obj";
+			tree.m_materialFile = "plane.mtl";
 			tree.name = "dsad";
-			tree.pos = Vec3(i*4,0,j*4);
+			tree.pos = Vec3(i*3,0,j*3);
 			gSys->pMeshSystem->CreateMesh(&tree);
 		}
 	}
 
-	for (uint i = 0; i < 100; i++)
+	for (uint i = 0; i < 20; i++)
 	{
 		SMeshParams tree;
-		tree.fileName = "objects/boulder1.obj";
-		tree.m_materialFile = "grey.mtl";
+		tree.fileName = "objects/cube.obj";
+		tree.m_materialFile = "plane.mtl";
 		tree.name = "dsad";
 		if (rand() % 4 < 1)
 			tree.pos = Vec3(rand() % 100, 0, rand() % 100);
@@ -99,37 +119,32 @@ void CMainWindow::Init()
 		//gSys->pMeshSystem->CreateMesh(&tree);
 
 	}
-	int a[100];
+
+
+	int a[20];
 	ILight* l;
 	for (int i : a)
 	{
 		Light sun;
 		sun.type = POINTLIGHT;
 		sun.color = Vec3(rand() % 2, rand() % 2 , rand() % 2);
-		if (rand() % 4 < 1)
-			sun.position = Vec3(rand() % 100, 2, rand() % 100);
-		else if (rand() % 4 < 2)
-			sun.position = Vec3(rand() % 100, 2, rand() % 100) * Vec3(-0.5, 1, 0.5);
-		else if (rand() % 4 < 3)
-			sun.position = Vec3(rand() % 100, 2, rand() % 100) * Vec3(0.5, 1, -0.5);
-		else
-			sun.position = Vec3(rand() % -100, 2, rand() % -100) * Vec3(-0.5, 1, -0.5);
+			sun.position = Vec3(rand() % 20, 2, rand() % 20);
 		sun.attenuation = Vec3(1,1,1);
 		//sun.position = Vec3(4, 3, 4);
-		//gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
+		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
 
 	Light cl;
 	cl.attenuation = Vec3(1, 1, 1);
 	cl.color = Vec3(4,4,4);
 	cl.type = POINTLIGHT;
-	l = gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
+	//l = gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
 
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Load a scene
-	gSys->pLevelLoader->LoadLevel("assetzoo.shinedata");
+	//gSys->pLevelLoader->LoadLevel("sexdungeon.shinedata");
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);

@@ -43,28 +43,6 @@ vec2 GetScreenSpacePosition()
         return gl_FragCoord.xy/u_screenRes;
 }
 
-vec4 ComputeVolumetricLighting(vec2 sspos)
-{
-/*       const int SAMPLES = 128;
-               
-        float intensity = 0.25;
-        float decay = 0.96875;
-        vec2 texcoord = sspos;
-        vec2 dir = (lightsspos / 1000) - texcoord;
-        dir /= SAMPLES;
-        vec3 godrays = texture(godraycolor, texcoord).xyz;
-               
-        for(int j = 0; j < SAMPLES; j++)
-        {
-                godrays += texture(godraycolor, texcoord).xyz * intensity;
-                intensity *= decay;
-                texcoord += dir;       
-        }
-       
-        return vec4(godrays, 1.0);*/
-		return vec4(0);
-}
-
 vec4 bloom(vec2 sspos)
 {
 	float values[9];
@@ -149,7 +127,7 @@ void main () {
 					attenuation /=(att.x * 0.1) + ((att.y* 0.1) * distanceToLight) + ((att.y * 0.1)* distanceToLight * distanceToLight);
 				}
                                
-               cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
+               cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
                finalValue += (u_lightColor * NdotL * (0.3 + cook * (1.0-0.2)))+vec3(0.1);
 				if(attenuation != 0)
 					finalValue *= attenuation;

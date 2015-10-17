@@ -5,10 +5,20 @@ layout(location = 0) in vec3 vp;
 out vec3 TexCoord;
 
 uniform mat4 MVP;
+out vec2 ViewRay;
+uniform vec2 u_screenRes;
+
+float toRad(float ip)
+{
+	return (3.14/180) * ip;
+}
+
 
 void main () {
 	
 	gl_Position = vec4(vp, 1.0);
+	ViewRay.x = vp.x * (1280/720) * tan(toRad(45));
+    ViewRay.y = vp.y * tan(toRad(45));
 };
 
 //@ // Shader split
@@ -30,6 +40,90 @@ uniform sampler2D u_godraycolor;
 uniform	sampler2D u_depth;
 uniform sampler2D u_normaltex;
 uniform sampler2D u_positiontex;
+uniform vec2 u_lightsspos;
+uniform mat4 gProj;
+in vec2 ViewRay;
+const int MAX_KERNEL_SIZE = 64;
+uniform vec3 gKernel[MAX_KERNEL_SIZE];
+
+//// SSAO
+//	float linearizeDepth(vec2 coord)
+//	{
+//		float f=1000.0;
+//		float n = 0.1;
+//		float z = (2 * n) / (f + n - texture2D( u_depth, coord ).x * (f - n));
+//		return z;
+//	}
+
+//	float ComputeSSAO()
+//	{
+//		//vec3 Color = vec3(0.0, 0.0, 0.0);
+//		//float Offsets[4] = float[]( -1.5, -0.5, 0.5, 1.5 );
+//		//vec2 TexCoord = GetScreenSpacePosition();
+//		//for (int i = 0 ; i < 4 ; i++) 
+//		//{
+//		//	for (int j = 0 ; j < 4 ; j++) 
+//		//	{
+//		//		vec2 tc = TexCoord;
+//		//		tc.x = TexCoord.x + Offsets[j] / textureSize(u_color, 0).x;
+//		//		tc.y = TexCoord.y + Offsets[i] / textureSize(u_color, 0).y;
+//		//		Color += texture(u_color, tc).xyz;
+//		//	}
+//		//}
+
+//		//Color /= 10.0;
+//		vec2 sspos = GetScreenSpacePosition();
+//		float ViewZ = linearizeDepth(sspos);
+
+//		float ViewX = ViewRay.x * ViewZ;
+//		float ViewY = ViewRay.y * ViewZ;
+
+//		vec3 Pos = vec3(ViewX, ViewY, ViewZ);
+
+//		float AO = 0.0;
+
+//		for (int i = 0 ; i < MAX_KERNEL_SIZE ; i++) 
+//		{
+//			vec3 samplePos = Pos + gKernel[i];
+//			vec4 offset = vec4(samplePos, 1.0);
+//			offset = gProj * offset;
+//			offset.xy /= offset.w;
+//			offset.xy = offset.xy * 0.5 + vec2(0.5);
+
+//			float sampleDepth = linearizeDepth(offset.xy);
+
+//			if (abs(Pos.z - sampleDepth) < 1.5) {
+//				AO += step(sampleDepth,samplePos.z);
+//			}
+//		}
+
+//		AO = 1.0 - AO/64.0;
+		
+//		return pow(AO,2);
+//	}
+//// ~SSAO
+
+vec4 ComputeVolumetricLighting(vec2 sspos)
+{
+       const int SAMPLES = 128;
+               
+        float intensity = 0.25;
+        float decay = 0.96875;
+        vec2 texcoord = sspos;
+        vec2 dir = (u_lightsspos/1000) - texcoord;
+        dir /= SAMPLES;
+        vec3 godrays = texture(u_godraycolor, texcoord).xyz;
+               
+        for(int j = 0; j < SAMPLES; j++)
+        {
+                godrays += texture(u_godraycolor, texcoord).xyz * intensity;
+                intensity *= decay;
+                texcoord += dir;       
+        }
+       
+        return vec4(godrays, 1.0);
+		return vec4(0);
+}
 
 // SSAO
 	float compareDepths(float depth1,float depth2 ) 
@@ -102,7 +196,7 @@ uniform sampler2D u_positiontex;
 
 	// Sun constants (for now)
 	const vec3 sunPos = vec3(500,200,500);
-	const vec3 u_lightColor = vec3(10);
+	const vec3 u_lightColor = vec3(0);
 
 	vec4 ComputeSun()
 	{
@@ -148,7 +242,7 @@ uniform sampler2D u_positiontex;
 		fresnel += Ks;
 								
 		cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
-		final += vec4((u_lightColor * NdotL * (0.3 + cook * (1.0-0.2))) ,1)+vec4(0.1);
+		final += vec4((u_lightColor * NdotL * (0.3 + cook * (1.0-0.2))) ,1)+vec4(0.5);
 
 		 return final;
 	}
@@ -157,7 +251,8 @@ uniform sampler2D u_positiontex;
  
 void main () {
 	vec2 sspos = GetScreenSpacePosition();
-	frag_colour = texture(u_albedo, sspos) + ( texture(u_color, sspos) * ComputeSun()) * vec4(vec3(1.0 - ComputeSSAO()), 1);
+	frag_colour = texture(u_albedo, sspos) + ( texture(u_color, sspos) * ComputeSun()) * vec4(vec3(1-ComputeSSAO()), 1) + ComputeVolumetricLighting(sspos);
 	//frag_colour = texture(u_albedo, sspos) * vec4(vec3(1.0 - ComputeSSAO()), 1);
 	//frag_colour =  vec4(vec3(1.0 - ComputeSSAO()), 1);
+	//frag_colour = texture(u_godraycolor, sspos);
 };

@@ -31,7 +31,7 @@ public:
 	void DrawMeshes();
 	void DrawShadowMap();
 	void ReleaseSystems();
-	//void DrawGodRayShit();
+	void DrawGodRayShit();
 	void DrawLights();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
@@ -47,6 +47,10 @@ private:
 	IMesh* lightsphere;
 	IShader* lp_shader;
 	IShader* null_shader;
+	Vec3 kernelPoints[64];
+	CCubeMapTexture* irr;
+	IMesh* m_pLastMesh;
+	IShader* godray;
 
 };
 

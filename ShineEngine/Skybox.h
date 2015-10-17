@@ -23,12 +23,12 @@ public:
 
 	void Draw();
 	CFPCamera* cam;
+	CCubeMapTexture* tex;
 protected:
 private:
 	GLuint m_textureId;
 	GLuint m_vao;
 	IShader* pShader;
-	CCubeMapTexture* tex;
 	std::vector<float> m_verticies;
 	std::vector<float> m_normals;
 	std::vector<float> m_texcoords;

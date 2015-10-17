@@ -3,9 +3,9 @@
 	"objects":[
 
 		{
-			"objectpath":"objects/sexdungeon.obj",
+			"objectpath":"objects/plane.obj",
 			"position":"0,0,0",
-			"material":"m2.mtl"
+			"material":"plane.mtl"
 		}
 	],
 	"lights":[

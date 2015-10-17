@@ -73,12 +73,7 @@ void CMaterial::ParseMtlFile()
 						texparams.m_file = obj["texture"].GetString();
 						texparams.m_name = obj["texname"].GetString();
 
-						if (obj["type"].GetString() == "DIFFUSE")
-							texparams.m_Type = DIFFUSE;
-						else if (obj["type"].GetString() == "SPECULAR")
-							texparams.m_Type = SPECULAR;
-						else if (obj["type"].GetString() == "NORMAL")
-							texparams.m_Type = NORMAL;
+						texparams.m_Type = (TextureType)atoi(obj["type"].GetString());
 
 						CreateTexture(&texparams);
 

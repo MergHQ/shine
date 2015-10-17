@@ -169,8 +169,8 @@ void CPostProcessor::FboQuad()
 
 void CPostProcessor::MeshPass()
 {
-	GLenum DrawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT5 };
-	glDrawBuffers(4, DrawBuffers);
+	GLenum DrawBuffers[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(5, DrawBuffers);
 }
 
 void CPostProcessor::GodRayPass()

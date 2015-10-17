@@ -68,6 +68,7 @@ void CMesh::CreateBufferObjects()
 		if (gSys->pMeshSystem->GetMeshContainer()[i]->GetFileName() == m_file && !gSys->pMeshSystem->GetMeshContainer()[i]->shapes.empty())
 		{
 			shapes = gSys->pMeshSystem->GetMeshContainer()[i]->shapes;
+			tangents = gSys->pMeshSystem->GetMeshContainer()[i]->tangents;
 			shouldLoad = false;
 		}
 	}
@@ -94,6 +95,20 @@ void CMesh::CreateBufferObjects()
 
 		auto currentShape = shapes[i];
 
+		std::vector<Vec3> vertices;
+		std::vector<Vec2> texCoords;
+
+		for (uint j = 0; j < currentShape.mesh.positions.size(); j += 3)
+		{
+			vertices.push_back(Vec3(currentShape.mesh.positions[j], currentShape.mesh.positions[j + 1], currentShape.mesh.positions[j + 2]));
+		}
+
+		if(!currentShape.mesh.texcoords.empty())
+			for (uint k = 0; k < currentShape.mesh.texcoords.size(); k += 2)
+			{
+				texCoords.push_back(Vec2(currentShape.mesh.texcoords[k], currentShape.mesh.texcoords[k + 1]));
+			}
+
 		GLuint vbo = 0;
 		GLuint indicies = 0;
 		GLuint normals = 0;
@@ -108,7 +123,7 @@ void CMesh::CreateBufferObjects()
 			glEnableVertexAttribArray(0);
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * currentShape.mesh.positions.size(), &currentShape.mesh.positions[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
 			
 		}
@@ -134,10 +149,24 @@ void CMesh::CreateBufferObjects()
 			glEnableVertexAttribArray(2);
 			glGenBuffers(1, &tex_coords);
 			glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
-			glBufferData(GL_ARRAY_BUFFER, currentShape.mesh.texcoords.size() * sizeof(float), &currentShape.mesh.texcoords[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(Vec2), &texCoords[0], GL_STATIC_DRAW);
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 		}
 
+		if (!currentShape.mesh.texcoords.empty() && shouldLoad)
+		{
+			auto payload = ComputeTangent(vertices, texCoords);
+			tangents = payload[0];
+		}
+
+		// Gen tangents
+		glEnableVertexAttribArray(3);
+		glGenBuffers(1, &tex_coords);
+		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
+		glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0][0], GL_STATIC_DRAW);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		
+		
 		glBindVertexArray(NULL);
 
 		// Fill the shape struct
@@ -160,6 +189,57 @@ void CMesh::BuildTM(Vec3 pos, Vec3 axis, float rot)
 {
 	m_tm = glm::translate(glm::mat4(), pos) * glm::rotate(glm::mat4(), rot, axis) * glm::scale(Mat44(),Vec3(1,1,1));
 }
+
+std::vector<std::vector<Vec3>> CMesh::ComputeTangent(std::vector<Vec3>& pos, std::vector<Vec2>& uv)
+{
+	std::vector<Vec3> tan;
+	std::vector<Vec3> bitan;
+
+	for (int i = 0; i < pos.size(); i += 3)
+	{
+		if (i + 1 <= pos.size() && i + 2 <= pos.size() && i + 1 <= uv.size() && i + 2 <= uv.size())
+		{
+			Vec3& v0 = pos[i];
+			Vec3& v1 = pos[i + 1];
+			Vec3& v2 = pos[i + 2];
+
+			Vec2& uv0 = uv[i];
+			Vec2& uv1 = uv[i + 1];
+			Vec2& uv2 = uv[i + 2];
+
+			// Vertex delta
+			Vec3 dpos1 = v1 - v0;
+			Vec3 dpos2 = v2 - v0;
+
+			// UV delta
+			Vec2 duv1 = uv1 - uv0;
+			Vec2 duv2 = uv2 - uv0;
+
+			// Formula http://ogldev.atspace.co.uk/www/tutorial26/tangent_space_calc6.jpg
+
+			float r = 1.0f / ((duv1.x * duv2.y) - (duv2.x - duv1.y));
+			Vec3 tangent = (dpos1 * duv2.y - dpos2 * duv1.y)*r;
+			Vec3 bitangent = (dpos2 * duv1.x - dpos1 * duv2.x)*r;
+
+			tangent = glm::normalize(tangent);
+			bitangent = glm::normalize(bitangent);
+
+			tan.push_back(tangent);
+			tan.push_back(tangent);
+			tan.push_back(tangent);
+
+			bitan.push_back(bitangent);
+			bitan.push_back(bitangent);
+			bitan.push_back(bitangent);
+		}
+	}
+
+	std::vector<std::vector<Vec3>> last;
+	last.push_back(tan);
+	last.push_back(bitan);
+	return last;
+}
+
 
 std::vector<tinyobj::shape_t> CMesh::ReadCompiledObj(std::istream* stream)
 {

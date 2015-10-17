@@ -51,6 +51,7 @@ struct Shape
 	GLuint meshTexcoords;
 };
 
+
 /*
 The mesh interface.
 */
