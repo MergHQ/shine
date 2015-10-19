@@ -84,6 +84,7 @@ void main () {
                 float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
                 float shininess = materialParams.x;
                 float Ks = 1;
+				float k = 0.5;
                
                 float cook = 0;
                 vec3 finalValue = vec3(0);
@@ -95,10 +96,7 @@ void main () {
                 float NdotH = max(dot(normalize(normal), H), 0.0);
                 float NdotL = max(dot(normalize(normal), Ln), 0.0);
                 float VdotH = max(dot(surfaceToCamera, H), 0.0);
-                               
-                // Diffuse
-                vec4 diffuse = vec4(u_lightColor * (NdotL * shininess), 1);
-                               
+                             
                 // Geometric attenuation
                 float NH2 = 2.0 * NdotH;
                 float g1 = (NH2 * NdotV) / VdotH;
@@ -111,7 +109,7 @@ void main () {
                 float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
 				float roughness;
 				if (NdotL > 0 && NdotV > 0) 
-					float roughness = r1 * exp(r2);
+					roughness = r1 * exp(r2);
                                
                 // Fresnel
                 float fresnel = pow(1.0 - VdotH, 5.0);
@@ -128,7 +126,7 @@ void main () {
 				}
                                
                cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
-               finalValue += (u_lightColor * NdotL * (0.3 + cook * (1.0-0.2)))+vec3(0.1);
+               finalValue += (u_lightColor * NdotL * (k + cook * (1.0-k)));
 				if(attenuation != 0)
 					finalValue *= attenuation;
 

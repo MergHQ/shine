@@ -88,7 +88,7 @@ void CMainWindow::Init()
 	gSys = new IGlobalSystem();
 	gSys->Init(this);
 
-	for (uint i = 0; i < 10; i++)
+	for (uint i = 0; i <10; i++)
 	{
 
 		for (uint j = 0; j < 10; j++)
@@ -97,7 +97,7 @@ void CMainWindow::Init()
 			tree.fileName = "objects/cube.obj";
 			tree.m_materialFile = "plane.mtl";
 			tree.name = "dsad";
-			tree.pos = Vec3(i*3,0,j*3);
+			tree.pos = Vec3(i*2,0,j*2);
 			gSys->pMeshSystem->CreateMesh(&tree);
 		}
 	}
@@ -116,21 +116,20 @@ void CMainWindow::Init()
 			tree.pos = Vec3(rand() % 100, rand() % 10, rand() % 100) * Vec3(1, 0, -1);
 		else
 			tree.pos = Vec3(rand() % -100, rand() % 10, rand() % -100) * Vec3(-1, 0, -1);
-		//gSys->pMeshSystem->CreateMesh(&tree);
+		gSys->pMeshSystem->CreateMesh(&tree);
 
 	}
 
 
-	int a[20];
+	int a[50];
 	ILight* l;
 	for (int i : a)
 	{
 		Light sun;
 		sun.type = POINTLIGHT;
 		sun.color = Vec3(rand() % 2, rand() % 2 , rand() % 2);
-			sun.position = Vec3(rand() % 20, 2, rand() % 20);
+			sun.position = Vec3(rand() % 40, 2, rand() % 40);
 		sun.attenuation = Vec3(1,1,1);
-		//sun.position = Vec3(4, 3, 4);
 		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
 

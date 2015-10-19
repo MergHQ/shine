@@ -103,7 +103,7 @@ void CMesh::CreateBufferObjects()
 			vertices.push_back(Vec3(currentShape.mesh.positions[j], currentShape.mesh.positions[j + 1], currentShape.mesh.positions[j + 2]));
 		}
 
-		if(!currentShape.mesh.texcoords.empty())
+		if (!currentShape.mesh.texcoords.empty())
 			for (uint k = 0; k < currentShape.mesh.texcoords.size(); k += 2)
 			{
 				texCoords.push_back(Vec2(currentShape.mesh.texcoords[k], currentShape.mesh.texcoords[k + 1]));
@@ -125,7 +125,7 @@ void CMesh::CreateBufferObjects()
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, GL_FALSE, (GLubyte *)NULL);
-			
+
 		}
 
 		if (!currentShape.mesh.indices.empty())
@@ -159,12 +159,15 @@ void CMesh::CreateBufferObjects()
 			tangents = payload[0];
 		}
 
-		// Gen tangents
-		glEnableVertexAttribArray(3);
-		glGenBuffers(1, &tex_coords);
-		glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
-		glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0][0], GL_STATIC_DRAW);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		if (!tangents.empty())
+		{
+			// Gen tangents
+			glEnableVertexAttribArray(3);
+			glGenBuffers(1, &tex_coords);
+			glBindBuffer(GL_ARRAY_BUFFER, tex_coords);
+			glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0][0], GL_STATIC_DRAW);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		}
 		
 		
 		glBindVertexArray(NULL);

@@ -207,44 +207,45 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
 		vec3 position = texture(u_positiontex, sspos).xyz;
 		vec3 surfaceToCamera = normalize(u_CamPos - position);
 
-		float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
+		float NdotV = max(0.0,dot(normalize(normal), surfaceToCamera));
 		float shininess = texture(u_materialParams, sspos).x;
-		float Ks = 1;
+        float Ks = 1;
+		float k = 0.5;
 		float cook = 0;
 
 		vec3 Ln = normalize(sunPos - position);
 		vec3 H = normalize(normalize(surfaceToCamera+Ln));
                                
-		float NdotH = max(dot(normalize(normal), H), 0.0);
-		float NdotL = max(dot(normalize(normal), Ln), 0.0);
-		float VdotH = max(dot(surfaceToCamera, H), 0.0);
-                               
-		// Diffuse
-		vec4 diffuse = vec4(u_lightColor * (NdotL * shininess), 1);
-                               
-		// Geometric attenuation
-		float NH2 = 2.0 * NdotH;
-		float g1 = (NH2 * NdotV) / VdotH;
-		float g2 = (NH2 * NdotL) / VdotH;
-		float geoAtt = min(1.0, min(g1, g2));
-                               
-		// Roughness
-		float mSquared = shininess*shininess;
-		float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
-		float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
-		float roughness;
-		if (NdotL > 0 && NdotV > 0) 
-			float roughness = r1 * exp(r2);
-                               
-		// Fresnel
-		float fresnel = pow(1.0 - VdotH, 5.0);
-		fresnel *= (1.0 - Ks);
-		fresnel += Ks;
-								
-		cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 3.14);
-		final += vec4((u_lightColor * NdotL * (0.3 + cook * (1.0-0.2))) ,1)+vec4(0.5);
+		float NdotH = max(0.0, dot(normalize(normal), H));
+		float NdotL = max(0.0, dot(normalize(normal), Ln));
+		float VdotH = max(0.0, dot(surfaceToCamera, H));
 
-		 return final;
+        if(NdotL > 0.0)
+		{     
+			// Geometric attenuation
+			float NH2 = 2.0 * NdotH;
+			float g1 = (NH2 * NdotV) / VdotH;
+			float g2 = (NH2 * NdotL) / VdotH;
+			float geoAtt = min(1.0, min(g1, g2));
+                               
+			// Roughness
+			float mSquared = shininess*shininess;
+			float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
+			float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
+			float roughness = 0;
+			if (NdotL > 0 && NdotV > 0) 
+				clamp(0,1,roughness = r1 * exp(r2));
+                               
+			// Fresnel
+			float fresnel = pow(1.0 - VdotH, 5.0);
+			fresnel *= (1.0 - Ks);
+			fresnel += Ks;
+								
+			cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
+		}
+		final += vec4((u_lightColor * NdotL * (k + cook * (1.0-k)) +d vec3(0.5)*Ks) ,1);
+
+		return final;
 	}
 
 //

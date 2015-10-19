@@ -76,10 +76,10 @@ void main () {
 	grcolor = vec4(0);
 	
 	float bias = 0.0001;
-	float visib = 1.0;
+	float visib =1.0;
 	if ( texture(shadowmap, ShadowCoord.xy ).z  <  ShadowCoord.z-bias)
 	{
-		visib = 0.5;
+		visib = 1;
 	}
 	
 	if(textures == 1)

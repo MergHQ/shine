@@ -41,7 +41,7 @@ void CRenderer::Init(GLFWwindow* pWin)
 	m_postprocessor = new CPostProcessor;
 	m_postprocessor->Initialize("shaders/quad.ss");
 
-	pSm = new CShadowMapFBO(16000, 16000, "shaders/shadowmap.ss");
+	pSm = new CShadowMapFBO(6144, 6144, "shaders/shadowmap.ss");
 
 	m_pLightSystem = new CLightSystem;
 	SMeshParams sd;
@@ -86,7 +86,6 @@ void CRenderer::Render()
 	glViewport(0, 0, m_postprocessor->fbostats[0], m_postprocessor->fbostats[1]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0,0,0,0);
-	DrawGodRayShit();
 	DrawMeshes();
 	DrawLights();
 	ProcessFramebuffer(m_postprocessor->GetShader()->GetShaderProgramme());
@@ -133,6 +132,10 @@ void CRenderer::ProcessFramebuffer(GLuint ShaderProg)
 	glActiveTexture(GL_TEXTURE14);
 	glBindTexture(GL_TEXTURE_2D, m_postprocessor->textures[3]);
 	glUniform1i(glGetUniformLocation(ShaderProg, "u_positiontex"), 14);
+
+	glActiveTexture(GL_TEXTURE21);
+	glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
+	glUniform1i(glGetUniformLocation(ShaderProg, "smsm"), 21);
 
 	glUniformMatrix4fv(glGetUniformLocation(ShaderProg, "gProj"), 1, GL_TRUE, glm::value_ptr(gSys->GetCamera()->GetProjectionMatrix()));
 	glUniform3fv(glGetUniformLocation(ShaderProg, "gKernel"), 64, (const GLfloat*)&kernelPoints[0]);
@@ -242,8 +245,8 @@ void CRenderer::DrawMeshes()
 					m_pLastMesh = pMesh;
 				}
 
-				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
-				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(200, 200, 200), Vec3(0, 0, 0), Vec3(0, 1, 0)) * wtm;
+				Mat44 depthProjectionMatrix = glm::ortho<float>(-100, 100, -100, 100, -100, 200);
+				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * wtm;
 				glm::mat4 biasMatrix(
 					0.5, 0.0, 0.0, 0.0,
 					0.0, 0.5, 0.0, 0.0,
@@ -262,8 +265,9 @@ void CRenderer::DrawMeshes()
 void CRenderer::DrawShadowMap()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, pSm->GetFBO());
-	glViewport(0, 0, 16000, 16000);
-
+	glViewport(0, 0, 6144, 6144);
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (uint iter = 0; iter < gSys->pMeshSystem->GetMeshContainer().size(); iter++)
@@ -272,17 +276,18 @@ void CRenderer::DrawShadowMap()
 		{
 			for (Shape* s : pMesh->GetShapeContainer())
 			{
-				CShader* pProgram = static_cast<CShader*>(s->pMaterial->GetShader());
+				CShader* pProgram = static_cast<CShader*>(pSm->GetShader());
 
 				glUseProgram(pSm->GetShader()->GetShaderProgramme());
-				Mat44 depthProjectionMatrix = glm::ortho<float>(-400, 400, -400, 400, -400, 800);
-				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(200, 200, 200), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
+				Mat44 depthProjectionMatrix = glm::ortho<float>(-100, 100, -100, 100, -100, 200);
+				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * pMesh->GetWorldTM();
 				glUniformMatrix4fv(pProgram->uniformLocations[0], 1, GL_FALSE, glm::value_ptr(mvp));
 				glBindVertexArray(s->meshVao);
 				glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 			}
 		}
 	}
+	glDepthMask(GL_FALSE);
 }
 
 void CRenderer::DrawGodRayShit()
