@@ -5,6 +5,7 @@
 #include "shine.h"
 #include "IShader.h"
 #include <GL\glew.h>
+#include <GLFW\glfw3.h>
 
 enum TextureType
 {
@@ -36,6 +37,7 @@ struct ITexture
 	virtual string GetTextureName() = 0;
 	virtual string GetTextureFile() = 0;
 	virtual int GetTextureId() = 0;
+	virtual void ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap) = 0;
 
 };
 #endif

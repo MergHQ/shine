@@ -12,12 +12,12 @@ CSkyBox::CSkyBox()
 	pShader = new CShader(&s);
 
 	STextureParams t;
-	t.cubemapTextures[0] = "nightsky_right.bmp";
-	t.cubemapTextures[1] = "nightsky_left.bmp";
-	t.cubemapTextures[2] = "nightsky_top.bmp";
-	t.cubemapTextures[3] = "nightsky_top.bmp";
-	t.cubemapTextures[4] = "nightsky_front.bmp";
-	t.cubemapTextures[5] = "nightsky_back.bmp";
+	t.cubemapTextures[0] = "irradiance/posx.jpg";
+	t.cubemapTextures[1] = "irradiance/negx.jpg";
+	t.cubemapTextures[2] = "irradiance/posy.jpg";
+	t.cubemapTextures[3] = "irradiance/negy.jpg";
+	t.cubemapTextures[4] = "irradiance/posz.jpg";
+	t.cubemapTextures[5] = "irradiance/negz.jpg";
 	t.m_name = "dskldkjmfkdls";
 	tex = new CCubeMapTexture(&t);
 
@@ -105,7 +105,7 @@ void CSkyBox::Draw()
 
 	glBindVertexArray(m_vao);
 
-	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), cam->GetWorldPos())) * glm::rotate(Mat44(), PI, Vec3(1, 0, 0)) * glm::scale(Mat44(), Vec3(900,900,900))));
+	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), cam->GetWorldPos())) * glm::rotate(Mat44(),0.0f, Vec3(1,0,0)) * glm::scale(Mat44(), Vec3(900,900,900))));
 
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, tex->GetTextureBufferId());

@@ -63,7 +63,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glu32.lib;glew32.lib;glfw3.lib;opengl32.lib;/NODEFAULTLIB:glu32.lib;/NODEFAULTLIB:MSVCRT;/NODEFAULTLIB:LIBCMT;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImage.lib;glu32.lib;glew32.lib;glfw3.lib;opengl32.lib;/NODEFAULTLIB:glu32.lib;/NODEFAULTLIB:MSVCRT;/NODEFAULTLIB:LIBCMT;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,6 +95,7 @@
     <ClCompile Include="FPCamera.cpp" />
     <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="GlobalSystem.cpp" />
+    <ClCompile Include="IlluminationProbe.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="JsonTool.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="GameInput.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILight.h" />
+    <ClInclude Include="IlluminationProbe.h" />
     <ClInclude Include="IMaterial.h" />
     <ClInclude Include="IMesh.h" />
     <ClInclude Include="Input.h" />

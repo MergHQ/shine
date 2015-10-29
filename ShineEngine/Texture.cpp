@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include <freeimg\imageloader.hpp>
 
 CTexture::CTexture(STextureParams* params)
 {
@@ -73,8 +74,18 @@ void CTexture::Load()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-
 	m_texBufferId = textureID;
+}
+
+void CTexture::ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap)
+{
+	if (!cubemap)
+	{
+		glActiveTexture(activate);
+		glBindTexture(GL_TEXTURE_2D, m_texBufferId);
+		int offset = activate - 0x84C0;
+		glUniform1i(uniformLoc, offset);
+	}
 }
 
 CCubeMapTexture::CCubeMapTexture(STextureParams* params)
@@ -113,57 +124,77 @@ void CCubeMapTexture::Load()
 	int height;
 
 	GLuint textureID;
-	glEnable(GL_TEXTURE_CUBE_MAP | GL_TEXTURE_2D | GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	for (int i = 0; i < 6; i++)
 	{
 		string file = ASSET_ROOT_DIR + m_textureFiles[i];
-
+		Image_t img;
 		if (file.c_str() != nullptr && file != "")
 		{
-			FILE* pFile = fopen(file.c_str(), "rb");
-
-			if (pFile)
-			{
-				if (fread(header, 1, 54, pFile) != 54)
-					gSys->Log("Not a BMP file");
-
-				if (header[0] != 'B' || header[1] != 'M')
-				{
-					gSys->Log("Not a BMP file (Wrong header)");
-				}
-
-				dataPos = *(int*)&(header[0x0A]);
-				imageSize = *(int*)&(header[0x22]);
-				width = *(int*)&(header[0x12]);
-				height = *(int*)&(header[0x16]);
-
-				if (imageSize == 0)    
-					imageSize = width*height * 3;
-
-				if (dataPos == 0)      
-					dataPos = 54;
-
-				data = new unsigned char[imageSize];
-
-				fread(data, 1, imageSize, pFile);
-
-				fclose(pFile);
-			}
-			else
-				gSys->Log("[TEXTURESYS] Cannot open file");
+			img.load(file.c_str());
 		}
 
-		glTexImage2D(m_types[i], 0, GL_RGBA, width, height, 0, GL_BGR,
-			GL_UNSIGNED_BYTE, data);
+		glTexImage2D(m_types[i], 0, GL_SRGB8_ALPHA8, img.width, img.height, 0, GL_RGB,
+			GL_UNSIGNED_BYTE, img.data);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
 
+
 	m_texBufferId = textureID;
+}
+
+void CCubeMapTexture::ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap)
+{
+	if (cubemap)
+	{
+		glActiveTexture(activate);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_texBufferId);
+		int offset = activate - 0x84C0;
+		glUniform1i(uniformLoc, offset);
+	}
+}
+
+CFboTexture::CFboTexture(GLint cbt, GLint dataType, GLint colorAttachment, int width, int height)
+{
+	Load(cbt, dataType, colorAttachment, width, height);
+}
+
+CFboTexture::~CFboTexture()
+{
+	glDeleteTextures(1, &m_texBufferId);
+}
+
+void CFboTexture::Load(GLint cbt, GLint dataType, GLint colorAttachment, int width, int height)
+{
+	int shit;
+
+	if (cbt == GL_RGB32F)
+		shit = GL_RGB;
+	else if (cbt == GL_DEPTH32F_STENCIL8)
+		shit = GL_DEPTH_STENCIL;
+	else shit = cbt;
+
+	glGenTextures(1, &m_texBufferId);
+	glBindTexture(GL_TEXTURE_2D, m_texBufferId);
+	glTexImage2D(GL_TEXTURE_2D, 0, cbt, width, height, 0, shit, dataType, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture(GL_FRAMEBUFFER, colorAttachment, m_texBufferId, 0);
+}
+
+void CFboTexture::ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap)
+{
+	if (!cubemap)
+	{
+		glActiveTexture(activate);
+		glBindTexture(GL_TEXTURE_2D, m_texBufferId);
+		int offset = activate - 0x84C0;
+		glUniform1i(uniformLoc, offset);
+	}
 }

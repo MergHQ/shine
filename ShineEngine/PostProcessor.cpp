@@ -3,6 +3,7 @@
 #include "IShader.h"
 #include "Shader.h"
 #include "Renderer.h"
+#include "Skybox.h"
 
 CPostProcessor::CPostProcessor()
 {
@@ -12,12 +13,9 @@ CPostProcessor::~CPostProcessor()
 {
 	delete pSSRS;
 	glDeleteBuffers(1, &fbo);
-	glDeleteBuffers(1, &depthtex);
-	glDeleteBuffers(1, &normaltex);
-	glDeleteBuffers(1, &colortex);
-	glDeleteBuffers(1, &positiontex);
-	for (uint i = 0; i < sizeof(textures); i++)
-		glDeleteTextures(1, &textures[i]);
+	for (uint i = 0; i < 7; i++)
+		if(textures[i] != nullptr)
+			delete textures[i];
 }
 
 void CPostProcessor::Initialize(string shaderfile)
@@ -39,74 +37,13 @@ void CPostProcessor::Initialize(string shaderfile)
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-
-	glGenTextures(1, &depthtex);
-	glGenTextures(1, &normaltex);
-	glGenTextures(1, &colortex);
-	glGenTextures(1, &positiontex);
-	glGenTextures(1, &godray);
-	glGenTextures(1, &m_finalTexture);
-	glGenTextures(1, &m_depthTexture);
-	glGenTextures(1, &materialParams);
-
-	glBindTexture(GL_TEXTURE_2D, colortex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colortex, 0);
-
-	glBindTexture(GL_TEXTURE_2D, normaltex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, normaltex, 0);
-
-	glBindTexture(GL_TEXTURE_2D, positiontex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, fbowidth, fboheight, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, positiontex, 0);
-
-	glBindTexture(GL_TEXTURE_2D, godray);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, godray, 0);
-
-	glBindTexture(GL_TEXTURE_2D, materialParams);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, materialParams, 0);
-
-	// depth
-	glBindTexture(GL_TEXTURE_2D, depthtex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, fbowidth, fboheight, 0, GL_DEPTH_STENCIL,
-		GL_FLOAT_32_UNSIGNED_INT_24_8_REV, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, depthtex, 0); 
-
-	// final
-	glBindTexture(GL_TEXTURE_2D, m_finalTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fbowidth, fboheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, m_finalTexture, 0);
+	colortex = new CFboTexture(GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT0, fbowidth, fboheight);
+	normaltex = new CFboTexture(GL_RGB32F, GL_FLOAT, GL_COLOR_ATTACHMENT1, fbowidth, fboheight);
+	positiontex = new CFboTexture(GL_RGB32F, GL_FLOAT, GL_COLOR_ATTACHMENT2, fbowidth, fboheight);
+	godray = new CFboTexture(GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT3, fbowidth, fboheight);
+	materialParams = new CFboTexture(GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT5, fbowidth, fboheight);
+	depthtex = new CFboTexture(GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH_STENCIL_ATTACHMENT, fbowidth, fboheight);
+	m_finalTexture = new CFboTexture(GL_RGBA, GL_UNSIGNED_BYTE, GL_COLOR_ATTACHMENT4, fbowidth, fboheight);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -121,8 +58,7 @@ void CPostProcessor::Initialize(string shaderfile)
 	textures[3] = positiontex;
 	textures[4] = godray;
 	textures[5] = m_finalTexture;
-	textures[6] = m_depthTexture;
-	textures[7] = materialParams;
+	textures[6] = materialParams;
 
 	FboQuad();
 
@@ -199,4 +135,39 @@ void CPostProcessor::LightPass()
 	glBlendFunc(GL_ONE, GL_ONE);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
+}
+
+void CPostProcessor::ProcessFramebuffer()
+{
+	GLuint ShaderProg = pSSRS->GetShaderProgramme();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, fbostats[0],fbostats[1]);
+	glUseProgram(ShaderProg);
+	auto castedShader = static_cast<CShader*>(pSSRS);
+
+	glUniform2f(castedShader->uniformLocations[6], fbostats[0], fbostats[1]);
+	pSSRS->Update();
+
+	textures[0]->ActivateTexture(GL_TEXTURE3, castedShader->uniformLocations[9], false);
+	textures[1]->ActivateTexture(GL_TEXTURE16, castedShader->uniformLocations[11], false);
+	textures[2]->ActivateTexture(GL_TEXTURE4, castedShader->uniformLocations[13], false);
+	textures[3]->ActivateTexture(GL_TEXTURE20, castedShader->uniformLocations[14], false);
+	textures[4]->ActivateTexture(GL_TEXTURE13, castedShader->uniformLocations[12], false);
+	textures[5]->ActivateTexture(GL_TEXTURE14, castedShader->uniformLocations[10], false);
+	textures[6]->ActivateTexture(GL_TEXTURE15, castedShader->uniformLocations[15], false);
+	gSys->m_pSkyBox->tex->ActivateTexture(GL_TEXTURE20, glGetUniformLocation(pSSRS->GetShaderProgramme(), "cubemapsamp"), true);
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_RED"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o1));
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_GREEN"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o2));
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_BLUE"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o3));
+	// Camera
+	glUniform3f(castedShader->uniformLocations[16], gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
+
+	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(500, 500, 500, 1));
+	Vec3 ndc = Vec3(cs.x, cs.y, cs.z) / cs.w;
+	Vec2 ss = Vec2(((ndc.x + 1) / 2 * 1280), (ndc.y + 1) / 2 * 720) * Vec2(0.79, 1.4);
+	glUniform2f(castedShader->uniformLocations[17], ss.x, ss.y);
+
+	// Bind quad.
+	glBindVertexArray(GetQuadVao());
+	glDrawElements(GL_TRIANGLES, QuadIndices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 }

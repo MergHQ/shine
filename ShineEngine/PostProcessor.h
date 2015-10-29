@@ -4,6 +4,7 @@
 
 #include "IShader.h"
 #include "shine.h"
+#include "ITexture.h"
 
 #include <GLFW\glfw3.h>
 #include <vector>
@@ -16,7 +17,7 @@ public:
 
 	// 0 = width, 1 = height
 	int fbostats[2];
-	GLuint textures[8];
+	ITexture* textures[7];
 
 	void Initialize(string shaderfile);
 	GLuint GetFBO() { return fbo; }
@@ -27,11 +28,20 @@ public:
 	void GodRayPass();
 	void StencilPass();
 	void LightPass();
+	void ProcessFramebuffer();
 protected:
 private:
 	void FboQuad();
 	int fbowidth, fboheight;
-	GLuint fbo, depthtex, normaltex, quadvao, quadvbo, quadibo, quaduv, colortex, positiontex, godray, m_depthTexture, m_finalTexture, materialParams;
+	ITexture* depthtex;
+	ITexture* normaltex; 
+	ITexture* colortex;
+	ITexture* positiontex;
+	ITexture* godray;
+	ITexture* m_depthTexture;
+	ITexture* m_finalTexture;
+	ITexture* materialParams;
+	GLuint quadvao, quadvbo, quadibo, quaduv, fbo;
 	IShader* pSSRS;
 };
 #endif

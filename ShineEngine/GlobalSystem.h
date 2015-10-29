@@ -16,6 +16,7 @@ class CWindowInput;
 class CMaterialSystem;
 class CEnvironmentLoader;
 class CSkyBox;
+class CEditorController;
 
 struct IGlobalSystem
 {
@@ -32,6 +33,7 @@ public:
 	CMaterialSystem* pMaterialSystem;
 	CEnvironmentLoader* pLevelLoader;
 	CMainWindow* pMainWin;
+	CEditorController* pEditorController;
 
 	CConsoleInput* m_pConIp;
 	CGameInput* m_pGameIp;

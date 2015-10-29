@@ -24,7 +24,7 @@ public:
 	// ~IShader
 
 	// MVP, texture, obj2world, DepthBias, shadowmap, texture toggle, screen size, material roughness, normal map.
-	GLuint uniformLocations[9];
+	GLuint uniformLocations[18];
 
 protected:
 private:

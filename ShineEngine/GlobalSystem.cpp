@@ -12,6 +12,7 @@
 #include "MaterialSystem.h"
 #include "EnvironmentIO.h"
 #include "Skybox.h"
+#include "EditorController.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
@@ -33,6 +34,7 @@ IGlobalSystem::~IGlobalSystem()
 	delete m_pCamera;
 	delete pMaterialSystem;
 	delete pLevelLoader;
+	delete pEditorController;
 
 	delete m_pConIp;
 	delete m_pGameIp;
@@ -64,7 +66,12 @@ void IGlobalSystem::Init(CMainWindow* win)
 	if (m_pCamera->Init())
 		Log("- Camera system\n\n");
 	pLevelLoader = new CEnvironmentLoader;
+#ifdef DEV_MODE
+	pEditorController = new CEditorController;
+	pEditorController->Init();
+#endif
 	Log("We gucchi!");
+
 
 
 	//--------------

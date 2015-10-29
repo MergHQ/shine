@@ -172,4 +172,13 @@ void CShader::GenerateUniformLocations()
 	uniformLocations[6] = glGetUniformLocation(sprog, "u_screenRes");
 	uniformLocations[7] = glGetUniformLocation(sprog, "u_roughness");
 	uniformLocations[8] = glGetUniformLocation(sprog, "u_normalMap");
+	uniformLocations[9] = glGetUniformLocation(sprog, "u_color");
+	uniformLocations[10] = glGetUniformLocation(sprog, "u_albedo");
+	uniformLocations[11] = glGetUniformLocation(sprog, "u_depth");
+	uniformLocations[12] = glGetUniformLocation(sprog, "u_godraycolor");
+	uniformLocations[13] = glGetUniformLocation(sprog, "u_normaltex");
+	uniformLocations[14] = glGetUniformLocation(sprog, "u_positiontex");
+	uniformLocations[15] = glGetUniformLocation(sprog, "u_materialParams");
+	uniformLocations[16] = glGetUniformLocation(sprog, "u_CamPos");
+	uniformLocations[17] = glGetUniformLocation(sprog, "u_lightsspos");
 }

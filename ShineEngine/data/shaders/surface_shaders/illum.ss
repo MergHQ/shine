@@ -10,6 +10,7 @@ out vec3 fNormal;
 out vec4 fPosition;
 out vec4 ShadowCoord;
 out vec3 fTangent;
+out vec3 pos;
 
 uniform mat4 MVP;
 uniform mat4 Obj2World;
@@ -24,6 +25,7 @@ void main () {
 	fPosition = Obj2World * vec4(vp, 1.0);
 	ShadowCoord = DepthBias * vec4(vp, 1.0);
 	fTangent = (Obj2World * vec4(tangent, 0.0)).xyz;
+	pos = vp;
 };
 
 //@ // Shader split
@@ -35,6 +37,7 @@ in vec3 fNormal;
 in vec4 fPosition;
 in vec4 ShadowCoord;
 in vec3 fTangent;
+in vec3 pos;
 
 layout(location = 0) out vec4 frag_colour;	
 layout(location = 1) out vec3 attachNormal;
@@ -46,8 +49,12 @@ uniform sampler2D texsamp;
 uniform int textures;
 uniform sampler2D shadowmap;
 uniform int asd;
+uniform float time;
 uniform float u_roughness;
 uniform sampler2D u_normalMap;
+uniform samplerCube cubemapsamp;
+uniform vec3 u_CamPos;
+
 
 vec3 CalcBumpedNormal()
 {
@@ -69,10 +76,11 @@ void main () {
 	if(length(texture(u_normalMap, UV).xyz) == 0)
 		attachNormal = fNormal;
 	else
-		attachNormal = CalcBumpedNormal();
+		attachNormal = fNormal;
 
+	vec4 envMapDiff = texture(cubemapsamp, normalize(reflect(u_CamPos-fPosition.xyz, attachNormal)));
 	position = fPosition.xyz;
-	materialParams = vec4(u_roughness,0,0,0);
+	materialParams = vec4(u_roughness,envMapDiff.xyz);
 	grcolor = vec4(0);
 	
 	float bias = 0.0001;
@@ -84,6 +92,7 @@ void main () {
 	
 	if(textures == 1)
 	{
+		vec2 aUV = UV + vec2(time);
 		frag_colour = texture(texsamp, UV) * visib;	
 	}else{
 		frag_colour = vec4(1) * visib;

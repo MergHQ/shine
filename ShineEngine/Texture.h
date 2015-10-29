@@ -16,6 +16,7 @@ public:
 	virtual string GetTextureName() { return m_texName; }
 	virtual string GetTextureFile() { return m_texFile; }
 	virtual int GetTextureId() { return m_texId; }
+	virtual void ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap);
 	//~ITexture	
 	
 	TextureType GetTextureType() { return m_texType; }
@@ -41,6 +42,7 @@ public:
 	// This function is not really working with cubemaps.
 	virtual string GetTextureFile() { return ""; }
 	virtual int GetTextureId() { return m_textureId; }
+	virtual void ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap);
 	//~ITexture	
 
 protected:
@@ -53,4 +55,28 @@ private:
 
 	GLuint m_texBufferId;
 };
+
+class CFboTexture : public ITexture
+{
+public:
+	CFboTexture(GLint cbt, GLint dataType, GLint colorAttachment, int width, int height);
+	~CFboTexture();
+
+	//ITexture
+	virtual void Load(GLint cbt, GLint dataType, GLint colorAttachment, int width, int height);
+	virtual GLuint GetTextureBufferId() { return m_texBufferId; }
+	virtual string GetTextureName() { return m_textureName; }
+	// This function is not really working with cubemaps.
+	virtual string GetTextureFile() { return "this is a framebuffer texture."; }
+	virtual int GetTextureId() { return m_textureId; }
+	virtual void ActivateTexture(GLuint activate, GLuint uniformLoc, bool cubemap);
+	//~ITexture	
+
+
+private:
+	GLuint m_texBufferId;
+	string m_textureName;
+	int m_textureId;
+};
+
 #endif

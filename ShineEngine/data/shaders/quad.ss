@@ -41,10 +41,14 @@ uniform	sampler2D u_depth;
 uniform sampler2D u_normaltex;
 uniform sampler2D u_positiontex;
 uniform vec2 u_lightsspos;
+uniform samplerCube cubemapsamp;
 uniform mat4 gProj;
 in vec2 ViewRay;
 const int MAX_KERNEL_SIZE = 64;
 uniform vec3 gKernel[MAX_KERNEL_SIZE];
+uniform mat4 M_RED;
+uniform mat4 M_GREEN;
+uniform mat4 M_BLUE;
 
 //// SSAO
 //	float linearizeDepth(vec2 coord)
@@ -122,7 +126,6 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
         }
        
         return vec4(godrays, 1.0);
-		return vec4(0);
 }
 
 // SSAO
@@ -153,37 +156,40 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
 			vec2 texCoord = GetScreenSpacePosition();
 
 			float depth = linearizeDepth(texCoord);
-			float d;
-			float pw = 1 / u_screenRes.x;
-			float ph = 1 / u_screenRes.y;
-			float aoCap = 1.0;
-			float ao = 0.0;
-			float aoMultiplier=10000.0;
-			float depthTolerance = 0.001;
-			float aoscale=0.9;
-
-			for(int i = 0; i < 4; i++)
+			if(depth < 0.1)
 			{
-				d=linearizeDepth( vec2(texCoord.x+pw,texCoord.y+ph));
-				ao+=compareDepths(depth,d)/aoscale;
+				float d;
+				float pw = 1 / u_screenRes.x;
+				float ph = 1 / u_screenRes.y;
+				float aoCap = 1.0;
+				float ao = 0.0;
+				float aoMultiplier=10000.0;
+				float depthTolerance = 0.001;
+				float aoscale=0.9;
 
-				d=linearizeDepth( vec2(texCoord.x-pw,texCoord.y+ph));
-				ao+=compareDepths(depth,d)/aoscale;
+				for(int i = 0; i < 4; i++)
+				{
+					d=linearizeDepth( vec2(texCoord.x+pw,texCoord.y+ph));
+					ao+=compareDepths(depth,d)/aoscale;
 
-				d=linearizeDepth( vec2(texCoord.x+pw,texCoord.y-ph));
-				ao+=compareDepths(depth,d)/aoscale;
+					d=linearizeDepth( vec2(texCoord.x-pw,texCoord.y+ph));
+					ao+=compareDepths(depth,d)/aoscale;
 
-				d=linearizeDepth( vec2(texCoord.x-pw,texCoord.y-ph));
-				ao+=compareDepths(depth,d)/aoscale;
+					d=linearizeDepth( vec2(texCoord.x+pw,texCoord.y-ph));
+					ao+=compareDepths(depth,d)/aoscale;
 
-				pw*=2.0;
-				ph*=2.0;
-				aoMultiplier/=2.0;
-				aoscale*=1.2;
+					d=linearizeDepth( vec2(texCoord.x-pw,texCoord.y-ph));
+					ao+=compareDepths(depth,d)/aoscale;
+
+					pw*=2.0;
+					ph*=2.0;
+					aoMultiplier/=2.0;
+					aoscale*=1.2;
+				}
+
+				ao/=16.0;
+				final = ao;
 			}
-
-			ao/=16.0;
-			final = ao;
 
 		return final;
 	}
@@ -198,62 +204,103 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
 	const vec3 sunPos = vec3(500,200,500);
 	const vec3 u_lightColor = vec3(0);
 
-	vec4 ComputeSun()
+vec4 SpecularBRDF()
+{
+                // Cook torrance lighting model.       
+               
+                vec4 lighting = vec4(0);
+               
+                vec2 sspos = GetScreenSpacePosition();
+                vec3 normal = texture(u_normaltex, sspos).xyz;
+                vec3 position = texture(u_positiontex, sspos).xyz;
+                vec3 surfaceToCamera = normalize(u_CamPos - position);
+				vec4 materialParams = texture(u_materialParams, sspos);
+               
+                float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
+                float shininess = materialParams.x;
+                float Ks = 1;
+				float k = 0.5;
+               
+                float cook = 0;
+                vec3 finalValue = vec3(0);
+
+              
+				vec3 Ln = normalize(sunPos - position);
+				vec3 H = normalize(normalize(surfaceToCamera+Ln));
+                               
+				float NdotH = max(dot(normalize(normal), H), 0.0);
+				float NdotL = max(dot(normalize(normal), Ln), 0.0);
+				float VdotH = max(dot(surfaceToCamera, H), 0.0);
+
+                if(NdotL > 0.0)    
+				{         
+					// Geometric attenuation
+					float NH2 = 2.0 * NdotH;
+					float g1 = (NH2 * NdotV) / VdotH;
+					float g2 = (NH2 * NdotL) / VdotH;
+					float geoAtt = min(1.0, min(g1, g2));
+                               
+					// Roughness
+					float mSquared = shininess*shininess;
+					float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
+					float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
+					float roughness;
+					if (NdotL > 0 && NdotV > 0) 
+						roughness = r1 * exp(r2);
+                               
+					// Fresnel
+					float fresnel = pow(1.0 - VdotH, 5.0);
+					fresnel *= (1.0 - Ks);
+					fresnel += Ks;
+        
+				   cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
+				   finalValue += (u_lightColor * NdotL * (k + cook * (1.0-k)));
+
+				}
+
+			return vec4(finalValue,1);
+}
+
+vec4 DiffuseBRDF()
+{
+	vec4 final = vec4(0);
+
+	vec2 sspos = GetScreenSpacePosition();
+	vec3 position = texture(u_positiontex, sspos).xyz;
+	vec3 normal = texture(u_normaltex, sspos).xyz;
+	vec3 Ln = normalize(sunPos - position);
+
+	float NdotL = max(0.0, dot(normalize(normal), Ln));
+
+	if(NdotL > 0.0)
 	{
-		vec4 final = vec4(0);
-
-		vec2 sspos = GetScreenSpacePosition();
-		vec3 normal = texture(u_normaltex, sspos).xyz;
-		vec3 position = texture(u_positiontex, sspos).xyz;
-		vec3 surfaceToCamera = normalize(u_CamPos - position);
-
-		float NdotV = max(0.0,dot(normalize(normal), surfaceToCamera));
-		float shininess = texture(u_materialParams, sspos).x;
-        float Ks = 1;
-		float k = 0.5;
-		float cook = 0;
-
-		vec3 Ln = normalize(sunPos - position);
-		vec3 H = normalize(normalize(surfaceToCamera+Ln));
-                               
-		float NdotH = max(0.0, dot(normalize(normal), H));
-		float NdotL = max(0.0, dot(normalize(normal), Ln));
-		float VdotH = max(0.0, dot(surfaceToCamera, H));
-
-        if(NdotL > 0.0)
-		{     
-			// Geometric attenuation
-			float NH2 = 2.0 * NdotH;
-			float g1 = (NH2 * NdotV) / VdotH;
-			float g2 = (NH2 * NdotL) / VdotH;
-			float geoAtt = min(1.0, min(g1, g2));
-                               
-			// Roughness
-			float mSquared = shininess*shininess;
-			float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
-			float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
-			float roughness = 0;
-			if (NdotL > 0 && NdotV > 0) 
-				clamp(0,1,roughness = r1 * exp(r2));
-                               
-			// Fresnel
-			float fresnel = pow(1.0 - VdotH, 5.0);
-			fresnel *= (1.0 - Ks);
-			fresnel += Ks;
-								
-			cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
-		}
-		final += vec4((u_lightColor * NdotL * (k + cook * (1.0-k)) +d vec3(0.5)*Ks) ,1);
-
-		return final;
+		final = vec4(u_lightColor * NdotL, 1);
 	}
 
+	return final;
+}
+
+vec4 ComputeSH(vec3 normal)
+{
+	vec4 final;
+	vec4 castedNormal = vec4(normal, 1);
+
+	final.r = clamp(dot(castedNormal, M_RED * castedNormal),0,1);
+	final.g = clamp(dot(castedNormal, M_GREEN* castedNormal),0,1);
+	final.b = clamp(dot(castedNormal, M_BLUE * castedNormal),0,1);
+
+	return final;
+}
+	
 //
  
 void main () {
 	vec2 sspos = GetScreenSpacePosition();
-	frag_colour = texture(u_albedo, sspos) + ( texture(u_color, sspos) * ComputeSun()) * vec4(vec3(1-ComputeSSAO()), 1) + ComputeVolumetricLighting(sspos);
+	vec4 albedo = texture(u_color, sspos);
+	vec4 directLighting = albedo * DiffuseBRDF() * SpecularBRDF();
+	vec4 indirectLighting = albedo * ComputeSH(texture(u_normaltex, sspos).xyz);
+	frag_colour = texture(u_albedo, sspos) + (directLighting + indirectLighting );
 	//frag_colour = texture(u_albedo, sspos) * vec4(vec3(1.0 - ComputeSSAO()), 1);
 	//frag_colour =  vec4(vec3(1.0 - ComputeSSAO()), 1);
-	//frag_colour = texture(u_godraycolor, sspos);
+	//frag_colour = texture(u_color, sspos);
 };

@@ -153,6 +153,9 @@
     <ClCompile Include="EditorController.cpp">
       <Filter>Source Files\Engine\Editor stuff</Filter>
     </ClCompile>
+    <ClCompile Include="IlluminationProbe.cpp">
+      <Filter>Source Files\Engine\System\Environment</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shine.h">
@@ -274,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="EditorController.h">
       <Filter>Source Files\Engine\Editor stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="IlluminationProbe.h">
+      <Filter>Source Files\Engine\System\Environment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
 #include "ShadowGen.h"
 #include "IShader.h"
 #include "IMesh.h"
+#include "IlluminationProbe.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -27,7 +28,6 @@ public:
 	~CRenderer();
 	void Init(GLFWwindow* pWin);
 	void Render();
-	void ProcessFramebuffer(GLuint ShaderProg); 
 	void DrawMeshes();
 	void DrawShadowMap();
 	void ReleaseSystems();
@@ -35,6 +35,7 @@ public:
 	void DrawLights();
 	GLFWwindow* GetWin() { return window; }
 	CLightSystem* GetLightSystem() { return m_pLightSystem; }
+	Mat44 o1, o2, o3;
 
 protected:
 private:
@@ -51,6 +52,8 @@ private:
 	CCubeMapTexture* irr;
 	IMesh* m_pLastMesh;
 	IShader* godray;
+	CIlluminationProbe* pProbeGen;
+
 
 };
 

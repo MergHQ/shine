@@ -2,6 +2,7 @@
 #define _SHINE_H_
 #pragma once
 
+#define sl std;
 #define DEV_MODE
 #define ASSET_ROOT_DIR std::string("data/")
 #define PI float(3.14159265358979323846264338327950288)

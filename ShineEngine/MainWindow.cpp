@@ -17,6 +17,7 @@
 #include <iostream>
 #include <random>
 
+
 IGlobalSystem* gSys;
 static void error_callback(int error, const char* description)
 {
@@ -31,7 +32,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		Light cl;
 		cl.attenuation = Vec3(1, 1, 1);
-		cl.color = Vec3(4, 2,0);
+		cl.color = Vec3(4, 3,3);
 		cl.position = gSys->GetCamera()->GetWorldPos();
 		cl.type = POINTLIGHT;
 		gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
@@ -94,10 +95,10 @@ void CMainWindow::Init()
 		for (uint j = 0; j < 10; j++)
 		{
 			SMeshParams tree;
-			tree.fileName = "objects/cube.obj";
-			tree.m_materialFile = "plane.mtl";
+			tree.fileName = "objects/sphere.obj";
+			tree.m_materialFile = "news.mtl";
 			tree.name = "dsad";
-			tree.pos = Vec3(i*2,0,j*2);
+			tree.pos = Vec3(i*3,0,j*3);
 			gSys->pMeshSystem->CreateMesh(&tree);
 		}
 	}
@@ -120,15 +121,14 @@ void CMainWindow::Init()
 
 	}
 
-
-	int a[50];
+	int a[10];
 	ILight* l;
 	for (int i : a)
 	{
 		Light sun;
 		sun.type = POINTLIGHT;
 		sun.color = Vec3(rand() % 2, rand() % 2 , rand() % 2);
-			sun.position = Vec3(rand() % 40, 2, rand() % 40);
+			sun.position = Vec3(rand() % 30, 2, rand() % 30);
 		sun.attenuation = Vec3(1,1,1);
 		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
 	}
@@ -137,6 +137,7 @@ void CMainWindow::Init()
 	cl.attenuation = Vec3(1, 1, 1);
 	cl.color = Vec3(4,4,4);
 	cl.type = POINTLIGHT;
+	cl.position = Vec3(2);
 	//l = gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
 
 	// Disable cursor.
@@ -144,6 +145,7 @@ void CMainWindow::Init()
 
 	// Load a scene
 	//gSys->pLevelLoader->LoadLevel("sexdungeon.shinedata");
+	glfwWindowHint(GLFW_SRGB_CAPABLE, TRUE);
 
 	// Set the camera mode
 	gSys->GetCamera()->SetCameraMode(ICamera::EDITOR);

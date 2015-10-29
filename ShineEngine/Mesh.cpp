@@ -200,8 +200,8 @@ std::vector<std::vector<Vec3>> CMesh::ComputeTangent(std::vector<Vec3>& pos, std
 
 	for (int i = 0; i < pos.size(); i += 3)
 	{
-		if (i + 1 <= pos.size() && i + 2 <= pos.size() && i + 1 <= uv.size() && i + 2 <= uv.size())
-		{
+		//if (i + 1 <= pos.size() && i + 2 <= pos.size() && i + 1 <= uv.size() && i + 2 <= uv.size())
+		//{
 			Vec3& v0 = pos[i];
 			Vec3& v1 = pos[i + 1];
 			Vec3& v2 = pos[i + 2];
@@ -234,7 +234,7 @@ std::vector<std::vector<Vec3>> CMesh::ComputeTangent(std::vector<Vec3>& pos, std
 			bitan.push_back(bitangent);
 			bitan.push_back(bitangent);
 			bitan.push_back(bitangent);
-		}
+		//}
 	}
 
 	std::vector<std::vector<Vec3>> last;
