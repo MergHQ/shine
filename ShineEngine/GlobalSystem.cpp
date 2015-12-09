@@ -13,6 +13,7 @@
 #include "EnvironmentIO.h"
 #include "Skybox.h"
 #include "EditorController.h"
+#include "Environment.h"
 
 IGlobalSystem::IGlobalSystem() :
 pInput(nullptr),
@@ -21,7 +22,7 @@ pMeshSystem(nullptr),
 pConsoleSystem(nullptr),
 pMaterialSystem(nullptr),
 m_pCamera(nullptr),
-m_pSkyBox(nullptr)
+pEnvironment(nullptr)
 {
 }
 
@@ -35,11 +36,11 @@ IGlobalSystem::~IGlobalSystem()
 	delete pMaterialSystem;
 	delete pLevelLoader;
 	delete pEditorController;
+	delete pEnvironment;
 
 	delete m_pConIp;
 	delete m_pGameIp;
 	delete m_pWinIp;
-	delete m_pSkyBox;
 }
  
 void IGlobalSystem::Init(CMainWindow* win)
@@ -57,6 +58,8 @@ void IGlobalSystem::Init(CMainWindow* win)
 	Log("- Mesh system");
 	pMaterialSystem = new CMaterialSystem;
 	Log("- Material System");
+	pEnvironment = new CEnvironment;
+	Log("- Environtment systems");
 	pRenderer = new CRenderer;
 	pRenderer->Init(win->GetWindow());
 	Log("- Renderer");
@@ -79,9 +82,6 @@ void IGlobalSystem::Init(CMainWindow* win)
 	m_pConIp = new CConsoleInput;
 	m_pGameIp = new CGameInput;
 	m_pWinIp = new CWindowInput;
-
-	// Environment stuff
-	m_pSkyBox = new CSkyBox;
 }
 
 void IGlobalSystem::ReleaseRenderContent()

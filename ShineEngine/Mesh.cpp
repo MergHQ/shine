@@ -75,7 +75,7 @@ void CMesh::CreateBufferObjects()
 
 	if (shouldLoad)
 	{
-		gSys->Log("/n Loading model " + m_file);
+		gSys->Log("Loading .obj " + m_file);
 
 		std::string inputfile = ASSET_ROOT_DIR + m_file;
 		std::vector<tinyobj::material_t> materials;
@@ -198,44 +198,44 @@ std::vector<std::vector<Vec3>> CMesh::ComputeTangent(std::vector<Vec3>& pos, std
 	std::vector<Vec3> tan;
 	std::vector<Vec3> bitan;
 
-	for (int i = 0; i < pos.size(); i += 3)
-	{
-		//if (i + 1 <= pos.size() && i + 2 <= pos.size() && i + 1 <= uv.size() && i + 2 <= uv.size())
-		//{
-			Vec3& v0 = pos[i];
-			Vec3& v1 = pos[i + 1];
-			Vec3& v2 = pos[i + 2];
+	//for (int i = 0; i < pos.size(); i += 3)
+	//{
+	//	if (i + 1 <= pos.size() && i + 2 <= pos.size() && i + 1 <= uv.size() && i + 2 <= uv.size())
+	//	{
+	//		Vec3& v0 = pos[i];
+	//		Vec3& v1 = pos[i + 1];
+	//		Vec3& v2 = pos[i + 2];
 
-			Vec2& uv0 = uv[i];
-			Vec2& uv1 = uv[i + 1];
-			Vec2& uv2 = uv[i + 2];
+	//		Vec2& uv0 = uv[i];
+	//		Vec2& uv1 = uv[i + 1];
+	//		Vec2& uv2 = uv[i + 2];
 
-			// Vertex delta
-			Vec3 dpos1 = v1 - v0;
-			Vec3 dpos2 = v2 - v0;
+	//		// Vertex delta
+	//		Vec3 dpos1 = v1 - v0;
+	//		Vec3 dpos2 = v2 - v0;
 
-			// UV delta
-			Vec2 duv1 = uv1 - uv0;
-			Vec2 duv2 = uv2 - uv0;
+	//		// UV delta
+	//		Vec2 duv1 = uv1 - uv0;
+	//		Vec2 duv2 = uv2 - uv0;
 
-			// Formula http://ogldev.atspace.co.uk/www/tutorial26/tangent_space_calc6.jpg
+	//		// Formula http://ogldev.atspace.co.uk/www/tutorial26/tangent_space_calc6.jpg
 
-			float r = 1.0f / ((duv1.x * duv2.y) - (duv2.x - duv1.y));
-			Vec3 tangent = (dpos1 * duv2.y - dpos2 * duv1.y)*r;
-			Vec3 bitangent = (dpos2 * duv1.x - dpos1 * duv2.x)*r;
+	//		float r = 1.0f / ((duv1.x * duv2.y) - (duv2.x - duv1.y));
+	//		Vec3 tangent = (dpos1 * duv2.y - dpos2 * duv1.y)*r;
+	//		Vec3 bitangent = (dpos2 * duv1.x - dpos1 * duv2.x)*r;
 
-			tangent = glm::normalize(tangent);
-			bitangent = glm::normalize(bitangent);
+	//		tangent = glm::normalize(tangent);
+	//		bitangent = glm::normalize(bitangent);
 
-			tan.push_back(tangent);
-			tan.push_back(tangent);
-			tan.push_back(tangent);
+	//		tan.push_back(tangent);
+	//		tan.push_back(tangent);
+	//		tan.push_back(tangent);
 
-			bitan.push_back(bitangent);
-			bitan.push_back(bitangent);
-			bitan.push_back(bitangent);
-		//}
-	}
+	//		bitan.push_back(bitangent);
+	//		bitan.push_back(bitangent);
+	//		bitan.push_back(bitangent);
+	//	}
+	//}
 
 	std::vector<std::vector<Vec3>> last;
 	last.push_back(tan);

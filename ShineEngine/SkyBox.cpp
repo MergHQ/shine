@@ -12,8 +12,8 @@ CSkyBox::CSkyBox()
 	pShader = new CShader(&s);
 
 	STextureParams t;
-	t.cubemapTextures[0] = "irradiance/posx.jpg";
-	t.cubemapTextures[1] = "irradiance/negx.jpg";
+	t.cubemapTextures[0] = "irradiance/negx.jpg";
+	t.cubemapTextures[1] = "irradiance/posx.jpg";
 	t.cubemapTextures[2] = "irradiance/posy.jpg";
 	t.cubemapTextures[3] = "irradiance/negy.jpg";
 	t.cubemapTextures[4] = "irradiance/posz.jpg";
@@ -105,7 +105,7 @@ void CSkyBox::Draw()
 
 	glBindVertexArray(m_vao);
 
-	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), cam->GetWorldPos())) * glm::rotate(Mat44(),0.0f, Vec3(1,0,0)) * glm::scale(Mat44(), Vec3(900,900,900))));
+	glUniformMatrix4fv(glGetUniformLocation(pShader->GetShaderProgramme(), "MVP"), 1, GL_FALSE, glm::value_ptr(gSys->GetCamera()->GetVPMatrix() * (glm::translate(Mat44(), gSys->GetCamera()->GetWorldPos())) * glm::rotate(Mat44(),0.0f, Vec3(1,0,0)) * glm::scale(Mat44(), Vec3(900,900,900))));
 
 	glActiveTexture(GL_TEXTURE20);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, tex->GetTextureBufferId());

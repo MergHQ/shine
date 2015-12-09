@@ -1,6 +1,0 @@
-{
-	"material_name" : "asdafwsad",
-	"shading" : "shaders/pp_shaders/DeferredLightPass.ss",
-	"shaderparams":[],
-	"textures":[]
-}

@@ -5,19 +5,28 @@
 #include <vector>
 #include "shine.h"
 #include <freeimg\imageloader.hpp>
+#include "ITexture.h"
+
+struct IrradianceValues
+{
+	Mat44 m_red, m_blue, m_green;
+};
 
 class CIlluminationProbe
 {
 public:
-	CIlluminationProbe(std::vector<string>& filename, Mat44& out1, Mat44& out2, Mat44& out3);
-	~CIlluminationProbe() {};
+	// File name is optional if you want the cubemap to be loaded from a file.
+	CIlluminationProbe(std::vector<string>& filename, Vec3 position);
+	~CIlluminationProbe();
+
+	IrradianceValues* GetIrradianceValues() { return m_values; }
+	ITexture* GetCubeMapTex() { return m_pCmTex; }
 
 private:
-
-
-	void GetTexelAttrib(const int texId, const float u, const float v, const float texelSize,
-		Vec3 *direction, float *solidAngle);
-
+	IrradianceValues* m_values;
+	void GenerateImageData(Vec3 position, BYTE& imageData);
+	void GetTexelAttrib(const int texId, const float u, const float v, const float texelSize, Vec3 *direction, float *solidAngle);
+	ITexture* m_pCmTex;
 };
 
 class CEnvTexture
@@ -35,6 +44,19 @@ private:
 
 };
 
+class CLookUpTexture
+{
+public:
+	CLookUpTexture();
+	~CLookUpTexture();
+
+	GLuint& GetTextureID() { return m_texId; };
+private:
+	float GSmith(float roughness, float ndotv, float ndotl);
+	uint32_t ReverseBits(uint32_t v);
+	GLuint m_texId;
+
+};
 
 
 

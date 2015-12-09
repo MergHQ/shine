@@ -16,7 +16,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 CRenderer::CRenderer():
-time(0)
+time(0.0f)
 {
 }
 
@@ -32,60 +32,33 @@ void CRenderer::ReleaseSystems()
 	delete pSm;
 	delete lightsphere;
 	delete lp_shader;
-	delete pProbeGen;
+
 }
 
 void CRenderer::Init(GLFWwindow* pWin)
 {
 	window = pWin;
 
+	// Create frame buffer to process screen space shading.
 	m_postprocessor = new CPostProcessor;
 	m_postprocessor->Initialize("shaders/quad.ss");
 
 	pSm = new CShadowMapFBO(6144, 6144, "shaders/shadowmap.ss");
 
-	std::vector<string> a{ "irradiance/posx.jpg","irradiance/negx.jpg", "irradiance/posy.jpg","irradiance/negy.jpg","irradiance/posz.jpg","irradiance/negz.jpg" };
-	pProbeGen = new CIlluminationProbe(a, o1,o2,o3);
+	// Test env map
+	std::vector<string> a{ "irradiance/negx.jpg","irradiance/posx.jpg", "irradiance/posy.jpg","irradiance/negy.jpg","irradiance/posz.jpg","irradiance/negz.jpg" };
+	gSys->pEnvironment->CreateLightProbe(a, Vec3());
 
+	// Create dynamic light system.
 	m_pLightSystem = new CLightSystem;
-	SMeshParams sd;
-	sd.fileName = "objects/sphere.obj";
-	sd.name = "dsff";
-	sd.m_materialFile = "m.mtl";
-	lightsphere = new CMesh(&sd);
 
-	SShaderParams sp;
-	sp.name = "kdsad";
-	sp.s_file = "shaders/pp_shaders/DeferredLightPass.ss";
-	lp_shader = new CShader(&sp);
-
-	SShaderParams ns;
-	ns.name = "kdsad";
-	ns.s_file = "shaders/null.ss";
-	null_shader = new CShader(&ns);
-
-	SShaderParams nska;
-	nska.name = "kdsad";
-	nska.s_file = "shaders/gr.ss";
-	godray = new CShader(&nska);
-
-	for (uint i = 0; i < 64; i++) {
-		float scale = (float)i / (float)(64);
-		Vec3 v;
-		v.x = 2.0f * (float)rand() / RAND_MAX - 1.0f;
-		v.y = 2.0f * (float)rand() / RAND_MAX - 1.0f;
-		v *= (0.1f + 0.9f * scale * scale);
-
-		kernelPoints[i] = v;
-	}
-
+	// Create shaders and objects for different rendering fearures.
+	InitRendererDependencies();
 }
 
 void CRenderer::Render()
 {
-	time += 0.001f;
-
-
+	time += 1.0f;
 	//DrawShadowMap();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_postprocessor->GetFBO());
@@ -93,18 +66,9 @@ void CRenderer::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0,0,0,0);
 	glEnable(GL_FRAMEBUFFER_SRGB);
-	if (gSys->m_pSkyBox != nullptr)
-	{
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-
-		gSys->m_pSkyBox->cam = static_cast<CFPCamera*>(gSys->GetCamera());
-		gSys->m_pSkyBox->Draw();
-	}
-	DrawMeshes();
-	DrawLights();
+	//gSys->pEnvironment->GetSkyBox()->Draw();
+	MeshPass();
+	LightPass();
 #ifdef DEV_MODE
 	gSys->pEditorController->DrawEditorObjects(); // Draw editor helpers
 #endif
@@ -112,7 +76,7 @@ void CRenderer::Render()
 
 }
 
-void CRenderer::DrawMeshes()
+void CRenderer::MeshPass()
 {
 	m_postprocessor->MeshPass();
 	glDepthMask(GL_TRUE);
@@ -144,7 +108,7 @@ void CRenderer::DrawMeshes()
 					CShader* pProgram = static_cast<CShader*>(s->pMaterial->GetShader()); // The power of interfaces.
 					glBindVertexArray(s->meshVao);
 					glUniformMatrix4fv(pProgram->uniformLocations[0], 1, GL_FALSE, glm::value_ptr(vpm * wtm));
-					gSys->m_pSkyBox->tex->ActivateTexture(GL_TEXTURE20, glGetUniformLocation(pProgram->GetShaderProgramme(), "cubemapsamp"), true);
+					gSys->pEnvironment->GetLightProbeList()[0]->GetCubeMapTex()->ActivateTexture(GL_TEXTURE20, glGetUniformLocation(pProgram->GetShaderProgramme(), "cubemapsamp"), true);
 					glUniform3f(pProgram->uniformLocations[16], gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 
 					// Diffuse
@@ -158,15 +122,13 @@ void CRenderer::DrawMeshes()
 					{
 						s->pMaterial->GetTextures()[1]->ActivateTexture(GL_TEXTURE12, pProgram->uniformLocations[8], false);
 					}
+					glUniform3f(glGetUniformLocation(p, "u_CamPos"), gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
 
 
 					glUniformMatrix4fv(pProgram->uniformLocations[2], 1, GL_FALSE, glm::value_ptr(wtm));
-					glUniformMatrix4fv(pProgram->uniformLocations[3], 1, GL_FALSE, glm::value_ptr(DepthBiasMVP));
 					glActiveTexture(GL_TEXTURE7);
 					glBindTexture(GL_TEXTURE_2D, pSm->GetTextureBufferID());
 					glUniform1i(pProgram->uniformLocations[4], 7);
-
-					glUniform1f(glGetUniformLocation(pProgram->GetShaderProgramme(), "time"), time);
 
 					glDrawElements(GL_TRIANGLES, s->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 
@@ -174,32 +136,22 @@ void CRenderer::DrawMeshes()
 					// Material params
 
 					// Roughness
-					glUniform1f(pProgram->uniformLocations[7], s->pMaterial->GetMaterialParams()[1]);
+					glUniform1f(pProgram->uniformLocations[7], s->pMaterial->GetMaterialParams()[0]);
+					// Metallic
+					glUniform1f(pProgram->uniformLocations[18], s->pMaterial->GetMaterialParams()[1]);
 
 					m_pLastMesh = pMesh;
 
 				}
-
-
-				Mat44 depthProjectionMatrix = glm::ortho<float>(-100, 100, -100, 100, -100, 200);
-				Mat44 mvp = depthProjectionMatrix * glm::lookAt(Vec3(50, 50, 50), Vec3(0, 0, 0), Vec3(0, 1, 0)) * wtm;
-				glm::mat4 biasMatrix(
-					0.5, 0.0, 0.0, 0.0,
-					0.0, 0.5, 0.0, 0.0,
-					0.0, 0.0, 0.5, 0.0,
-					0.5, 0.5, 0.5, 1.0
-					);
-				DepthBiasMVP = biasMatrix*mvp;
-
 			}
 		}
 	}
 
-	DrawGodRayShit();
+	//DrawGodRayShit();
 	glDepthMask(GL_FALSE);
 }
 
-void CRenderer::DrawShadowMap()
+void CRenderer::ShadowMapPass()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, pSm->GetFBO());
 	glViewport(0, 0, 6144, 6144);
@@ -227,7 +179,7 @@ void CRenderer::DrawShadowMap()
 	glDepthMask(GL_FALSE);
 }
 
-void CRenderer::DrawGodRayShit()
+void CRenderer::GodRayPass()
 {
 	m_postprocessor->GodRayPass();
 	glClearColor(0, 0, 0, 0);
@@ -244,7 +196,7 @@ void CRenderer::DrawGodRayShit()
 	glDrawElements(GL_TRIANGLES, lightsphere->GetShapeContainer()[0]->indices.size() * sizeof(uint), GL_UNSIGNED_INT, 0);
 }
 
-void CRenderer::DrawLights()
+void CRenderer::LightPass()
 {
 #ifdef DEV_MODE
 	m_pLightSystem->ProcessLights();
@@ -305,6 +257,30 @@ void CRenderer::DrawLights()
 	glDisable(GL_BLEND);
 	glDisable(GL_STENCIL_TEST);
 
+}
+
+void CRenderer::InitRendererDependencies()
+{
+	SMeshParams deferedRendering_sphere;
+	deferedRendering_sphere.fileName = "objects/sphere.obj";
+	deferedRendering_sphere.name = "dsff";
+	deferedRendering_sphere.m_materialFile = "m.mtl";
+	lightsphere = new CMesh(&deferedRendering_sphere);
+
+	SShaderParams lightPassShader;
+	lightPassShader.name = "kdsad";
+	lightPassShader.s_file = "shaders/LightPass.ss";
+	lp_shader = new CShader(&lightPassShader);
+
+	SShaderParams nullShader;
+	nullShader.name = "kdsad";
+	nullShader.s_file = "shaders/null.ss";
+	null_shader = new CShader(&nullShader);
+
+	SShaderParams godrayShader;
+	godrayShader.name = "kdsad";
+	godrayShader.s_file = "shaders/gr.ss";
+	godray = new CShader(&godrayShader);
 }
 
 

@@ -23,8 +23,8 @@ public:
 	virtual void Update();
 	// ~IShader
 
-	// MVP, texture, obj2world, DepthBias, shadowmap, texture toggle, screen size, material roughness, normal map.
-	GLuint uniformLocations[18];
+	// MVP, texture, obj2world, DepthBias, shadowmap, texture toggle, screen size, material roughness, normal map, metallic.
+	GLuint uniformLocations[19];
 
 protected:
 private:

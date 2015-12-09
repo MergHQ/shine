@@ -155,13 +155,17 @@ void CPostProcessor::ProcessFramebuffer()
 	textures[4]->ActivateTexture(GL_TEXTURE13, castedShader->uniformLocations[12], false);
 	textures[5]->ActivateTexture(GL_TEXTURE14, castedShader->uniformLocations[10], false);
 	textures[6]->ActivateTexture(GL_TEXTURE15, castedShader->uniformLocations[15], false);
-	gSys->m_pSkyBox->tex->ActivateTexture(GL_TEXTURE20, glGetUniformLocation(pSSRS->GetShaderProgramme(), "cubemapsamp"), true);
-	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_RED"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o1));
-	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_GREEN"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o2));
-	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_BLUE"), 1, GL_FALSE, glm::value_ptr(gSys->pRenderer->o3));
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_RED"), 1, GL_FALSE, glm::value_ptr(gSys->pEnvironment->GetLightProbeList()[0]->GetIrradianceValues()->m_red));
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_GREEN"), 1, GL_FALSE, glm::value_ptr(gSys->pEnvironment->GetLightProbeList()[0]->GetIrradianceValues()->m_green));
+	glUniformMatrix4fv(glGetUniformLocation(castedShader->GetShaderProgramme(), "M_BLUE"), 1, GL_FALSE, glm::value_ptr(gSys->pEnvironment->GetLightProbeList()[0]->GetIrradianceValues()->m_blue));
 	// Camera
 	glUniform3f(castedShader->uniformLocations[16], gSys->GetCamera()->GetWorldPos().x, gSys->GetCamera()->GetWorldPos().y, gSys->GetCamera()->GetWorldPos().z);
-
+	if (gSys->pEnvironment->GetLUT() != nullptr)
+	{
+		glActiveTexture(GL_TEXTURE17);
+		glBindTexture(GL_TEXTURE_2D, gSys->pEnvironment->GetLUT()->GetTextureID());
+		glUniform1i(glGetUniformLocation(pSSRS->GetShaderProgramme(), "LUT"), 17);
+	}
 	Vec4 cs = gSys->GetCamera()->GetProjectionMatrix() * (gSys->GetCamera()->GetViewMatrix() * Vec4(500, 500, 500, 1));
 	Vec3 ndc = Vec3(cs.x, cs.y, cs.z) / cs.w;
 	Vec2 ss = Vec2(((ndc.x + 1) / 2 * 1280), (ndc.y + 1) / 2 * 720) * Vec2(0.79, 1.4);

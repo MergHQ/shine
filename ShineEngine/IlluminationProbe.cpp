@@ -1,5 +1,8 @@
 #include "IlluminationProbe.h"
 #include <Windows.h>
+#include "Renderer.h"
+#include <glm\gtc\matrix_transform.hpp>
+#include <math.h>
 
 #define Y0(n)   (0.282095f)                             /* L_00 */
 #define Y1(n)   (0.488603f*n.y)                         /* L_1-1 */
@@ -15,22 +18,35 @@
 #define GREEN   1u
 #define BLUE    2u
 
-CIlluminationProbe::CIlluminationProbe(std::vector<string>& filename, Mat44& out1, Mat44& out2, Mat44& out3)
+CIlluminationProbe::CIlluminationProbe(std::vector<string>& filename, Vec3 position)
 {
 	float shCoeff[3][9];
 	memset(shCoeff[RED], 0, 9u*sizeof(float));
 	memset(shCoeff[GREEN], 0, 9u*sizeof(float));
 	memset(shCoeff[BLUE], 0, 9u*sizeof(float));
 
-	auto envMaps = new CEnvTexture(filename);
+	CEnvTexture* envMaps;
+	if (!filename.empty())
+	{
+		envMaps = new CEnvTexture(filename);
+
+		// Make radiance map.
+		STextureParams t;
+		for (int index = 0; index < 6; index++)
+			t.cubemapTextures[index] = filename[index];
+		t.m_name = "dskldkjmfkdls";
+		m_pCmTex = new CCubeMapTexture(&t);
+	}
+	else return;
 
 	float texelSize = 1 / envMaps->size[0];
 	float texRes = envMaps->size[0];
 
 	// Color from data.
 	const float dColor = 1.0f / float((sizeof(unsigned char) << 8) - 1);
-
+	 
 	float sumWeight = 0.0f;
+
 	for (int tex = 0; tex < 6; tex++)
 	{
 		float u, v;
@@ -129,11 +145,38 @@ CIlluminationProbe::CIlluminationProbe(std::vector<string>& filename, Mat44& out
 		M[c][3][2] = c2 * shCoeff[c][2];
 		M[c][3][3] = c4 * shCoeff[c][0] - c5 * shCoeff[c][6];
 	}
-	out1 = M[0];
-	out2 = M[1];
-	out3 = M[2];
+
+	m_values = new IrradianceValues;
+
+	m_values->m_red = M[0];
+	m_values->m_green = M[1];
+	m_values->m_blue = M[2];
 
 	delete envMaps;
+}
+
+CIlluminationProbe::~CIlluminationProbe()
+{
+	delete m_values;
+	delete m_pCmTex;
+}
+
+void CIlluminationProbe::GenerateImageData(Vec3 position, BYTE & imageData)
+{
+	
+	
+	float theta[6]= { 0, PI / 2, PI, PI * 1.5,0,0 };
+	float omega[6] = { 0, 0, 0, PI / 2, PI * 1.5 };
+
+	// Render scene for each face.
+	for (int i = 0; i < 6; i++)
+	{
+		Vec3 cameraDir = Vec3(cos(omega[i]) * sin(theta[i]), sin(omega[i]), cos(omega[i]) * cos(theta[i]));
+
+		// The resolution is 128px * 128px.
+		Mat44 projMatrix = glm::perspective(45.0f, 128.0f / 128.0f, 0.1f, 4000.0f);
+		Mat44 viewMatrix = glm::lookAt(position, position + cameraDir, Vec3(0, 1, 0));
+	}
 }
 
 void CIlluminationProbe::GetTexelAttrib(const int texId, const float u, const float v, const float texelSize,
@@ -228,3 +271,102 @@ CEnvTexture::~CEnvTexture()
 #undef RED
 #undef GREEN
 #undef BLUE  
+
+CLookUpTexture::CLookUpTexture()
+{
+	// Some defs
+	unsigned const WIDTH = 32;
+	unsigned const HEIGHT = 64;
+	unsigned const sampleNum = 128;
+
+	float lutData[WIDTH][HEIGHT][4];
+
+	for (unsigned y = 0; y < HEIGHT; ++y)
+	{
+		float const ndotv = (y + 0.5f) / HEIGHT;
+
+		for (unsigned x = 0; x < WIDTH; ++x)
+		{
+			float gloss = (x + 0.5f) / WIDTH;
+			float roughness = powf(1.0f - gloss, 2.0f);
+
+			float vx = sqrtf(1.0f - ndotv * ndotv);
+			float vy = 0.0f;
+			float vz = ndotv;
+
+			float scale = 0.0f;
+			float bias = 0.0f;
+
+
+			for (unsigned i = 0; i < sampleNum; ++i)
+			{
+				float e1 = (float)i / sampleNum;
+				float e2 = (float)((double)ReverseBits(i) / (double)0x100000000LL);
+
+				float phi = 2.0f * PI * e1;
+				float cosPhi = cosf(phi);
+				float sinPhi = sinf(phi);
+				float cosTheta = sqrtf((1.0f - e2) / (1.0f + (roughness * roughness - 1.0f) * e2));
+				float sinTheta = sqrtf(1.0f - cosTheta * cosTheta);
+
+				float hx = sinTheta * cosf(phi);
+				float hy = sinTheta * sinf(phi);
+				float hz = cosTheta;
+
+				float vdh = vx * hx + vy * hy + vz * hz;
+				float lx = 2.0f * vdh * hx - vx;
+				float ly = 2.0f * vdh * hy - vy;
+				float lz = 2.0f * vdh * hz - vz;
+
+				float ndotl = glm::max(lz, 0.0f);
+				float ndoth = glm::max(hz, 0.0f);
+				float vdoth = glm::max(vdh, 0.0f);
+
+				if (ndotl > 0.0f)
+				{
+					// Apply the geometric attenuation for the values
+					float gsmith = GSmith(roughness, ndotv, ndotl);
+					float ndotlVisPDF = ndotl * gsmith * (4.0f * vdoth / ndoth);
+					float fc = powf(1.0f - vdoth, 5.0f);
+
+					scale += ndotlVisPDF * (1.0f - fc);
+					bias += ndotlVisPDF * fc;
+				}
+			}
+			scale /= sampleNum;
+			bias /= sampleNum;
+			lutData[x][y][0] = scale;
+			lutData[x][y][1] = bias;
+			lutData[x][y][2] = 0.0f;
+			lutData[x][y][3] = 0.0f;
+		}
+	}
+
+	glGenTextures(1, &m_texId);
+	glBindTexture(GL_TEXTURE_2D, m_texId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, lutData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	gSys->Log(std::to_string(glGetError()));
+}
+
+CLookUpTexture::~CLookUpTexture()
+{
+}
+
+float CLookUpTexture::GSmith(float roughness, float ndotv, float ndotl)
+{
+	float m2 = roughness * roughness;
+	float visV = ndotl * sqrt(ndotv * (ndotv - ndotv * m2) + m2);
+	float visL = ndotv * sqrt(ndotl * (ndotl - ndotl * m2) + m2);
+	return 0.5f / (visV + visL);
+}
+
+uint32_t CLookUpTexture::ReverseBits(uint32_t v)
+{
+	v = ((v >> 1) & 0x55555555) | ((v & 0x55555555) << 1);
+	v = ((v >> 2) & 0x33333333) | ((v & 0x33333333) << 2);
+	v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
+	v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
+	v = (v >> 16) | (v << 16);
+	return v;
+}

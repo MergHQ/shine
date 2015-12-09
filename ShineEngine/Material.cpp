@@ -51,7 +51,8 @@ void CMaterial::ParseMtlFile()
 				m_matName = shapes[i]["material_name"].GetString();
 
 				// Params
-				m_params[1] = atof(shapes[i]["roughness"].GetString());
+				m_params[0] = atof(shapes[i]["roughness"].GetString());
+				m_params[1] = atof(shapes[i]["metallic"].GetString());
 
 				SShaderParams sparams;
 

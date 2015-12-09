@@ -28,7 +28,7 @@ private:
 	string m_matName;
 	string m_shapeName;
 	int m_id;
-	float m_params[1];
+	float m_params[2];
 	ITexture* m_pTexture;
 	CShader* m_pShader;
 	std::vector<ITexture*> m_textureContainer;

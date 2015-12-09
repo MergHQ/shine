@@ -32,7 +32,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		Light cl;
 		cl.attenuation = Vec3(1, 1, 1);
-		cl.color = Vec3(4, 3,3);
+		cl.color = Vec3(5);
 		cl.position = gSys->GetCamera()->GetWorldPos();
 		cl.type = POINTLIGHT;
 		gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
@@ -51,8 +51,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	if (key == GLFW_KEY_N && action == GLFW_RELEASE)
 	{
 		SMeshParams tree;
-		tree.fileName = "objects/lptree.obj";
-		tree.m_materialFile = "tree.mtl";
+		tree.fileName = "objects/small_plane.obj";
+		tree.m_materialFile = "plane.mtl";
 		tree.name = "dsad";
 		tree.pos = gSys->GetCamera()->GetWorldPos();
 		gSys->pMeshSystem->CreateMesh(&tree);
@@ -85,6 +85,7 @@ void CMainWindow::Init()
 		exit(1);
 	}
 
+
 	// Creating the core systems
 	gSys = new IGlobalSystem();
 	gSys->Init(this);
@@ -95,50 +96,13 @@ void CMainWindow::Init()
 		for (uint j = 0; j < 10; j++)
 		{
 			SMeshParams tree;
-			tree.fileName = "objects/sphere.obj";
-			tree.m_materialFile = "news.mtl";
+			tree.fileName = "objects/untitled.obj";
+			tree.m_materialFile = "materials/barrel.mtl";
 			tree.name = "dsad";
 			tree.pos = Vec3(i*3,0,j*3);
 			gSys->pMeshSystem->CreateMesh(&tree);
 		}
 	}
-
-	for (uint i = 0; i < 20; i++)
-	{
-		SMeshParams tree;
-		tree.fileName = "objects/cube.obj";
-		tree.m_materialFile = "plane.mtl";
-		tree.name = "dsad";
-		if (rand() % 4 < 1)
-			tree.pos = Vec3(rand() % 100, 0, rand() % 100);
-		else if (rand() % 4 < 2)
-			tree.pos = Vec3(rand() % 100, rand() % 100, rand() % 100) * Vec3(-1, 0, 1);
-		else if (rand() % 4 < 3)
-			tree.pos = Vec3(rand() % 100, rand() % 10, rand() % 100) * Vec3(1, 0, -1);
-		else
-			tree.pos = Vec3(rand() % -100, rand() % 10, rand() % -100) * Vec3(-1, 0, -1);
-		gSys->pMeshSystem->CreateMesh(&tree);
-
-	}
-
-	int a[10];
-	ILight* l;
-	for (int i : a)
-	{
-		Light sun;
-		sun.type = POINTLIGHT;
-		sun.color = Vec3(rand() % 2, rand() % 2 , rand() % 2);
-			sun.position = Vec3(rand() % 30, 2, rand() % 30);
-		sun.attenuation = Vec3(1,1,1);
-		gSys->pRenderer->GetLightSystem()->CreateLight(&sun);
-	}
-
-	Light cl;
-	cl.attenuation = Vec3(1, 1, 1);
-	cl.color = Vec3(4,4,4);
-	cl.type = POINTLIGHT;
-	cl.position = Vec3(2);
-	//l = gSys->pRenderer->GetLightSystem()->CreateLight(&cl);
 
 	// Disable cursor.
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -167,10 +131,6 @@ void CMainWindow::Init()
 		gSys->Update(dt * 60); // We run around 60 fps
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-		//pm->SetPos(Vec3(sin(t) * 10, sin(t) * 10, 0));
-		//pl->SetPos(gSys->GetCamera()->GetWorldPos());
-		//l->SetPos(gSys->GetCamera()->GetWorldPos());
-
 	}
 
 	gSys->ReleaseRenderContent();

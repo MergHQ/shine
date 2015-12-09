@@ -1,0 +1,52 @@
+{
+  "shapes": [
+    {
+      "shape": "wood",
+      "material_name": "null",
+      "shading": "shaders/illum.ss",
+      "roughness": "0.8",
+      "metallic": "0.0",
+      "textures": [
+        {
+          "texture": "textures/brown.jpg",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    },
+    {
+      "shape": "metal",
+      "material_name": "null",
+      "shading": "shaders/illum.ss",
+      "roughness": "0.8",
+      "metallic": "1.0",
+      "textures": [
+        {
+          "texture": "grey.mtl",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        },
+        {
+          "texture": "",
+          "texname": "shit",
+          "type": "DIFFUSE"
+        }
+      ]
+    }
+  ]
+}

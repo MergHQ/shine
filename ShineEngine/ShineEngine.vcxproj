@@ -91,6 +91,7 @@
     <ClCompile Include="DisableCommand.cpp" />
     <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="EnableCommand.cpp" />
+    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="EnvironmentIO.cpp" />
     <ClCompile Include="FPCamera.cpp" />
     <ClCompile Include="GameInput.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="DisableCommand.h" />
     <ClInclude Include="EditorController.h" />
     <ClInclude Include="EnableCommand.h" />
+    <ClInclude Include="Environment.h" />
     <ClInclude Include="EnvironmentIO.h" />
     <ClInclude Include="FPCamera.h" />
     <ClInclude Include="GameInput.h" />

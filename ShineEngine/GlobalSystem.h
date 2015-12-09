@@ -17,6 +17,7 @@ class CMaterialSystem;
 class CEnvironmentLoader;
 class CSkyBox;
 class CEditorController;
+class CEnvironment;
 
 struct IGlobalSystem
 {
@@ -34,12 +35,11 @@ public:
 	CEnvironmentLoader* pLevelLoader;
 	CMainWindow* pMainWin;
 	CEditorController* pEditorController;
+	CEnvironment* pEnvironment;
 
 	CConsoleInput* m_pConIp;
 	CGameInput* m_pGameIp;
 	CWindowInput* m_pWinIp;
-
-	CSkyBox* m_pSkyBox;
 
 	void Init(CMainWindow* MainWin);
 	void Update(float dt);

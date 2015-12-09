@@ -15,7 +15,7 @@ float toRad(float ip)
 
 
 void main () {
-	
+
 	gl_Position = vec4(vp, 1.0);
 	ViewRay.x = vp.x * (1280/720) * tan(toRad(45));
     ViewRay.y = vp.y * tan(toRad(45));
@@ -49,87 +49,33 @@ uniform vec3 gKernel[MAX_KERNEL_SIZE];
 uniform mat4 M_RED;
 uniform mat4 M_GREEN;
 uniform mat4 M_BLUE;
-
-//// SSAO
-//	float linearizeDepth(vec2 coord)
-//	{
-//		float f=1000.0;
-//		float n = 0.1;
-//		float z = (2 * n) / (f + n - texture2D( u_depth, coord ).x * (f - n));
-//		return z;
-//	}
-
-//	float ComputeSSAO()
-//	{
-//		//vec3 Color = vec3(0.0, 0.0, 0.0);
-//		//float Offsets[4] = float[]( -1.5, -0.5, 0.5, 1.5 );
-//		//vec2 TexCoord = GetScreenSpacePosition();
-//		//for (int i = 0 ; i < 4 ; i++) 
-//		//{
-//		//	for (int j = 0 ; j < 4 ; j++) 
-//		//	{
-//		//		vec2 tc = TexCoord;
-//		//		tc.x = TexCoord.x + Offsets[j] / textureSize(u_color, 0).x;
-//		//		tc.y = TexCoord.y + Offsets[i] / textureSize(u_color, 0).y;
-//		//		Color += texture(u_color, tc).xyz;
-//		//	}
-//		//}
-
-//		//Color /= 10.0;
-//		vec2 sspos = GetScreenSpacePosition();
-//		float ViewZ = linearizeDepth(sspos);
-
-//		float ViewX = ViewRay.x * ViewZ;
-//		float ViewY = ViewRay.y * ViewZ;
-
-//		vec3 Pos = vec3(ViewX, ViewY, ViewZ);
-
-//		float AO = 0.0;
-
-//		for (int i = 0 ; i < MAX_KERNEL_SIZE ; i++) 
-//		{
-//			vec3 samplePos = Pos + gKernel[i];
-//			vec4 offset = vec4(samplePos, 1.0);
-//			offset = gProj * offset;
-//			offset.xy /= offset.w;
-//			offset.xy = offset.xy * 0.5 + vec2(0.5);
-
-//			float sampleDepth = linearizeDepth(offset.xy);
-
-//			if (abs(Pos.z - sampleDepth) < 1.5) {
-//				AO += step(sampleDepth,samplePos.z);
-//			}
-//		}
-
-//		AO = 1.0 - AO/64.0;
-		
-//		return pow(AO,2);
-//	}
-//// ~SSAO
+uniform sampler2D LUT;
+uniform vec3 u_CamPos;
+uniform sampler2D u_materialParams;
 
 vec4 ComputeVolumetricLighting(vec2 sspos)
 {
        const int SAMPLES = 128;
-               
+
         float intensity = 0.25;
         float decay = 0.96875;
         vec2 texcoord = sspos;
         vec2 dir = (u_lightsspos/1000) - texcoord;
         dir /= SAMPLES;
         vec3 godrays = texture(u_godraycolor, texcoord).xyz;
-               
+
         for(int j = 0; j < SAMPLES; j++)
         {
                 godrays += texture(u_godraycolor, texcoord).xyz * intensity;
                 intensity *= decay;
-                texcoord += dir;       
+                texcoord += dir;
         }
-       
+
         return vec4(godrays, 1.0);
 }
 
 // SSAO
-	float compareDepths(float depth1,float depth2 ) 
+	float compareDepths(float depth1,float depth2 )
 	{
 		vec2 camerarange = vec2(0.1,1000);
 		float aoCap = 1.0;
@@ -197,110 +143,121 @@ vec4 ComputeVolumetricLighting(vec2 sspos)
 
 // SUN
 
-	uniform vec3 u_CamPos;
-	uniform sampler2D u_materialParams;
+//	uniform vec3 u_CamPos;
+//	uniform sampler2D u_materialParams;
 
-	// Sun constants (for now)
-	const vec3 sunPos = vec3(500,200,500);
-	const vec3 u_lightColor = vec3(0);
+//	// Sun constants (for now)
+//	const vec3 sunPos = vec3(500,200,500);
+//	const vec3 u_lightColor = vec3(0);
 
-vec4 SpecularBRDF()
-{
-                // Cook torrance lighting model.       
-               
-                vec4 lighting = vec4(0);
-               
-                vec2 sspos = GetScreenSpacePosition();
-                vec3 normal = texture(u_normaltex, sspos).xyz;
-                vec3 position = texture(u_positiontex, sspos).xyz;
-                vec3 surfaceToCamera = normalize(u_CamPos - position);
-				vec4 materialParams = texture(u_materialParams, sspos);
-               
-                float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
-                float shininess = materialParams.x;
-                float Ks = 1;
-				float k = 0.5;
-               
-                float cook = 0;
-                vec3 finalValue = vec3(0);
+//vec4 SpecularBRDF()
+//{
+//                // Cook torrance lighting model.
 
-              
-				vec3 Ln = normalize(sunPos - position);
-				vec3 H = normalize(normalize(surfaceToCamera+Ln));
-                               
-				float NdotH = max(dot(normalize(normal), H), 0.0);
-				float NdotL = max(dot(normalize(normal), Ln), 0.0);
-				float VdotH = max(dot(surfaceToCamera, H), 0.0);
+//                vec4 lighting = vec4(0);
 
-                if(NdotL > 0.0)    
-				{         
-					// Geometric attenuation
-					float NH2 = 2.0 * NdotH;
-					float g1 = (NH2 * NdotV) / VdotH;
-					float g2 = (NH2 * NdotL) / VdotH;
-					float geoAtt = min(1.0, min(g1, g2));
-                               
-					// Roughness
-					float mSquared = shininess*shininess;
-					float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
-					float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
-					float roughness;
-					if (NdotL > 0 && NdotV > 0) 
-						roughness = r1 * exp(r2);
-                               
-					// Fresnel
-					float fresnel = pow(1.0 - VdotH, 5.0);
-					fresnel *= (1.0 - Ks);
-					fresnel += Ks;
-        
-				   cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
-				   finalValue += (u_lightColor * NdotL * (k + cook * (1.0-k)));
+//                vec2 sspos = GetScreenSpacePosition();
+//                vec3 normal = texture(u_normaltex, sspos).xyz;
+//                vec3 position = texture(u_positiontex, sspos).xyz;
+//                vec3 surfaceToCamera = normalize(u_CamPos - position);
+//				vec4 materialParams = texture(u_materialParams, sspos);
 
-				}
+//                float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
+//                float shininess = materialParams.x;
+//                float Ks = 1;
+//				float k = 0.5;
 
-			return vec4(finalValue,1);
-}
+//                float cook = 0;
+//                vec3 finalValue = vec3(0);
 
-vec4 DiffuseBRDF()
-{
-	vec4 final = vec4(0);
 
-	vec2 sspos = GetScreenSpacePosition();
-	vec3 position = texture(u_positiontex, sspos).xyz;
-	vec3 normal = texture(u_normaltex, sspos).xyz;
-	vec3 Ln = normalize(sunPos - position);
+//				vec3 Ln = normalize(sunPos - position);
+//				vec3 H = normalize(normalize(surfaceToCamera+Ln));
 
-	float NdotL = max(0.0, dot(normalize(normal), Ln));
+//				float NdotH = max(dot(normalize(normal), H), 0.0);
+//				float NdotL = max(dot(normalize(normal), Ln), 0.0);
+//				float VdotH = max(dot(surfaceToCamera, H), 0.0);
 
-	if(NdotL > 0.0)
-	{
-		final = vec4(u_lightColor * NdotL, 1);
-	}
+//                if(NdotL > 0.0)
+//				{
+//					// Geometric attenuation
+//					float NH2 = 2.0 * NdotH;
+//					float g1 = (NH2 * NdotV) / VdotH;
+//					float g2 = (NH2 * NdotL) / VdotH;
+//					float geoAtt = min(1.0, min(g1, g2));
 
-	return final;
-}
+//					// Roughness
+//					float mSquared = shininess*shininess;
+//					float r1 = 1.0 / (4.0 * mSquared * pow(NdotH, 4.0));
+//					float r2 = (NdotH * NdotH - 1.0) / (mSquared * NdotH * NdotH);
+//					float roughness;
+//					if (NdotL > 0 && NdotV > 0)
+//						roughness = r1 * exp(r2);
+
+//					// Fresnel
+//					float fresnel = pow(1.0 - VdotH, 5.0);
+//					fresnel *= (1.0 - Ks);
+//					fresnel += Ks;
+
+//				   cook = (fresnel * geoAtt * roughness) / (NdotV * NdotL * 4);
+//				   finalValue += (u_lightColor * NdotL * (k + cook * (1.0-k)));
+
+//				}
+
+//			return vec4(finalValue,1);
+//}
+
+//vec4 DiffuseBRDF()
+//{
+//	vec4 final = vec4(0);
+
+//	vec2 sspos = GetScreenSpacePosition();
+//	vec3 position = texture(u_positiontex, sspos).xyz;
+//	vec3 normal = texture(u_normaltex, sspos).xyz;
+//	vec3 Ln = normalize(sunPos - position);
+
+//	float NdotL = max(0.0, dot(normalize(normal), Ln));
+
+//	if(NdotL > 0.0)
+//	{
+//		final = vec4(u_lightColor * NdotL, 1);
+//	}
+
+//	return final;
+//}
 
 vec4 ComputeSH(vec3 normal)
 {
 	vec4 final;
 	vec4 castedNormal = vec4(normal, 1);
 
-	final.r = clamp(dot(castedNormal, M_RED * castedNormal),0,1);
-	final.g = clamp(dot(castedNormal, M_GREEN* castedNormal),0,1);
-	final.b = clamp(dot(castedNormal, M_BLUE * castedNormal),0,1);
+	final.r = clamp(dot(castedNormal, M_RED * castedNormal),0.0,1.0);
+	final.g = clamp(dot(castedNormal, M_GREEN* castedNormal),0.0,1.0);
+	final.b = clamp(dot(castedNormal, M_BLUE * castedNormal),0.0,1.0);
+	final.a = 0;
 
-	return final;
+	return final*0.1;
 }
-	
+
+vec4 indirectSpec(vec2 sspos)
+{
+   vec3 normal = texture(u_normaltex, sspos).xyz;
+   vec3 position = texture(u_positiontex, sspos).xyz;
+   vec3 surfaceToCamera = normalize(u_CamPos - position);
+   float NdotV = max(dot(normalize(normal), surfaceToCamera), 0.0);
+   vec4 materialParams = texture(u_materialParams, sspos);
+
+   vec2 EnvBRDF = texture(LUT,vec2(1-materialParams.x,NdotV)).rg;
+   return vec4(materialParams.yzw * (vec3(1)*EnvBRDF.x+EnvBRDF.y),1)*0.1;
+
+}
+
 //
- 
+
 void main () {
 	vec2 sspos = GetScreenSpacePosition();
 	vec4 albedo = texture(u_color, sspos);
-	vec4 directLighting = albedo * DiffuseBRDF() * SpecularBRDF();
-	vec4 indirectLighting = albedo * ComputeSH(texture(u_normaltex, sspos).xyz);
-	frag_colour = texture(u_albedo, sspos) + (directLighting + indirectLighting );
-	//frag_colour = texture(u_albedo, sspos) * vec4(vec3(1.0 - ComputeSSAO()), 1);
-	//frag_colour =  vec4(vec3(1.0 - ComputeSSAO()), 1);
-	//frag_colour = texture(u_color, sspos);
+	vec4 directLighting = texture(u_albedo,sspos);
+	vec4 indirectLighting = vec4(ComputeSH(texture(u_normaltex, sspos).xyz).xyz,1) + indirectSpec(sspos);
+	frag_colour = (albedo*(directLighting+indirectLighting));
 };
